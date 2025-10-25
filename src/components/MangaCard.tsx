@@ -1,6 +1,7 @@
 import { Eye, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { useTranslation } from "@/hooks/useTranslation";
 
 interface MangaCardProps {
   image: string;
@@ -19,6 +20,8 @@ export const MangaCard = ({
   rating,
   isNew 
 }: MangaCardProps) => {
+  const { t } = useTranslation();
+  
   return (
     <Card className="group relative overflow-hidden bg-card border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer animate-fade-in">
       <div className="relative aspect-[2/3] overflow-hidden">
@@ -30,7 +33,7 @@ export const MangaCard = ({
         
         {isNew && (
           <Badge className="absolute top-2 left-2 bg-primary text-primary-foreground border-0 shadow-lg">
-            MỚI
+            {t.common.new}
           </Badge>
         )}
 
