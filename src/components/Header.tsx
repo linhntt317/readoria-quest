@@ -1,0 +1,55 @@
+import { Search, BookOpen, Menu } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+
+export const Header = () => {
+  return (
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+      <div className="container flex h-16 items-center justify-between px-4">
+        <div className="flex items-center gap-6">
+          <Button variant="ghost" size="icon" className="md:hidden">
+            <Menu className="h-5 w-5" />
+          </Button>
+          
+          <a href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
+            <BookOpen className="h-8 w-8 text-primary" />
+            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              TruyệnHD
+            </span>
+          </a>
+
+          <nav className="hidden md:flex items-center gap-6">
+            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Thể Loại
+            </a>
+            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Danh Sách
+            </a>
+            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+              Hỏi Đáp
+            </a>
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-3">
+          <div className="relative hidden sm:block">
+            <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="Tìm kiếm truyện..."
+              className="w-64 pl-9 bg-secondary/50 border-border/50"
+            />
+          </div>
+
+          <Button variant="ghost" size="icon" className="sm:hidden">
+            <Search className="h-5 w-5" />
+          </Button>
+
+          <Button className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground">
+            Đăng Truyện
+          </Button>
+        </div>
+      </div>
+    </header>
+  );
+};
