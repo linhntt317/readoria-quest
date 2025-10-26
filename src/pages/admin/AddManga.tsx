@@ -16,7 +16,7 @@ const mangaSchema = z.object({
   title: z.string().min(1, "Tên truyện không được để trống"),
   author: z.string().min(1, "Tác giả không được để trống"),
   description: z.string().min(10, "Giới thiệu phải có ít nhất 10 ký tự"),
-  tagIds: z.array(z.string()).min(1, "Vui lòng chọn ít nhất một thể loại"),
+  tagIds: z.array(z.string()).min(0, "Vui lòng chọn ít nhất một thể loại"),
   imageUrl: z.string().url("URL hình ảnh không hợp lệ"),
 });
 
@@ -44,7 +44,7 @@ const AddManga = () => {
           author: data.author,
           description: data.description,
           imageUrl: data.imageUrl,
-          tagIds: data.tagIds
+          tagIds: data?.tagIds
         }
       });
 

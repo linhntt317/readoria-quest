@@ -113,7 +113,7 @@ const AddChapter = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="content">Nội dung (URL ảnh, mỗi dòng một ảnh)</Label>
+                <Label htmlFor="content">Nội dung (có thể thêm tURL ảnh, mỗi dòng một ảnh)</Label>
                 <Textarea 
                   id="content" 
                   {...register("content")} 
