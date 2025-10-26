@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -10,6 +10,8 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useMangaById } from "@/hooks/useManga";
 
 const chapterSchema = z.object({
   chapterNumber: z.string().min(1, "Số chương không được để trống"),
@@ -22,60 +24,49 @@ type ChapterForm = z.infer<typeof chapterSchema>;
 const AddChapter = () => {
   const { mangaId } = useParams();
   const navigate = useNavigate();
-  const [mangaTitle, setMangaTitle] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { data: manga, isLoading } = useMangaById(mangaId);
 
   const { register, handleSubmit, formState: { errors }, reset } = useForm<ChapterForm>({
     resolver: zodResolver(chapterSchema),
   });
 
-  useEffect(() => {
-    const stored = localStorage.getItem("manga_list");
-    if (stored) {
-      const mangaList = JSON.parse(stored);
-      const manga = mangaList.find((m: any) => m.id === mangaId);
-      if (manga) {
-        setMangaTitle(manga.title);
-      }
-    }
-  }, [mangaId]);
-
-  const onSubmit = (data: ChapterForm) => {
+  const onSubmit = async (data: ChapterForm) => {
     setIsSubmitting(true);
     
     try {
-      const stored = localStorage.getItem("manga_list");
-      if (!stored) return;
-      
-      const mangaList = JSON.parse(stored);
-      const mangaIndex = mangaList.findIndex((m: any) => m.id === mangaId);
-      
-      if (mangaIndex === -1) {
-        toast.error("Không tìm thấy truyện!");
-        return;
-      }
+      const { error } = await supabase.functions.invoke('chapters', {
+        method: 'POST',
+        body: {
+          mangaId,
+          chapterNumber: parseInt(data.chapterNumber),
+          title: data.chapterTitle,
+          content: data.content
+        }
+      });
 
-      const newChapter = {
-        id: Date.now().toString(),
-        ...data,
-        createdAt: new Date().toISOString(),
-      };
-
-      if (!mangaList[mangaIndex].chapters) {
-        mangaList[mangaIndex].chapters = [];
-      }
-      
-      mangaList[mangaIndex].chapters.push(newChapter);
-      localStorage.setItem("manga_list", JSON.stringify(mangaList));
+      if (error) throw error;
       
       toast.success("Đã thêm chương thành công!");
       reset();
-    } catch (error) {
-      toast.error("Có lỗi xảy ra khi thêm chương!");
+    } catch (error: any) {
+      console.error('Error adding chapter:', error);
+      toast.error(error.message || "Có lỗi xảy ra khi thêm chương!");
     } finally {
       setIsSubmitting(false);
     }
   };
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+          <p className="mt-4 text-muted-foreground">Đang tải thông tin truyện...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -92,7 +83,7 @@ const AddChapter = () => {
         <Card className="max-w-2xl mx-auto">
           <CardHeader>
             <CardTitle>Thêm Chương Mới</CardTitle>
-            <CardDescription>Truyện: {mangaTitle}</CardDescription>
+            <CardDescription>Truyện: {manga?.title}</CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
@@ -102,6 +93,7 @@ const AddChapter = () => {
                   id="chapterNumber" 
                   {...register("chapterNumber")} 
                   placeholder="Ví dụ: 1, 2, 3..." 
+                  type="number"
                 />
                 {errors.chapterNumber && (
                   <p className="text-sm text-destructive">{errors.chapterNumber.message}</p>

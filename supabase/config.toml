@@ -1,1 +1,10 @@
 project_id = "ljmoqseafxhncpwzuwex"
+
+[functions.manga]
+verify_jwt = false
+
+[functions.tags]
+verify_jwt = false
+
+[functions.chapters]
+verify_jwt = false

@@ -1,35 +1,30 @@
-import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { BookOpen, Plus } from "lucide-react";
-
-interface Manga {
-  id: string;
-  title: string;
-  author: string;
-  imageUrl: string;
-  tags: string[];
-  description: string;
-  chapters: any[];
-}
+import { useManga } from "@/hooks/useManga";
 
 const ManageManga = () => {
-  const [mangaList, setMangaList] = useState<Manga[]>([]);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const stored = localStorage.getItem("manga_list");
-    if (stored) {
-      setMangaList(JSON.parse(stored));
-    }
-  }, []);
+  const { data: mangaList, isLoading } = useManga();
 
   const handleAddChapter = (mangaId: string) => {
     navigate(`/admin/add-chapter/${mangaId}`);
   };
 
-  if (mangaList.length === 0) {
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center p-8">
+        <div className="text-center">
+          <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
+          <p className="mt-4 text-muted-foreground">Đang tải truyện...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!mangaList || mangaList.length === 0) {
     return (
       <Card className="max-w-2xl mx-auto">
         <CardContent className="pt-6">
@@ -53,7 +48,7 @@ const ManageManga = () => {
             <CardHeader>
               <div className="flex gap-4">
                 <img 
-                  src={manga.imageUrl} 
+                  src={manga.image_url} 
                   alt={manga.title}
                   className="w-20 h-28 object-cover rounded"
                 />
@@ -61,10 +56,10 @@ const ManageManga = () => {
                   <CardTitle className="text-lg">{manga.title}</CardTitle>
                   <CardDescription>{manga.author}</CardDescription>
                   <div className="flex flex-wrap gap-1 mt-2">
-                    {manga.tags.map((tag, idx) => (
-                      <span key={idx} className="text-xs bg-secondary px-2 py-1 rounded">
-                        {tag}
-                      </span>
+                    {manga.tags.map((tag) => (
+                      <Badge key={tag.id} variant="secondary">
+                        {tag.name}
+                      </Badge>
                     ))}
                   </div>
                 </div>
@@ -76,7 +71,7 @@ const ManageManga = () => {
               </p>
               <div className="flex items-center justify-between">
                 <span className="text-sm text-muted-foreground">
-                  {manga.chapters.length} chương
+                  {manga.chapterCount || 0} chương
                 </span>
                 <Button size="sm" onClick={() => handleAddChapter(manga.id)}>
                   <Plus className="h-4 w-4 mr-2" />
