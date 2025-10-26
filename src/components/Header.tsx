@@ -8,7 +8,7 @@ export const Header = () => {
   const { t, language, setLanguage } = useTranslation();
   const location = useLocation();
   const navigate = useNavigate();
-  const isAdminRoute = location.pathname.startsWith('/admin');
+  const isAdminLoginRoute = location.pathname === '/admin/post-truyen';
 
   const toggleLanguage = () => {
     setLanguage(language === 'vi' ? 'en' : 'vi');
@@ -65,7 +65,7 @@ export const Header = () => {
             <Globe className="h-5 w-5" />
           </Button>
 
-          {isAdminRoute && (
+          {isAdminLoginRoute && (
             <Button 
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={() => navigate('/admin/post-truyen')}
