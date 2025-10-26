@@ -1,10 +1,14 @@
-import { Search, BookOpen, Menu, Globe } from "lucide-react";
+import { Search, BookOpen, Menu, Globe, Upload } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export const Header = () => {
   const { t, language, setLanguage } = useTranslation();
+  const location = useLocation();
+  const navigate = useNavigate();
+  const isAdminRoute = location.pathname.startsWith('/admin');
 
   const toggleLanguage = () => {
     setLanguage(language === 'vi' ? 'en' : 'vi');
@@ -61,9 +65,15 @@ export const Header = () => {
             <Globe className="h-5 w-5" />
           </Button>
 
-          <Button className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground">
-            {t.header.upload}
-          </Button>
+          {isAdminRoute && (
+            <Button 
+              className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
+              onClick={() => navigate('/admin/post-truyen')}
+            >
+              <Upload className="mr-2 h-4 w-4" />
+              {t.header.upload}
+            </Button>
+          )}
         </div>
       </div>
     </header>
