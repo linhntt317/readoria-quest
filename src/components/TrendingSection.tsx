@@ -1,24 +1,13 @@
 import { TrendingUp, Flame } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
-
-interface TrendingItem {
-  rank: number;
-  titleKey: string;
-  views: string;
-  isHot?: boolean;
-}
-
-const trendingData: TrendingItem[] = [
-  { rank: 1, titleKey: "item1", views: "1.2M", isHot: true },
-  { rank: 2, titleKey: "item2", views: "980K", isHot: true },
-  { rank: 3, titleKey: "item3", views: "856K", isHot: true },
-  { rank: 4, titleKey: "item4", views: "745K" },
-  { rank: 5, titleKey: "item5", views: "692K" },
-];
+import { useManga } from "@/hooks/useManga";
 
 export const TrendingSection = () => {
   const { t } = useTranslation();
+  const { data: mangaList } = useManga();
+  
+  const trending = mangaList?.slice().sort((a, b) => b.views - a.views).slice(0, 5) || [];
   
   return (
     <aside className="lg:col-span-1 space-y-6">
@@ -29,33 +18,36 @@ export const TrendingSection = () => {
         </div>
 
         <div className="space-y-3">
-          {trendingData.map((item) => (
-            <div 
-              key={item.rank}
-              className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group"
-            >
+          {trending.map((manga, index) => {
+            const rank = index + 1;
+            return (
               <div 
-                className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
-                  item.rank <= 3 
-                    ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30' 
-                    : 'bg-secondary text-muted-foreground'
-                }`}
+                key={manga.id}
+                className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group"
               >
-                {item.rank}
-              </div>
+                <div 
+                  className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
+                    rank <= 3 
+                      ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg shadow-primary/30' 
+                      : 'bg-secondary text-muted-foreground'
+                  }`}
+                >
+                  {rank}
+                </div>
 
-              <div className="flex-1 min-w-0">
-                <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors">
-                  {t.manga.trending[item.titleKey as keyof typeof t.manga.trending]}
-                </h3>
-                <p className="text-xs text-muted-foreground">{item.views} {t.common.views}</p>
-              </div>
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-medium text-sm line-clamp-1 group-hover:text-primary transition-colors">
+                    {manga.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground">{manga.views.toLocaleString()} {t.common.views}</p>
+                </div>
 
-              {item.isHot && (
-                <Flame className="h-4 w-4 text-orange-500 flex-shrink-0 animate-pulse" />
-              )}
-            </div>
-          ))}
+                {rank <= 3 && (
+                  <Flame className="h-4 w-4 text-orange-500 flex-shrink-0 animate-pulse" />
+                )}
+              </div>
+            );
+          })}
         </div>
       </Card>
 
@@ -64,15 +56,15 @@ export const TrendingSection = () => {
         <div className="space-y-2 text-sm text-muted-foreground">
           <p className="flex items-start gap-2">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-1.5" />
-            <span>{t.trending.notification1}</span>
+            <span>{mangaList?.length || 0} truyện đang có trên hệ thống</span>
           </p>
           <p className="flex items-start gap-2">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-1.5" />
-            <span>{t.trending.notification2}</span>
+            <span>Cập nhật liên tục mỗi ngày</span>
           </p>
           <p className="flex items-start gap-2">
             <span className="inline-block w-1.5 h-1.5 rounded-full bg-primary mt-1.5" />
-            <span>{t.trending.notification3}</span>
+            <span>Đọc truyện miễn phí 100%</span>
           </p>
         </div>
       </Card>

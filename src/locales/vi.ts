@@ -8,7 +8,7 @@ export const vi = {
     rating: "Đánh giá",
   },
   header: {
-    siteName: "TruyệnHD",
+    siteName: "Web Truyện Nhanh",
     categories: "Thể Loại",
     list: "Danh Sách",
     forum: "Hỏi Đáp",
@@ -38,8 +38,8 @@ export const vi = {
     notification3: "Hệ thống bảo trì 2h sáng mai",
   },
   footer: {
-    copyright: "© 2025 TruyệnHD. Tất cả quyền được bảo lưu.",
-    description: "Website đọc truyện tranh online miễn phí",
+    copyright: "© 2025 Web Truyện Nhanh. Tất cả quyền được bảo lưu.",
+    description: "Website đọc truyện online miễn phí",
   },
   manga: {
     titles: {

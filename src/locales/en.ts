@@ -10,7 +10,7 @@ export const en: TranslationKeys = {
     rating: "Rating",
   },
   header: {
-    siteName: "MangaHD",
+    siteName: "Fast Stories",
     categories: "Categories",
     list: "List",
     forum: "Forum",
@@ -40,8 +40,8 @@ export const en: TranslationKeys = {
     notification3: "System maintenance at 2am tomorrow",
   },
   footer: {
-    copyright: "© 2025 MangaHD. All rights reserved.",
-    description: "Free online manga reading website",
+    copyright: "© 2025 Fast Stories. All rights reserved.",
+    description: "Free online stories reading website",
   },
   manga: {
     titles: {
