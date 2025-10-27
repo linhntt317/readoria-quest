@@ -37,7 +37,7 @@ const AddManga = () => {
     setIsSubmitting(true);
     
     try {
-      const { data: result, error } = await supabase.functions.invoke('manga', {
+      const { data: result, error } = await supabase.functions.invoke('truyen', {
         method: 'POST',
         body: {
           title: data.title,

@@ -31,9 +31,9 @@ export interface Chapter {
 
 export const useManga = () => {
   return useQuery({
-    queryKey: ['manga'],
+    queryKey: ['truyen'],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('manga', {
+      const { data, error } = await supabase.functions.invoke('truyen', {
         method: 'GET'
       });
       
@@ -45,11 +45,11 @@ export const useManga = () => {
 
 export const useMangaById = (id: string | undefined) => {
   return useQuery({
-    queryKey: ['manga', id],
+    queryKey: ['truyen', id],
     queryFn: async () => {
-      if (!id) throw new Error('Manga ID is required');
+      if (!id) throw new Error('Truyen ID is required');
       
-      const { data, error } = await supabase.functions.invoke(`manga/${id}`, {
+      const { data, error } = await supabase.functions.invoke(`truyen/${id}`, {
         method: 'GET'
       });
       

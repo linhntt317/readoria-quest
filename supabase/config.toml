@@ -1,6 +1,6 @@
 project_id = "ljmoqseafxhncpwzuwex"
 
-[functions.manga]
+[functions.truyen]
 verify_jwt = false
 
 [functions.tags]
