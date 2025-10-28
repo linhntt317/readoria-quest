@@ -14,6 +14,7 @@ import MangaDetail from "./pages/admin/MangaDetail";
 import EditManga from "./pages/admin/EditManga";
 import EditChapter from "./pages/admin/EditChapter";
 import ViewChapter from "./pages/admin/ViewChapter";
+import ManageTags from "./pages/admin/ManageTags";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -57,6 +58,11 @@ const App = () => (
               <Route path="/admin/view-chapter/:chapterId" element={
                 <ProtectedRoute>
                   <ViewChapter />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/tags" element={
+                <ProtectedRoute>
+                  <ManageTags />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

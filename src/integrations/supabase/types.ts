@@ -120,16 +120,22 @@ export type Database = {
       }
       tags: {
         Row: {
+          category: string
+          color: string
           created_at: string | null
           id: string
           name: string
         }
         Insert: {
+          category?: string
+          color?: string
           created_at?: string | null
           id?: string
           name: string
         }
         Update: {
+          category?: string
+          color?: string
           created_at?: string | null
           id?: string
           name?: string

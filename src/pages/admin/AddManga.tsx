@@ -9,8 +9,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useTags } from "@/hooks/useManga";
+import { Search } from "lucide-react";
 
 const mangaSchema = z.object({
   title: z.string().min(1, "Tên truyện không được để trống"),
@@ -24,6 +26,7 @@ type MangaForm = z.infer<typeof mangaSchema>;
 
 const AddManga = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [searchTag, setSearchTag] = useState("");
   const { data: tags, isLoading: tagsLoading } = useTags();
   
   const { register, handleSubmit, control, formState: { errors }, reset } = useForm<MangaForm>({
@@ -94,27 +97,90 @@ const AddManga = () => {
               <Controller
                 name="tagIds"
                 control={control}
-                render={({ field }) => (
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 p-4 border rounded-lg">
-                    {tags?.map((tag) => (
-                      <div key={tag.id} className="flex items-center space-x-2">
-                        <Checkbox
-                          id={tag.id}
-                          checked={field.value?.includes(tag.id)}
-                          onCheckedChange={(checked) => {
-                            const newValue = checked
-                              ? [...(field.value || []), tag.id]
-                              : field.value?.filter((id) => id !== tag.id) || [];
-                            field.onChange(newValue);
-                          }}
+                render={({ field }) => {
+                  const groupedTags = tags?.reduce((acc, tag) => {
+                    if (!acc[tag.category]) {
+                      acc[tag.category] = [];
+                    }
+                    acc[tag.category].push(tag);
+                    return acc;
+                  }, {} as Record<string, typeof tags>);
+
+                  const filteredGroups = Object.entries(groupedTags || {}).map(([category, categoryTags]) => ({
+                    category,
+                    tags: categoryTags.filter(tag => 
+                      tag.name.toLowerCase().includes(searchTag.toLowerCase())
+                    )
+                  })).filter(group => group.tags.length > 0);
+
+                  return (
+                    <div className="space-y-3">
+                      <div className="relative">
+                        <Search className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
+                        <Input
+                          placeholder="Tìm kiếm thể loại..."
+                          value={searchTag}
+                          onChange={(e) => setSearchTag(e.target.value)}
+                          className="pl-8"
                         />
-                        <Label htmlFor={tag.id} className="cursor-pointer font-normal">
-                          {tag.name}
-                        </Label>
                       </div>
-                    ))}
-                  </div>
-                )}
+                      <ScrollArea className="h-[300px] border rounded-lg p-4">
+                        <div className="space-y-4">
+                          {filteredGroups.map(({ category, tags: categoryTags }) => (
+                            <div key={category}>
+                              <div className="flex items-center gap-2 mb-2">
+                                <div 
+                                  className="w-3 h-3 rounded-full"
+                                  style={{ backgroundColor: categoryTags[0]?.color }}
+                                />
+                                <h4 className="font-semibold text-sm">{category}</h4>
+                              </div>
+                              <div className="grid grid-cols-2 gap-2 ml-5">
+                                {categoryTags.map((tag) => (
+                                  <div key={tag.id} className="flex items-center space-x-2">
+                                    <Checkbox
+                                      id={tag.id}
+                                      checked={field.value?.includes(tag.id)}
+                                      onCheckedChange={(checked) => {
+                                        const newValue = checked
+                                          ? [...(field.value || []), tag.id]
+                                          : field.value?.filter((id) => id !== tag.id) || [];
+                                        field.onChange(newValue);
+                                      }}
+                                    />
+                                    <Label 
+                                      htmlFor={tag.id} 
+                                      className="cursor-pointer font-normal text-sm"
+                                      style={{ color: tag.color }}
+                                    >
+                                      {tag.name}
+                                    </Label>
+                                  </div>
+                                ))}
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </ScrollArea>
+                      {field.value && field.value.length > 0 && (
+                        <div className="flex flex-wrap gap-2">
+                          {field.value.map(tagId => {
+                            const tag = tags?.find(t => t.id === tagId);
+                            return tag ? (
+                              <div 
+                                key={tag.id}
+                                className="px-2 py-1 rounded-full text-xs text-white"
+                                style={{ backgroundColor: tag.color }}
+                              >
+                                {tag.name}
+                              </div>
+                            ) : null;
+                          })}
+                        </div>
+                      )}
+                    </div>
+                  );
+                }}
               />
             )}
             {errors.tagIds && <p className="text-sm text-destructive">{errors.tagIds.message}</p>}

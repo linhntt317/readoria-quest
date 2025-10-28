@@ -4,6 +4,8 @@ import { supabase } from '@/integrations/supabase/client';
 export interface Tag {
   id: string;
   name: string;
+  category: string;
+  color: string;
 }
 
 export interface Manga {
