@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { BookOpen, Plus } from "lucide-react";
+import { BookOpen, Plus, Eye } from "lucide-react";
 import { useManga } from "@/hooks/useManga";
 
 const ManageManga = () => {
@@ -11,6 +11,10 @@ const ManageManga = () => {
 
   const handleAddChapter = (mangaId: string) => {
     navigate(`/admin/add-chapter/${mangaId}`);
+  };
+
+  const handleViewDetail = (mangaId: string) => {
+    navigate(`/admin/manga-detail/${mangaId}`);
   };
 
   if (isLoading) {
@@ -73,10 +77,16 @@ const ManageManga = () => {
                 <span className="text-sm text-muted-foreground">
                   {manga.chapterCount || 0} chương
                 </span>
-                <Button size="sm" onClick={() => handleAddChapter(manga.id)}>
-                  <Plus className="h-4 w-4 mr-2" />
-                  Thêm chương
-                </Button>
+                <div className="flex gap-2">
+                  <Button size="sm" variant="outline" onClick={() => handleViewDetail(manga.id)}>
+                    <Eye className="h-4 w-4 mr-2" />
+                    Chi tiết
+                  </Button>
+                  <Button size="sm" onClick={() => handleAddChapter(manga.id)}>
+                    <Plus className="h-4 w-4 mr-2" />
+                    Thêm chương
+                  </Button>
+                </div>
               </div>
             </CardContent>
           </Card>

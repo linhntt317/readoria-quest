@@ -10,6 +10,10 @@ import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddChapter from "./pages/admin/AddChapter";
+import MangaDetail from "./pages/admin/MangaDetail";
+import EditManga from "./pages/admin/EditManga";
+import EditChapter from "./pages/admin/EditChapter";
+import ViewChapter from "./pages/admin/ViewChapter";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -33,6 +37,26 @@ const App = () => (
               <Route path="/admin/add-chapter/:mangaId" element={
                 <ProtectedRoute>
                   <AddChapter />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/manga-detail/:mangaId" element={
+                <ProtectedRoute>
+                  <MangaDetail />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/edit-manga/:mangaId" element={
+                <ProtectedRoute>
+                  <EditManga />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/edit-chapter/:chapterId" element={
+                <ProtectedRoute>
+                  <EditChapter />
+                </ProtectedRoute>
+              } />
+              <Route path="/admin/view-chapter/:chapterId" element={
+                <ProtectedRoute>
+                  <ViewChapter />
                 </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
