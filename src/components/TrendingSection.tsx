@@ -2,6 +2,7 @@ import { TrendingUp, Flame } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useManga } from "@/hooks/useManga";
+import { Link } from "react-router-dom";
 
 export const TrendingSection = () => {
   const { t } = useTranslation();
@@ -21,10 +22,13 @@ export const TrendingSection = () => {
           {trending.map((manga, index) => {
             const rank = index + 1;
             return (
-              <div 
+              <Link 
                 key={manga.id}
-                className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group"
+                to={`/truyen/${manga.id}`}
               >
+                <div 
+                  className="flex items-center gap-3 p-3 rounded-lg hover:bg-secondary/50 transition-colors cursor-pointer group"
+                >
                 <div 
                   className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center font-bold text-sm ${
                     rank <= 3 
@@ -45,7 +49,8 @@ export const TrendingSection = () => {
                 {rank <= 3 && (
                   <Flame className="h-4 w-4 text-orange-500 flex-shrink-0 animate-pulse" />
                 )}
-              </div>
+                </div>
+              </Link>
             );
           })}
         </div>

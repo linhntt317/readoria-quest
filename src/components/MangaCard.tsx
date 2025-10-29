@@ -2,8 +2,10 @@ import { Eye, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/hooks/useTranslation";
+import { Link } from "react-router-dom";
 
 interface MangaCardProps {
+  id: string;
   image: string;
   title: string;
   chapter?: string;
@@ -13,6 +15,7 @@ interface MangaCardProps {
 }
 
 export const MangaCard = ({ 
+  id,
   image, 
   title, 
   chapter, 
@@ -23,7 +26,8 @@ export const MangaCard = ({
   const { t } = useTranslation();
   
   return (
-    <Card className="group relative overflow-hidden bg-card border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer animate-fade-in">
+    <Link to={`/truyen/${id}`}>
+      <Card className="group relative overflow-hidden bg-card border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer animate-fade-in">
       <div className="relative aspect-[2/3] overflow-hidden">
         <img 
           src={image} 
@@ -64,6 +68,7 @@ export const MangaCard = ({
           {title}
         </h3>
       </div>
-    </Card>
+      </Card>
+    </Link>
   );
 };

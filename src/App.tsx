@@ -7,10 +7,12 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
+import MangaDetail from "./pages/MangaDetail";
+import ChapterReader from "./pages/ChapterReader";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddChapter from "./pages/admin/AddChapter";
-import MangaDetail from "./pages/admin/MangaDetail";
+import AdminMangaDetail from "./pages/admin/MangaDetail";
 import EditManga from "./pages/admin/EditManga";
 import EditChapter from "./pages/admin/EditChapter";
 import ViewChapter from "./pages/admin/ViewChapter";
@@ -29,6 +31,8 @@ const App = () => (
           <BrowserRouter>
             <Routes>
               <Route path="/" element={<Index />} />
+              <Route path="/truyen/:mangaId" element={<MangaDetail />} />
+              <Route path="/truyen/:mangaId/chuong/:chapterId" element={<ChapterReader />} />
               <Route path="/admin/post-truyen" element={<AdminLogin />} />
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute>
@@ -42,7 +46,7 @@ const App = () => (
               } />
               <Route path="/admin/manga-detail/:mangaId" element={
                 <ProtectedRoute>
-                  <MangaDetail />
+                  <AdminMangaDetail />
                 </ProtectedRoute>
               } />
               <Route path="/admin/edit-manga/:mangaId" element={

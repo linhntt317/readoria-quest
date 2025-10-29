@@ -46,7 +46,8 @@ const Index = () => {
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
                 {featured.map((manga) => (
                   <MangaCard 
-                    key={manga.id} 
+                    key={manga.id}
+                    id={manga.id}
                     image={manga.image_url}
                     title={manga.title}
                     chapter={manga.chapterCount ? `${t.common.chapter} ${manga.chapterCount}` : "Chưa có chương"}
@@ -70,6 +71,7 @@ const Index = () => {
                 {latest.map((manga, index) => (
                   <MangaCard 
                     key={`${manga.id}-${index}`}
+                    id={manga.id}
                     image={manga.image_url}
                     title={manga.title}
                     chapter={manga.chapterCount ? `${t.common.chapter} ${manga.chapterCount}` : "Chưa có chương"}
@@ -93,6 +95,7 @@ const Index = () => {
                 {topRated.map((manga) => (
                   <MangaCard 
                     key={`rated-${manga.id}`}
+                    id={manga.id}
                     image={manga.image_url}
                     title={manga.title}
                     chapter={manga.chapterCount ? `${t.common.chapter} ${manga.chapterCount}` : "Chưa có chương"}
