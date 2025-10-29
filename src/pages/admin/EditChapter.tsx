@@ -117,8 +117,16 @@ const EditChapter = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="content">Nội dung *</Label>
-                <Textarea id="content" {...register("content")} rows={15} />
+                <Label htmlFor="content">Nội dung (HTML) *</Label>
+                <Textarea 
+                  id="content" 
+                  {...register("content")} 
+                  rows={15} 
+                  className="font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  Hỗ trợ HTML: &lt;p&gt;, &lt;br&gt;, &lt;img&gt;, &lt;strong&gt;, &lt;em&gt;, v.v.
+                </p>
                 {errors.content && <p className="text-sm text-destructive">{errors.content.message}</p>}
               </div>
 

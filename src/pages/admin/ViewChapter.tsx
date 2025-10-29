@@ -70,9 +70,10 @@ const ViewChapter = () => {
             </p>
           </CardHeader>
           <CardContent>
-            <div className="prose prose-sm max-w-none">
-              <p className="whitespace-pre-wrap">{chapter.content}</p>
-            </div>
+            <div 
+              className="prose prose-sm md:prose-base max-w-none dark:prose-invert"
+              dangerouslySetInnerHTML={{ __html: chapter.content || '' }}
+            />
           </CardContent>
         </Card>
       </div>

@@ -187,13 +187,17 @@ const AddManga = () => {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="description">Giới thiệu</Label>
+            <Label htmlFor="description">Giới thiệu (HTML)</Label>
             <Textarea 
               id="description" 
               {...register("description")} 
-              placeholder="Nhập giới thiệu truyện..."
-              rows={6}
+              placeholder="<p>Giới thiệu truyện...</p>&#10;<p>Có thể dùng HTML để format</p>"
+              rows={10}
+              className="font-mono text-sm"
             />
+            <p className="text-xs text-muted-foreground">
+              Hỗ trợ HTML: &lt;p&gt;, &lt;br&gt;, &lt;strong&gt;, &lt;em&gt;, v.v.
+            </p>
             {errors.description && <p className="text-sm text-destructive">{errors.description.message}</p>}
           </div>
 

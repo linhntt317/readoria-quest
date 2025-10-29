@@ -51,9 +51,6 @@ const ChapterReader = () => {
   const prevChapter = currentIndex > 0 ? manga.chapters![currentIndex - 1] : null;
   const nextChapter = currentIndex < (manga.chapters?.length ?? 0) - 1 ? manga.chapters![currentIndex + 1] : null;
 
-  // Parse content as image URLs (one per line)
-  const imageUrls = chapter.content?.split('\n').filter(url => url.trim()) || [];
-
   return (
     <div className="min-h-screen bg-background">
       <Header />
@@ -100,22 +97,15 @@ const ChapterReader = () => {
         {/* Chapter Content */}
         <Card>
           <CardContent className="p-6">
-            {imageUrls.length === 0 ? (
+            {!chapter.content || chapter.content.trim() === '' ? (
               <p className="text-center text-muted-foreground py-8">
                 Chương này chưa có nội dung
               </p>
             ) : (
-              <div className="space-y-2">
-                {imageUrls.map((url, index) => (
-                  <img
-                    key={index}
-                    src={url}
-                    alt={`Trang ${index + 1}`}
-                    className="w-full mx-auto"
-                    loading="lazy"
-                  />
-                ))}
-              </div>
+              <div 
+                className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert"
+                dangerouslySetInnerHTML={{ __html: chapter.content }}
+              />
             )}
           </CardContent>
         </Card>

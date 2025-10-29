@@ -113,13 +113,17 @@ const AddChapter = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="content">Nội dung (có thể thêm tURL ảnh, mỗi dòng một ảnh)</Label>
+                <Label htmlFor="content">Nội dung (HTML)</Label>
                 <Textarea 
                   id="content" 
                   {...register("content")} 
-                  placeholder="https://example.com/page1.jpg&#10;https://example.com/page2.jpg&#10;..."
-                  rows={10}
+                  placeholder="<p>Nội dung chương...</p>&#10;<p>Hoặc thêm ảnh: <img src='url' /></p>"
+                  rows={15}
+                  className="font-mono text-sm"
                 />
+                <p className="text-xs text-muted-foreground">
+                  Hỗ trợ HTML: &lt;p&gt;, &lt;br&gt;, &lt;img&gt;, &lt;strong&gt;, &lt;em&gt;, v.v.
+                </p>
                 {errors.content && (
                   <p className="text-sm text-destructive">{errors.content.message}</p>
                 )}

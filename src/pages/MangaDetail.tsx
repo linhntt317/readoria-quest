@@ -111,9 +111,10 @@ const MangaDetail = () => {
               </CardHeader>
               <CardContent>
                 <h3 className="font-semibold mb-2">Giới thiệu</h3>
-                <p className="text-muted-foreground whitespace-pre-line leading-relaxed">
-                  {manga.description}
-                </p>
+                <div 
+                  className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground"
+                  dangerouslySetInnerHTML={{ __html: manga.description }}
+                />
               </CardContent>
             </Card>
 
