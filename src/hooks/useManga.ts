@@ -35,12 +35,37 @@ export const useManga = () => {
   return useQuery({
     queryKey: ['truyen'],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('truyen', {
-        method: 'GET'
-      });
+      // Query manga with tags
+      const { data: mangaData, error: mangaError } = await supabase
+        .from('manga')
+        .select(`
+          *,
+          tags:manga_tags(tag:tags(*))
+        `)
+        .order('created_at', { ascending: false });
       
-      if (error) throw error;
-      return data as Manga[];
+      if (mangaError) throw mangaError;
+
+      // Get chapter counts
+      const mangaIds = mangaData?.map(m => m.id) || [];
+      const { data: chapterCounts } = await supabase
+        .from('chapters')
+        .select('manga_id')
+        .in('manga_id', mangaIds);
+
+      const countMap = (chapterCounts || []).reduce((acc, ch) => {
+        acc[ch.manga_id] = (acc[ch.manga_id] || 0) + 1;
+        return acc;
+      }, {} as Record<string, number>);
+
+      // Format manga data
+      const formattedData = mangaData?.map(manga => ({
+        ...manga,
+        tags: manga.tags?.map((t: any) => t.tag).filter(Boolean) || [],
+        chapterCount: countMap[manga.id] || 0
+      })) || [];
+
+      return formattedData as Manga[];
     }
   });
 };
