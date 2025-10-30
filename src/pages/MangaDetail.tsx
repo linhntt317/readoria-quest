@@ -112,7 +112,7 @@ const MangaDetail = () => {
               <CardContent>
                 <h3 className="font-semibold mb-2">Giới thiệu</h3>
                 <div 
-                  className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground"
+                  className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{ __html: manga.description }}
                 />
               </CardContent>

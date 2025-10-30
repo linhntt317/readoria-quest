@@ -103,7 +103,7 @@ const ChapterReader = () => {
               </p>
             ) : (
               <div 
-                className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert"
+                className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert whitespace-pre-wrap"
                 dangerouslySetInnerHTML={{ __html: chapter.content }}
               />
             )}
