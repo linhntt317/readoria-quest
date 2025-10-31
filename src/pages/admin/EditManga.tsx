@@ -47,37 +47,18 @@ const EditManga = () => {
 
   const onSubmit = async (data: MangaForm) => {
     try {
-      const { error: updateError } = await supabase
-        .from('manga')
-        .update({
+      const { data: result, error } = await supabase.functions.invoke(`truyen/${mangaId}`, {
+        method: 'PUT',
+        body: {
           title: data.title,
           author: data.author,
           description: data.description,
-          image_url: data.image_url,
-        })
-        .eq('id', mangaId);
+          imageUrl: data.image_url,
+          tagIds: data.tags
+        }
+      });
 
-      if (updateError) throw updateError;
-
-      // Delete old tags
-      const { error: deleteTagsError } = await supabase
-        .from('manga_tags')
-        .delete()
-        .eq('manga_id', mangaId);
-
-      if (deleteTagsError) throw deleteTagsError;
-
-      // Insert new tags
-      const mangaTags = data.tags.map(tagId => ({
-        manga_id: mangaId!,
-        tag_id: tagId,
-      }));
-
-      const { error: insertTagsError } = await supabase
-        .from('manga_tags')
-        .insert(mangaTags);
-
-      if (insertTagsError) throw insertTagsError;
+      if (error) throw error;
 
       toast.success("Cập nhật truyện thành công!");
       navigate(`/admin/manga-detail/${mangaId}`);

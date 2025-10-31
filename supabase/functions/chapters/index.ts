@@ -40,13 +40,30 @@ serve(async (req) => {
       });
     }
 
-    // GET chapters by manga ID
+    // GET chapters by manga ID or single chapter by ID
     if (req.method === 'GET') {
       const url = new URL(req.url);
       const mangaId = url.searchParams.get('mangaId');
+      const chapterId = url.searchParams.get('id');
+      
+      if (chapterId) {
+        console.log('Fetching chapter:', chapterId);
+        
+        const { data: chapter, error } = await supabase
+          .from('chapters')
+          .select('*')
+          .eq('id', chapterId)
+          .single();
+
+        if (error) throw error;
+
+        return new Response(JSON.stringify(chapter), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
       
       if (!mangaId) {
-        throw new Error('mangaId is required');
+        throw new Error('mangaId or id is required');
       }
 
       console.log('Fetching chapters for manga:', mangaId);
@@ -60,6 +77,60 @@ serve(async (req) => {
       if (error) throw error;
 
       return new Response(JSON.stringify(chapters), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // PUT update chapter
+    if (req.method === 'PUT') {
+      const url = new URL(req.url);
+      const chapterId = url.searchParams.get('id');
+      
+      if (!chapterId) {
+        throw new Error('id is required');
+      }
+
+      const { chapterNumber, title, content } = await req.json();
+      
+      console.log('Updating chapter:', chapterId);
+
+      const { data: chapter, error } = await supabase
+        .from('chapters')
+        .update({
+          chapter_number: chapterNumber,
+          title,
+          content
+        })
+        .eq('id', chapterId)
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify(chapter), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // DELETE chapter
+    if (req.method === 'DELETE') {
+      const url = new URL(req.url);
+      const chapterId = url.searchParams.get('id');
+      
+      if (!chapterId) {
+        throw new Error('id is required');
+      }
+
+      console.log('Deleting chapter:', chapterId);
+
+      const { error } = await supabase
+        .from('chapters')
+        .delete()
+        .eq('id', chapterId);
+
+      if (error) throw error;
+
+      return new Response(JSON.stringify({ success: true }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }

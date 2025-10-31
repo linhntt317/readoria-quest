@@ -5,12 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit, Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { useMangaById } from "@/hooks/useManga";
 import { supabase } from "@/integrations/supabase/client";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Chapter } from "@/hooks/useManga";
+import { toast } from "sonner";
 
 const MangaDetail = () => {
   const navigate = useNavigate();
   const { mangaId } = useParams();
+  const queryClient = useQueryClient();
   const { data: manga, isLoading } = useMangaById(mangaId);
 
   const { data: chapters, isLoading: chaptersLoading } = useQuery({
@@ -56,6 +58,42 @@ const MangaDetail = () => {
       </div>
     );
   }
+
+  const handleDeleteChapter = async (chapterId: string) => {
+    if (!confirm("Bạn có chắc chắn muốn xoá chương này?")) return;
+
+    try {
+      const { error } = await supabase.functions.invoke(`chapters?id=${chapterId}`, {
+        method: 'DELETE'
+      });
+
+      if (error) throw error;
+
+      toast.success("Xoá chương thành công!");
+      queryClient.invalidateQueries({ queryKey: ['chapters', mangaId] });
+    } catch (error) {
+      console.error('Error deleting chapter:', error);
+      toast.error("Có lỗi xảy ra khi xoá chương");
+    }
+  };
+
+  const handleDeleteManga = async () => {
+    if (!confirm("Bạn có chắc chắn muốn xoá truyện này? Tất cả chương sẽ bị xoá.")) return;
+
+    try {
+      const { error } = await supabase.functions.invoke(`truyen/${mangaId}`, {
+        method: 'DELETE'
+      });
+
+      if (error) throw error;
+
+      toast.success("Xoá truyện thành công!");
+      navigate("/admin/dashboard");
+    } catch (error) {
+      console.error('Error deleting manga:', error);
+      toast.error("Có lỗi xảy ra khi xoá truyện");
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background p-4">
@@ -153,7 +191,7 @@ const MangaDetail = () => {
                       <Button 
                         size="sm" 
                         variant="outline"
-                        onClick={() => {/* TODO: Delete chapter */}}
+                        onClick={() => handleDeleteChapter(chapter.id)}
                       >
                         <Trash2 className="h-4 w-4" />
                       </Button>
@@ -170,7 +208,7 @@ const MangaDetail = () => {
           <Button 
             variant="destructive" 
             size="sm"
-            onClick={() => {/* TODO: Delete manga */}}
+            onClick={handleDeleteManga}
           >
             <Trash2 className="h-4 w-4 mr-2" />
             Xoá truyện

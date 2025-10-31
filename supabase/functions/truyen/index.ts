@@ -147,6 +147,81 @@ serve(async (req) => {
       });
     }
 
+    // PUT update truyen
+    if (req.method === 'PUT' && truyenId && truyenId !== 'truyen') {
+      const { title, author, description, imageUrl, tagIds } = await req.json();
+      
+      console.log('Updating truyen:', truyenId, { title, author, tagIds });
+
+      // Update manga
+      const { data: manga, error: mangaError } = await supabase
+        .from('manga')
+        .update({
+          title,
+          author,
+          description,
+          image_url: imageUrl
+        })
+        .eq('id', truyenId)
+        .select()
+        .single();
+
+      if (mangaError) throw mangaError;
+
+      // Delete existing tags
+      await supabase
+        .from('manga_tags')
+        .delete()
+        .eq('manga_id', truyenId);
+
+      // Insert new tags
+      if (tagIds && tagIds.length > 0) {
+        const mangaTags = tagIds.map((tagId: string) => ({
+          manga_id: truyenId,
+          tag_id: tagId
+        }));
+
+        const { error: tagsError } = await supabase
+          .from('manga_tags')
+          .insert(mangaTags);
+
+        if (tagsError) throw tagsError;
+      }
+
+      return new Response(JSON.stringify(manga), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    // DELETE truyen
+    if (req.method === 'DELETE' && truyenId && truyenId !== 'truyen') {
+      console.log('Deleting truyen:', truyenId);
+
+      // Delete chapters first (cascade)
+      await supabase
+        .from('chapters')
+        .delete()
+        .eq('manga_id', truyenId);
+
+      // Delete manga tags
+      await supabase
+        .from('manga_tags')
+        .delete()
+        .eq('manga_id', truyenId);
+
+      // Delete manga
+      const { error: mangaError } = await supabase
+        .from('manga')
+        .delete()
+        .eq('id', truyenId);
+
+      if (mangaError) throw mangaError;
+
+      return new Response(JSON.stringify({ success: true }), {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
     return new Response(JSON.stringify({ error: 'Method not allowed' }), {
       status: 405,
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

@@ -51,14 +51,14 @@ const EditChapter = () => {
 
   const onSubmit = async (data: ChapterForm) => {
     try {
-      const { error } = await supabase
-        .from('chapters')
-        .update({
-          chapter_number: data.chapter_number,
+      const { data: result, error } = await supabase.functions.invoke(`chapters?id=${chapterId}`, {
+        method: 'PUT',
+        body: {
+          chapterNumber: data.chapter_number,
           title: data.title,
           content: data.content,
-        })
-        .eq('id', chapterId);
+        }
+      });
 
       if (error) throw error;
 
