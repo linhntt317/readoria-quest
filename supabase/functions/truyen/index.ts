@@ -1,10 +1,56 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.39.3';
+import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
+
+// Validation schemas
+const createMangaSchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  author: z.string().trim().min(1).max(100),
+  description: z.string().trim().min(10).max(10000),
+  imageUrl: z.string().url().max(500),
+  tagIds: z.array(z.string().uuid()).max(20)
+});
+
+const updateMangaSchema = z.object({
+  title: z.string().trim().min(1).max(200),
+  author: z.string().trim().min(1).max(100),
+  description: z.string().trim().min(10).max(10000),
+  imageUrl: z.string().url().max(500),
+  tagIds: z.array(z.string().uuid()).max(20)
+});
+
+// Helper function to check admin role
+async function checkAdminRole(req: Request, supabase: any): Promise<{ user: any; error?: string }> {
+  const authHeader = req.headers.get('Authorization');
+  if (!authHeader) {
+    return { user: null, error: 'Unauthorized - Authentication required' };
+  }
+
+  const token = authHeader.replace('Bearer ', '');
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+  
+  if (authError || !user) {
+    return { user: null, error: 'Invalid authentication token' };
+  }
+
+  // Check if user has admin role
+  const { data: hasAdminRole, error: roleError } = await supabase
+    .rpc('has_role', { 
+      _user_id: user.id, 
+      _role: 'admin' 
+    });
+
+  if (roleError || !hasAdminRole) {
+    return { user: null, error: 'Forbidden - Admin access required' };
+  }
+
+  return { user };
+}
 
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
@@ -13,7 +59,7 @@ serve(async (req) => {
 
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
-    const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
+    const supabaseKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
     const url = new URL(req.url);
@@ -108,11 +154,45 @@ serve(async (req) => {
       });
     }
 
-    // POST create truyen
+    // POST create truyen (requires admin role)
     if (req.method === 'POST') {
-      const { title, author, description, imageUrl, tagIds } = await req.json();
+      const { user, error: authError } = await checkAdminRole(req, supabase);
+      if (authError) {
+        return new Response(JSON.stringify({ error: authError }), {
+          status: authError.includes('Forbidden') ? 403 : 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const rawBody = await req.json();
+      
+      // Validate input
+      const validation = createMangaSchema.safeParse(rawBody);
+      if (!validation.success) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid input', details: validation.error.format() }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const { title, author, description, imageUrl, tagIds } = validation.data;
       
       console.log('Creating truyen:', { title, author, tagIds });
+
+      // Verify all tags exist
+      if (tagIds && tagIds.length > 0) {
+        const { data: existingTags } = await supabase
+          .from('tags')
+          .select('id')
+          .in('id', tagIds);
+        
+        if (!existingTags || existingTags.length !== tagIds.length) {
+          return new Response(
+            JSON.stringify({ error: 'One or more tag IDs are invalid' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
 
       // Insert manga
       const { data: manga, error: mangaError } = await supabase
@@ -147,11 +227,45 @@ serve(async (req) => {
       });
     }
 
-    // PUT update truyen
+    // PUT update truyen (requires admin role)
     if (req.method === 'PUT' && truyenId && truyenId !== 'truyen') {
-      const { title, author, description, imageUrl, tagIds } = await req.json();
+      const { user, error: authError } = await checkAdminRole(req, supabase);
+      if (authError) {
+        return new Response(JSON.stringify({ error: authError }), {
+          status: authError.includes('Forbidden') ? 403 : 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      const rawBody = await req.json();
+      
+      // Validate input
+      const validation = updateMangaSchema.safeParse(rawBody);
+      if (!validation.success) {
+        return new Response(
+          JSON.stringify({ error: 'Invalid input', details: validation.error.format() }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
+
+      const { title, author, description, imageUrl, tagIds } = validation.data;
       
       console.log('Updating truyen:', truyenId, { title, author, tagIds });
+
+      // Verify all tags exist
+      if (tagIds && tagIds.length > 0) {
+        const { data: existingTags } = await supabase
+          .from('tags')
+          .select('id')
+          .in('id', tagIds);
+        
+        if (!existingTags || existingTags.length !== tagIds.length) {
+          return new Response(
+            JSON.stringify({ error: 'One or more tag IDs are invalid' }),
+            { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+          );
+        }
+      }
 
       // Update manga
       const { data: manga, error: mangaError } = await supabase
@@ -193,8 +307,16 @@ serve(async (req) => {
       });
     }
 
-    // DELETE truyen
+    // DELETE truyen (requires admin role)
     if (req.method === 'DELETE' && truyenId && truyenId !== 'truyen') {
+      const { user, error: authError } = await checkAdminRole(req, supabase);
+      if (authError) {
+        return new Response(JSON.stringify({ error: authError }), {
+          status: authError.includes('Forbidden') ? 403 : 401,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
       console.log('Deleting truyen:', truyenId);
 
       // Delete chapters first (cascade)

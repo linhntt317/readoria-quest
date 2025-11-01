@@ -1,10 +1,10 @@
 project_id = "ljmoqseafxhncpwzuwex"
 
 [functions.truyen]
-verify_jwt = false
+verify_jwt = true
 
 [functions.tags]
-verify_jwt = false
+verify_jwt = true
 
 [functions.chapters]
-verify_jwt = false
+verify_jwt = true

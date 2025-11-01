@@ -4,12 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { LogOut, Home, Tags } from "lucide-react";
 import AddManga from "./AddManga";
 import ManageManga from "./ManageManga";
+import { useAuth } from "@/contexts/AuthContext";
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
+  const { signOut } = useAuth();
 
-  const handleLogout = () => {
-    sessionStorage.removeItem("admin_authenticated");
+  const handleLogout = async () => {
+    await signOut();
     navigate("/");
   };
 
