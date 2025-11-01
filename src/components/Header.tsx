@@ -106,7 +106,7 @@ export const Header = () => {
           {!isAdminLoginRoute && (
             <Button 
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => navigate('/admin/post-truyen')}
+              onClick={() => navigate('/admin/dashboard')}
             >
               <Upload className="mr-2 h-4 w-4" />
               {t.header.upload}
