@@ -110,7 +110,6 @@ serve(async (req) => {
         console.log("Updating chapter (POST action):", {
           id,
           chapterNumber,
-          title,
         });
 
         const { data: chapters, error } = await supabase
@@ -201,7 +200,7 @@ serve(async (req) => {
 
       const { mangaId, chapterNumber, title, content } = validation.data;
 
-      console.log("Creating chapter:", { mangaId, chapterNumber, title });
+      console.log("Creating chapter:", { mangaId, chapterNumber });
 
       // Verify manga exists
       const { data: manga, error: mangaError } = await supabase

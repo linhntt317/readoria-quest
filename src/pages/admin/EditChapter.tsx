@@ -55,7 +55,7 @@ const EditChapter = () => {
     values: chapter
       ? {
           chapter_number: chapter.chapter_number,
-          title: chapter.title,
+          title: chapter.title || "",
           content: chapter.content || "",
         }
       : undefined,
@@ -131,7 +131,7 @@ const EditChapter = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="title">Tiêu đề chương *</Label>
+                <Label htmlFor="title">Tiêu đề chương</Label>
                 <Input id="title" {...register("title")} />
                 {errors.title && (
                   <p className="text-sm text-destructive">

@@ -1,6 +1,12 @@
 import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowLeft, Edit, Plus, Eye, Pencil, Trash2 } from "lucide-react";
 import { useMangaById } from "@/hooks/useManga";
@@ -16,18 +22,18 @@ const MangaDetail = () => {
   const { data: manga, isLoading } = useMangaById(mangaId);
 
   const { data: chapters, isLoading: chaptersLoading } = useQuery({
-    queryKey: ['chapters', mangaId],
+    queryKey: ["chapters", mangaId],
     queryFn: async () => {
       const { data, error } = await supabase
-        .from('chapters')
-        .select('*')
-        .eq('manga_id', mangaId)
-        .order('chapter_number', { ascending: true });
-      
+        .from("chapters")
+        .select("*")
+        .eq("manga_id", mangaId)
+        .order("chapter_number", { ascending: true });
+
       if (error) throw error;
       return data as Chapter[];
     },
-    enabled: !!mangaId
+    enabled: !!mangaId,
   });
 
   if (isLoading || chaptersLoading) {
@@ -51,7 +57,9 @@ const MangaDetail = () => {
         <div className="max-w-4xl mx-auto">
           <Card>
             <CardContent className="pt-6">
-              <p className="text-center text-muted-foreground">Không tìm thấy truyện</p>
+              <p className="text-center text-muted-foreground">
+                Không tìm thấy truyện
+              </p>
             </CardContent>
           </Card>
         </div>
@@ -63,26 +71,29 @@ const MangaDetail = () => {
     if (!confirm("Bạn có chắc chắn muốn xoá chương này?")) return;
 
     try {
-      const { error } = await supabase.functions.invoke('chapters', {
-        body: { action: 'delete', id: chapterId }
+      const { error } = await supabase.functions.invoke("chapters", {
+        body: { action: "delete", id: chapterId },
       });
 
       if (error) throw error;
 
       toast.success("Xoá chương thành công!");
-      queryClient.invalidateQueries({ queryKey: ['chapters', mangaId] });
+      queryClient.invalidateQueries({ queryKey: ["chapters", mangaId] });
     } catch (error) {
-      console.error('Error deleting chapter:', error);
+      console.error("Error deleting chapter:", error);
       toast.error("Có lỗi xảy ra khi xoá chương");
     }
   };
 
   const handleDeleteManga = async () => {
-    if (!confirm("Bạn có chắc chắn muốn xoá truyện này? Tất cả chương sẽ bị xoá.")) return;
+    if (
+      !confirm("Bạn có chắc chắn muốn xoá truyện này? Tất cả chương sẽ bị xoá.")
+    )
+      return;
 
     try {
       const { error } = await supabase.functions.invoke(`truyen/${mangaId}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
       if (error) throw error;
@@ -90,7 +101,7 @@ const MangaDetail = () => {
       toast.success("Xoá truyện thành công!");
       navigate("/admin/dashboard");
     } catch (error) {
-      console.error('Error deleting manga:', error);
+      console.error("Error deleting manga:", error);
       toast.error("Có lỗi xảy ra khi xoá truyện");
     }
   };
@@ -100,12 +111,18 @@ const MangaDetail = () => {
       <div className="max-w-4xl mx-auto space-y-6">
         {/* Header Actions */}
         <div className="flex items-center justify-between">
-          <Button variant="outline" onClick={() => navigate("/admin/dashboard")}>
+          <Button
+            variant="outline"
+            onClick={() => navigate("/admin/dashboard")}
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>
           <div className="flex gap-2">
-            <Button variant="outline" onClick={() => navigate(`/admin/edit-manga/${mangaId}`)}>
+            <Button
+              variant="outline"
+              onClick={() => navigate(`/admin/edit-manga/${mangaId}`)}
+            >
               <Edit className="h-4 w-4 mr-2" />
               Sửa truyện
             </Button>
@@ -120,14 +137,16 @@ const MangaDetail = () => {
         <Card>
           <CardHeader>
             <div className="flex gap-6">
-              <img 
-                src={manga.image_url} 
+              <img
+                src={manga.image_url}
                 alt={manga.title}
                 className="w-32 h-44 object-cover rounded"
               />
               <div className="flex-1">
                 <CardTitle className="text-2xl mb-2">{manga.title}</CardTitle>
-                <CardDescription className="text-base mb-3">Tác giả: {manga.author}</CardDescription>
+                <CardDescription className="text-base mb-3">
+                  Tác giả: {manga.author}
+                </CardDescription>
                 <div className="flex flex-wrap gap-2 mb-3">
                   {manga.tags.map((tag) => (
                     <Badge key={tag.id} variant="secondary">
@@ -145,7 +164,7 @@ const MangaDetail = () => {
           </CardHeader>
           <CardContent>
             <h3 className="font-semibold mb-2">Giới thiệu:</h3>
-            <div 
+            <div
               className="prose prose-sm max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
               dangerouslySetInnerHTML={{ __html: manga.description }}
             />
@@ -159,37 +178,47 @@ const MangaDetail = () => {
           </CardHeader>
           <CardContent>
             {!chapters || chapters.length === 0 ? (
-              <p className="text-center text-muted-foreground py-8">Chưa có chương nào</p>
+              <p className="text-center text-muted-foreground py-8">
+                Chưa có chương nào
+              </p>
             ) : (
               <div className="space-y-2">
                 {chapters.map((chapter) => (
-                  <div 
+                  <div
                     key={chapter.id}
                     className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 transition-colors"
                   >
                     <div className="flex-1">
-                      <p className="font-medium">Chương {chapter.chapter_number}: {chapter.title}</p>
+                      <p className="font-medium">
+                        Chương {chapter.chapter_number}: {chapter.title}
+                      </p>
                       <p className="text-sm text-muted-foreground">
-                        {new Date(chapter.created_at).toLocaleDateString('vi-VN')}
+                        {new Date(chapter.created_at).toLocaleDateString(
+                          "vi-VN"
+                        )}
                       </p>
                     </div>
                     <div className="flex gap-2">
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
-                        onClick={() => navigate(`/admin/view-chapter/${chapter.id}`)}
+                        onClick={() =>
+                          navigate(`/admin/view-chapter/${chapter.id}`)
+                        }
                       >
                         <Eye className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
-                        onClick={() => navigate(`/admin/edit-chapter/${chapter.id}`)}
+                        onClick={() =>
+                          navigate(`/admin/edit-chapter/${chapter.id}`)
+                        }
                       >
                         <Pencil className="h-4 w-4" />
                       </Button>
-                      <Button 
-                        size="sm" 
+                      <Button
+                        size="sm"
                         variant="outline"
                         onClick={() => handleDeleteChapter(chapter.id)}
                       >
@@ -205,11 +234,7 @@ const MangaDetail = () => {
 
         {/* Delete Manga Button */}
         <div className="flex justify-center">
-          <Button 
-            variant="destructive" 
-            size="sm"
-            onClick={handleDeleteManga}
-          >
+          <Button variant="destructive" size="sm" onClick={handleDeleteManga}>
             <Trash2 className="h-4 w-4 mr-2" />
             Xoá truyện
           </Button>

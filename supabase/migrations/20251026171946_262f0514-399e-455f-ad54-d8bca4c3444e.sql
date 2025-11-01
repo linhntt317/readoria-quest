@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS public.chapters (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   manga_id UUID REFERENCES public.manga(id) ON DELETE CASCADE NOT NULL,
   chapter_number INTEGER NOT NULL,
-  title TEXT NOT NULL,
+  title TEXT,
   content TEXT,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT now(),
   UNIQUE(manga_id, chapter_number)

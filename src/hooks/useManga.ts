@@ -1,5 +1,5 @@
-import { useQuery } from '@tanstack/react-query';
-import { supabase } from '@/integrations/supabase/client';
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 export interface Tag {
   id: string;
@@ -26,32 +26,34 @@ export interface Chapter {
   id: string;
   manga_id: string;
   chapter_number: number;
-  title: string;
+  title?: string;
   content?: string;
   created_at: string;
 }
 
 export const useManga = () => {
   return useQuery({
-    queryKey: ['truyen'],
+    queryKey: ["truyen"],
     queryFn: async () => {
       // Query manga with tags
       const { data: mangaData, error: mangaError } = await supabase
-        .from('manga')
-        .select(`
+        .from("manga")
+        .select(
+          `
           *,
           tags:manga_tags(tag:tags(*))
-        `)
-        .order('created_at', { ascending: false });
-      
+        `
+        )
+        .order("created_at", { ascending: false });
+
       if (mangaError) throw mangaError;
 
       // Get chapter counts
-      const mangaIds = mangaData?.map(m => m.id) || [];
+      const mangaIds = mangaData?.map((m) => m.id) || [];
       const { data: chapterCounts } = await supabase
-        .from('chapters')
-        .select('manga_id')
-        .in('manga_id', mangaIds);
+        .from("chapters")
+        .select("manga_id")
+        .in("manga_id", mangaIds);
 
       const countMap = (chapterCounts || []).reduce((acc, ch) => {
         acc[ch.manga_id] = (acc[ch.manga_id] || 0) + 1;
@@ -59,44 +61,45 @@ export const useManga = () => {
       }, {} as Record<string, number>);
 
       // Format manga data
-      const formattedData = mangaData?.map(manga => ({
-        ...manga,
-        tags: manga.tags?.map((t: any) => t.tag).filter(Boolean) || [],
-        chapterCount: countMap[manga.id] || 0
-      })) || [];
+      const formattedData =
+        mangaData?.map((manga) => ({
+          ...manga,
+          tags: manga.tags?.map((t: any) => t.tag).filter(Boolean) || [],
+          chapterCount: countMap[manga.id] || 0,
+        })) || [];
 
       return formattedData as Manga[];
-    }
+    },
   });
 };
 
 export const useMangaById = (id: string | undefined) => {
   return useQuery({
-    queryKey: ['truyen', id],
+    queryKey: ["truyen", id],
     queryFn: async () => {
-      if (!id) throw new Error('Truyen ID is required');
-      
+      if (!id) throw new Error("Truyen ID is required");
+
       const { data, error } = await supabase.functions.invoke(`truyen/${id}`, {
-        method: 'GET'
+        method: "GET",
       });
-      
+
       if (error) throw error;
       return data as Manga;
     },
-    enabled: !!id
+    enabled: !!id,
   });
 };
 
 export const useTags = () => {
   return useQuery({
-    queryKey: ['tags'],
+    queryKey: ["tags"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke('tags', {
-        method: 'GET'
+      const { data, error } = await supabase.functions.invoke("tags", {
+        method: "GET",
       });
-      
+
       if (error) throw error;
       return data as Tag[];
-    }
+    },
   });
 };
