@@ -43,9 +43,9 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Button variant="ghost" size="icon" className="md:hidden">
+          {/* <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
-          </Button>
+          </Button> */}
 
           <a
             href="/"
