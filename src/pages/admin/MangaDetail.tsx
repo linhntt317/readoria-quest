@@ -63,7 +63,8 @@ const MangaDetail = () => {
     if (!confirm("Bạn có chắc chắn muốn xoá chương này?")) return;
 
     try {
-      const { error } = await supabase.functions.invoke(`chapters?id=${chapterId}`, {
+      const { error } = await supabase.functions.invoke('chapters', {
+        body: { id: chapterId },
         method: 'DELETE'
       });
 

@@ -51,13 +51,14 @@ const EditChapter = () => {
 
   const onSubmit = async (data: ChapterForm) => {
     try {
-      const { data: result, error } = await supabase.functions.invoke(`chapters?id=${chapterId}`, {
-        method: 'PUT',
+      const { error } = await supabase.functions.invoke('chapters', {
         body: {
+          id: chapterId,
           chapterNumber: data.chapter_number,
           title: data.title,
           content: data.content,
-        }
+        },
+        method: 'PUT'
       });
 
       if (error) throw error;

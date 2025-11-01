@@ -83,16 +83,13 @@ serve(async (req) => {
 
     // PUT update chapter
     if (req.method === 'PUT') {
-      const url = new URL(req.url);
-      const chapterId = url.searchParams.get('id');
+      const { id, chapterNumber, title, content } = await req.json();
       
-      if (!chapterId) {
+      if (!id) {
         throw new Error('id is required');
       }
 
-      const { chapterNumber, title, content } = await req.json();
-      
-      console.log('Updating chapter:', chapterId);
+      console.log('Updating chapter:', id);
 
       const { data: chapter, error } = await supabase
         .from('chapters')
@@ -101,7 +98,7 @@ serve(async (req) => {
           title,
           content
         })
-        .eq('id', chapterId)
+        .eq('id', id)
         .select()
         .single();
 
@@ -114,19 +111,18 @@ serve(async (req) => {
 
     // DELETE chapter
     if (req.method === 'DELETE') {
-      const url = new URL(req.url);
-      const chapterId = url.searchParams.get('id');
+      const { id } = await req.json();
       
-      if (!chapterId) {
+      if (!id) {
         throw new Error('id is required');
       }
 
-      console.log('Deleting chapter:', chapterId);
+      console.log('Deleting chapter:', id);
 
       const { error } = await supabase
         .from('chapters')
         .delete()
-        .eq('id', chapterId);
+        .eq('id', id);
 
       if (error) throw error;
 
