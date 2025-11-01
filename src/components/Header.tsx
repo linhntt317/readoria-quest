@@ -1,4 +1,13 @@
-import { Search, BookOpen, Menu, Globe, Upload, Sun, Moon, Monitor } from "lucide-react";
+import {
+  Search,
+  BookOpen,
+  Menu,
+  Globe,
+  Upload,
+  Sun,
+  Moon,
+  Monitor,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -16,10 +25,10 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const isAdminLoginRoute = location.pathname === '/admin/post-truyen';
+  const isAdminLoginRoute = location.pathname === "/admin/post-truyen";
 
   const toggleLanguage = () => {
-    setLanguage(language === 'vi' ? 'en' : 'vi');
+    setLanguage(language === "vi" ? "en" : "vi");
   };
 
   const themeIcons = {
@@ -37,25 +46,37 @@ export const Header = () => {
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
           </Button>
-          
-          <a href="/" className="flex items-center gap-2 transition-transform hover:scale-105">
+
+          <a
+            href="/"
+            className="flex items-center gap-2 transition-transform hover:scale-105"
+          >
             <BookOpen className="h-8 w-8 text-primary" />
-            <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-xl w-[max-content] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {t.header.siteName}
             </span>
           </a>
 
-          <nav className="hidden md:flex items-center gap-6">
-            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+          {/* <nav className="hidden md:flex items-center gap-6">
+            <a
+              href="#"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            >
               {t.header.categories}
             </a>
-            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            >
               {t.header.list}
             </a>
-            <a href="#" className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors">
+            <a
+              href="#"
+              className="text-sm font-medium text-muted-foreground hover:text-primary transition-colors"
+            >
               {t.header.forum}
             </a>
-          </nav>
+          </nav> */}
         </div>
 
         <div className="flex items-center gap-3">
@@ -79,34 +100,36 @@ export const Header = () => {
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onClick={() => setTheme('light')}>
+              <DropdownMenuItem onClick={() => setTheme("light")}>
                 <Sun className="mr-2 h-4 w-4" />
-                {language === 'vi' ? 'Sáng' : 'Light'}
+                {language === "vi" ? "Sáng" : "Light"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('dark')}>
+              <DropdownMenuItem onClick={() => setTheme("dark")}>
                 <Moon className="mr-2 h-4 w-4" />
-                {language === 'vi' ? 'Tối' : 'Dark'}
+                {language === "vi" ? "Tối" : "Dark"}
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => setTheme('system')}>
+              <DropdownMenuItem onClick={() => setTheme("system")}>
                 <Monitor className="mr-2 h-4 w-4" />
-                {language === 'vi' ? 'Hệ Thống' : 'System'}
+                {language === "vi" ? "Hệ Thống" : "System"}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
 
-          <Button 
-            variant="ghost" 
-            size="icon" 
+          <Button
+            variant="ghost"
+            size="icon"
             onClick={toggleLanguage}
-            title={language === 'vi' ? 'Switch to English' : 'Chuyển sang Tiếng Việt'}
+            title={
+              language === "vi" ? "Switch to English" : "Chuyển sang Tiếng Việt"
+            }
           >
             <Globe className="h-5 w-5" />
           </Button>
 
           {!isAdminLoginRoute && (
-            <Button 
+            <Button
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => navigate('/admin/dashboard')}
+              onClick={() => navigate("/admin/dashboard")}
             >
               <Upload className="mr-2 h-4 w-4" />
               {t.header.upload}
