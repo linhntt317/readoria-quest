@@ -26,8 +26,9 @@ serve(async (req) => {
         const { id, chapterNumber, title, content } = body || {};
         if (!id) throw new Error('id is required');
 
-        console.log('Updating chapter (POST action):', id);
-        const { data: chapter, error } = await supabase
+        console.log('Updating chapter (POST action):', { id, chapterNumber, title });
+        
+        const { data: chapters, error } = await supabase
           .from('chapters')
           .update({
             chapter_number: chapterNumber,
@@ -35,18 +36,23 @@ serve(async (req) => {
             content
           })
           .eq('id', id)
-          .select()
-          .maybeSingle();
+          .select();
 
-        if (error) throw error;
-        if (!chapter) {
-          return new Response(JSON.stringify({ error: 'Chapter not found' }), {
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
+
+        if (!chapters || chapters.length === 0) {
+          console.error('No chapter found with id:', id);
+          return new Response(JSON.stringify({ error: 'Chapter not found or no permission to update' }), {
             status: 404,
             headers: { ...corsHeaders, 'Content-Type': 'application/json' },
           });
         }
 
-        return new Response(JSON.stringify(chapter), {
+        console.log('Chapter updated successfully:', chapters[0]);
+        return new Response(JSON.stringify(chapters[0]), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
       }
@@ -57,13 +63,27 @@ serve(async (req) => {
         if (!id) throw new Error('id is required');
 
         console.log('Deleting chapter (POST action):', id);
-        const { error } = await supabase
+        
+        const { data: deleted, error } = await supabase
           .from('chapters')
           .delete()
-          .eq('id', id);
+          .eq('id', id)
+          .select();
 
-        if (error) throw error;
+        if (error) {
+          console.error('Delete error:', error);
+          throw error;
+        }
 
+        if (!deleted || deleted.length === 0) {
+          console.error('No chapter found to delete with id:', id);
+          return new Response(JSON.stringify({ error: 'Chapter not found or no permission to delete' }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
+
+        console.log('Chapter deleted successfully');
         return new Response(JSON.stringify({ success: true }), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
         });
