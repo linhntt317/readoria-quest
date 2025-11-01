@@ -36,9 +36,15 @@ serve(async (req) => {
           })
           .eq('id', id)
           .select()
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
+        if (!chapter) {
+          return new Response(JSON.stringify({ error: 'Chapter not found' }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
 
         return new Response(JSON.stringify(chapter), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -98,9 +104,15 @@ serve(async (req) => {
           .from('chapters')
           .select('*')
           .eq('id', chapterId)
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
+        if (!chapter) {
+          return new Response(JSON.stringify({ error: 'Chapter not found' }), {
+            status: 404,
+            headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+          });
+        }
 
         return new Response(JSON.stringify(chapter), {
           headers: { ...corsHeaders, 'Content-Type': 'application/json' },
@@ -145,9 +157,15 @@ serve(async (req) => {
         })
         .eq('id', id)
         .select()
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
+      if (!chapter) {
+        return new Response(JSON.stringify({ error: 'Chapter not found' }), {
+          status: 404,
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
 
       return new Response(JSON.stringify(chapter), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },

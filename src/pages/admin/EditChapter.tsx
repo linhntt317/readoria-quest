@@ -32,7 +32,7 @@ const EditChapter = () => {
         .from('chapters')
         .select('*')
         .eq('id', chapterId)
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data as Chapter;
