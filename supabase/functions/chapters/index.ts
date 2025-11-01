@@ -16,10 +16,55 @@ serve(async (req) => {
     const supabaseKey = Deno.env.get('SUPABASE_ANON_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseKey);
 
-    // POST create chapter
+    // POST create/update/delete via invoke
     if (req.method === 'POST') {
-      const { mangaId, chapterNumber, title, content } = await req.json();
-      
+      const body = await req.json().catch(() => ({}));
+      const { action } = body || {};
+
+      // Update chapter (invoke always uses POST)
+      if (action === 'update') {
+        const { id, chapterNumber, title, content } = body || {};
+        if (!id) throw new Error('id is required');
+
+        console.log('Updating chapter (POST action):', id);
+        const { data: chapter, error } = await supabase
+          .from('chapters')
+          .update({
+            chapter_number: chapterNumber,
+            title,
+            content
+          })
+          .eq('id', id)
+          .select()
+          .single();
+
+        if (error) throw error;
+
+        return new Response(JSON.stringify(chapter), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Delete chapter (invoke always uses POST)
+      if (action === 'delete') {
+        const { id } = body || {};
+        if (!id) throw new Error('id is required');
+
+        console.log('Deleting chapter (POST action):', id);
+        const { error } = await supabase
+          .from('chapters')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+
+        return new Response(JSON.stringify({ success: true }), {
+          headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+        });
+      }
+
+      // Default: create chapter
+      const { mangaId, chapterNumber, title, content } = body;
       console.log('Creating chapter:', { mangaId, chapterNumber, title });
 
       const { data: chapter, error } = await supabase

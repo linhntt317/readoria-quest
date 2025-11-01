@@ -53,12 +53,12 @@ const EditChapter = () => {
     try {
       const { error } = await supabase.functions.invoke('chapters', {
         body: {
+          action: 'update',
           id: chapterId,
           chapterNumber: data.chapter_number,
           title: data.title,
           content: data.content,
-        },
-        method: 'PUT'
+        }
       });
 
       if (error) throw error;

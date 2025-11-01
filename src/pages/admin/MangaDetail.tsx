@@ -64,8 +64,7 @@ const MangaDetail = () => {
 
     try {
       const { error } = await supabase.functions.invoke('chapters', {
-        body: { id: chapterId },
-        method: 'DELETE'
+        body: { action: 'delete', id: chapterId }
       });
 
       if (error) throw error;
