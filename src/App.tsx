@@ -35,42 +35,42 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/truyen/:mangaId" element={<MangaDetail />} />
               <Route path="/truyen/:mangaId/chuong/:chapterId" element={<ChapterReader />} />
-              <Route path="/admin/post-truyen" element={<AdminLogin />} />
-              <Route path="/admin/login" element={<AdminLogin />} />
+              <Route path="/admin/post-truyen" />
+              {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
               <Route path="/admin/dashboard" element={
-                {/* {/* <ProtectedRoute> */} */}
+                <ProtectedRoute>
                   <AdminDashboard />
-                {/* {/* {/* <ProtectedRoute> */} */} */}
+                </ProtectedRoute>
               } />
               <Route path="/admin/add-chapter/:mangaId" element={
-                {/* {/* <ProtectedRoute> */} */}
+                <ProtectedRoute>
                   <AddChapter />
-                {/* {/* {/* <ProtectedRoute> */} */} */}
+                </ProtectedRoute>
               } />
               <Route path="/admin/manga-detail/:mangaId" element={
-                {/* {/* <ProtectedRoute> */} */}
+                <ProtectedRoute>
                   <AdminMangaDetail />
-                {/* {/* {/* <ProtectedRoute> */} */} */}
+                </ProtectedRoute>
               } />
               <Route path="/admin/edit-manga/:mangaId" element={
-                {/* {/* <ProtectedRoute> */} */}
+                <ProtectedRoute>
                   <EditManga />
-                {/* {/* {/* <ProtectedRoute> */} */} */}
+                </ProtectedRoute>
               } />
               <Route path="/admin/edit-chapter/:chapterId" element={
-                {/* {/* <ProtectedRoute> */} */}
+                <ProtectedRoute>
                   <EditChapter />
-                {/* {/* <ProtectedRoute> */} */}
+                </ProtectedRoute>
               } />
               <Route path="/admin/view-chapter/:chapterId" element={
-                {/* <ProtectedRoute> */}
+                <ProtectedRoute>
                   <ViewChapter />
-                {/* {/* <ProtectedRoute> */} */}
+                </ProtectedRoute>
               } />
               <Route path="/admin/tags" element={
-                {/* <ProtectedRoute> */}
+                <ProtectedRoute>
                   <ManageTags />
-                {/* {/* <ProtectedRoute> */} */}
+                </ProtectedRoute>
               } />
               {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
               <Route path="*" element={<NotFound />} />
