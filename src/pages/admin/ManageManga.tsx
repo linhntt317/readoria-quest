@@ -1,6 +1,12 @@
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Plus, Eye } from "lucide-react";
 import { useManga } from "@/hooks/useManga";
@@ -35,7 +41,9 @@ const ManageManga = () => {
           <div className="text-center py-12">
             <BookOpen className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
             <h3 className="text-lg font-semibold mb-2">Chưa có truyện nào</h3>
-            <p className="text-muted-foreground mb-4">Hãy thêm truyện mới để bắt đầu quản lý</p>
+            <p className="text-muted-foreground mb-4">
+              Hãy thêm truyện mới để bắt đầu quản lý
+            </p>
           </div>
         </CardContent>
       </Card>
@@ -45,15 +53,16 @@ const ManageManga = () => {
   return (
     <div className="max-w-4xl mx-auto">
       <h2 className="text-2xl font-bold mb-6">Danh sách Truyện</h2>
-      
+
       <div className="grid gap-4 md:grid-cols-2">
         {mangaList.map((manga) => (
           <Card key={manga.id}>
             <CardHeader>
               <div className="flex gap-4">
-                <img 
-                  src={manga.image_url} 
+                <img
+                  src={manga.image_url}
                   alt={manga.title}
+                  loading="lazy"
                   className="w-20 h-28 object-cover rounded"
                 />
                 <div className="flex-1">
@@ -78,7 +87,11 @@ const ManageManga = () => {
                   {manga.chapterCount || 0} chương
                 </span>
                 <div className="flex gap-2">
-                  <Button size="sm" variant="outline" onClick={() => handleViewDetail(manga.id)}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleViewDetail(manga.id)}
+                  >
                     <Eye className="h-4 w-4 mr-2" />
                     Chi tiết
                   </Button>

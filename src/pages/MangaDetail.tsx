@@ -69,6 +69,7 @@ const MangaDetail = () => {
                 <img
                   src={manga.image_url}
                   alt={manga.title}
+                  loading="lazy"
                   className="w-full rounded-lg shadow-lg mb-4"
                 />
 
