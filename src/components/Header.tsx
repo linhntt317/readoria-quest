@@ -103,7 +103,7 @@ export const Header = () => {
             <Globe className="h-5 w-5" />
           </Button>
 
-          {isAdminLoginRoute && (
+          {!isAdminLoginRoute && (
             <Button 
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={() => navigate('/admin/post-truyen')}
