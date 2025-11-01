@@ -11,14 +11,14 @@ const corsHeaders = {
 const createChapterSchema = z.object({
   mangaId: z.string().uuid('Invalid manga ID format'),
   chapterNumber: z.number().int().positive('Chapter number must be positive').max(9999),
-  title: z.string().trim().min(1, 'Title required').max(200, 'Title too long'),
+  title: z.string().max(200).optional().or(z.literal('')),
   content: z.string().min(1, 'Content required').max(100000, 'Content too long')
 });
 
 const updateChapterSchema = z.object({
   id: z.string().uuid('Invalid chapter ID'),
   chapterNumber: z.number().int().positive().max(9999).optional(),
-  title: z.string().trim().min(1).max(200).optional(),
+  title: z.string().max(200).optional().or(z.literal('')),
   content: z.string().min(1).max(100000).optional()
 });
 
