@@ -41,7 +41,7 @@ const App = () => (
                   <PostTruyen />
                 </ProtectedRoute>
               } />
-              {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
+              <Route path="/admin/login" element={<AdminLogin />} />
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute>
                   <AdminDashboard />
