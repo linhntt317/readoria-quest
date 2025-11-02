@@ -56,13 +56,12 @@ const PostTruyen = () => {
 
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
-      
 
-  const { data: response, error } = await useQuery({
-    queryKey: ['wiki', jjwxcLink],
-  });
-
-  const data = await response.json();
+      const { data: response, error } = await useQuery({
+        queryKey: ['wiki', jjwxcLink],
+      });
+    
+      const data = await response.json();
 
       if (data.err === 0 && data.exists !== false) {
         // Auto-fill form
