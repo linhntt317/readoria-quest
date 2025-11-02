@@ -55,7 +55,7 @@ const PostTruyen = () => {
 
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
-      const response = await fetch('https://truyenwikidich.net/info', {
+      const response = await fetch(`https://truyenwikidich.net/info?u=${encodedUrl}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
