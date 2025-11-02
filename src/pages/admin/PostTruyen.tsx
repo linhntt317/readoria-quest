@@ -45,6 +45,10 @@ const PostTruyen = () => {
     }
   });
 
+  const { data: response, error } = await useQuery({
+    queryKey: ['wiki', jjwxcLink],
+});
+
   const fetchStoryInfo = async () => {
     if (!jjwxcLink.trim()) {
       toast.error("Vui lòng nhập link truyện!");
