@@ -51,15 +51,15 @@ const PostTruyen = () => {
       return;
     }
 
+    const { data: response, error } = await supabase.functions.invoke(`info?u=${jjwxcLink}`});
+    
+    const data = await response.json();
+
     setIsFetching(true);
     setFetchError("");
 
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
-
-      const { data: response, error } = await supabase.functions.invoke(`info?u=${jjwxcLink}`});
-    
-      const data = await response.json();
 
       if (data.err === 0 && data.exists !== false) {
         // Auto-fill form
