@@ -52,8 +52,8 @@ const PostTruyen = () => {
     }
 
     const { data, error } = await supabase.functions.invoke('info', {
-  body: { u: jjwxcLink }
-});
+      body: { u: jjwxcLink }
+    });
 
     setIsFetching(true);
     setFetchError("");
