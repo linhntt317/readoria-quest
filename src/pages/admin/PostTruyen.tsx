@@ -57,7 +57,7 @@ const PostTruyen = () => {
       const encodedUrl = encodeURIComponent(jjwxcLink);
       const { data: response, error } = await supabase.functions.invoke('wiki', {
   body: { u: jjwxcLink } 
-}); 
+});
 
       const data = await response.json();
 
