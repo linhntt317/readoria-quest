@@ -56,9 +56,6 @@ const PostTruyen = () => {
 
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
-      const { data: response, error } = await useQuery({
-    queryKey: ['wiki', jjwxcLink],
-});
 
       const data = await response.json();
 
