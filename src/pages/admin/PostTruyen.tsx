@@ -51,7 +51,7 @@ const PostTruyen = () => {
       return;
     }
 
-    const { data: response, error } = await supabase.functions.invoke(`info?u=${jjwxcLink}`});
+    const { response, error } = await supabase.functions.invoke(`info?u=${jjwxcLink}`});
     
     const data = await response.json();
 
