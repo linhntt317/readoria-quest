@@ -60,7 +60,6 @@ const PostTruyen = () => {
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',
         },
-        body: `u=${encodedUrl}`
       });
 
       const data = await response.json();
