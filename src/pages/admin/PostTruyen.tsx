@@ -49,7 +49,7 @@ const PostTruyen = () => {
     queryKey: ['wiki', jjwxcLink],
   });
 
-        const data = await response.json();
+  const data = await response.json();
 
   const fetchStoryInfo = async () => {
     if (!jjwxcLink.trim()) {
