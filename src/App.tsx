@@ -18,6 +18,7 @@ import EditManga from "./pages/admin/EditManga";
 import EditChapter from "./pages/admin/EditChapter";
 import ViewChapter from "./pages/admin/ViewChapter";
 import ManageTags from "./pages/admin/ManageTags";
+import PostTruyen from "./pages/admin/PostTruyen";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
 
 const queryClient = new QueryClient();
@@ -35,7 +36,11 @@ const App = () => (
               <Route path="/" element={<Index />} />
               <Route path="/truyen/:mangaId" element={<MangaDetail />} />
               <Route path="/truyen/:mangaId/chuong/:chapterId" element={<ChapterReader />} />
-              <Route path="/admin/post-truyen" />
+              <Route path="/admin/post-truyen" element={
+                <ProtectedRoute>
+                  <PostTruyen />
+                </ProtectedRoute>
+              } />
               {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
               <Route path="/admin/dashboard" element={
                 <ProtectedRoute>
