@@ -3,6 +3,7 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -12,7 +13,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { supabase } from "@/integrations/supabase/client";
 import { useTags } from "@/hooks/useManga";
-import { Search, Link2, Loader2 } from "lucide-react";
+import { Search, Link2, Loader2, ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const mangaSchema = z.object({
@@ -28,6 +29,7 @@ const mangaSchema = z.object({
 type MangaForm = z.infer<typeof mangaSchema>;
 
 const PostTruyen = () => {
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
   const [searchTag, setSearchTag] = useState("");
@@ -116,11 +118,24 @@ const PostTruyen = () => {
   };
 
   return (
-    <Card className="max-w-2xl mx-auto">
-      <CardHeader>
-        <CardTitle>Đăng Truyện Mới</CardTitle>
-        <CardDescription>Nhập link truyện từ JJWXC để tự động điền thông tin hoặc điền thủ công</CardDescription>
-      </CardHeader>
+    <div className="min-h-screen bg-background">
+      <header className="border-b bg-card">
+        <div className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Button variant="ghost" size="sm" onClick={() => navigate("/admin/dashboard")}>
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <h1 className="text-2xl font-bold">Đăng Truyện Mới</h1>
+          </div>
+        </div>
+      </header>
+
+      <main className="container mx-auto px-4 py-8">
+        <Card className="max-w-2xl mx-auto">
+          <CardHeader>
+            <CardTitle>Thông tin truyện</CardTitle>
+            <CardDescription>Nhập link truyện từ JJWXC để tự động điền thông tin hoặc điền thủ công</CardDescription>
+          </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           {/* Link nhúng từ JJWXC */}
@@ -306,6 +321,8 @@ const PostTruyen = () => {
         </form>
       </CardContent>
     </Card>
+      </main>
+    </div>
   );
 };
 
