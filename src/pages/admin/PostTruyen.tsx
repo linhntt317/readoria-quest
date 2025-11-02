@@ -47,7 +47,9 @@ const PostTruyen = () => {
 
   const { data: response, error } = await useQuery({
     queryKey: ['wiki', jjwxcLink],
-});
+  });
+
+        const data = await response.json();
 
   const fetchStoryInfo = async () => {
     if (!jjwxcLink.trim()) {
@@ -60,8 +62,6 @@ const PostTruyen = () => {
 
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
-
-      const data = await response.json();
 
       if (data.err === 0 && data.exists !== false) {
         // Auto-fill form
