@@ -51,7 +51,9 @@ const PostTruyen = () => {
       return;
     }
 
-    const { dataInfo: response, error } = await supabase.functions.invoke(`info`,jjwxcLink});
+    const { data, error } = await supabase.functions.invoke('proxyTruyenInfo', {
+  body: { u: jjwxcLink }
+});
 
     setIsFetching(true);
     setFetchError("");
