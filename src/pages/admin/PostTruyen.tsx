@@ -57,15 +57,7 @@ const PostTruyen = () => {
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
 
-      const { data: response, error } = await supabase.functions.invoke(`info?u=${jjwxcLink}`, {
-        body: {
-          action: "update",
-          id: chapterId,
-          chapterNumber: data.chapter_number,
-          title: data.title,
-          content: data.content,
-        },
-      });
+      const { data: response, error } = await supabase.functions.invoke(`info?u=${jjwxcLink}`});
     
       const data = await response.json();
 
