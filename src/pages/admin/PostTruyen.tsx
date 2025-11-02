@@ -61,14 +61,14 @@ const PostTruyen = () => {
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
 
-      if (dataInfo.err === 0 && dataInfo.exists !== false) {
+      if (data.err === 0 && data.exists !== false) {
         // Auto-fill form
-        setValue("title", dataInfo.title_vi || "");
-        setValue("author", dataInfo.author_cv || "");
-        setValue("imageUrl", dataInfo.cover || "");
-        setValue("description", dataInfo.desc_vi || "");
-        setValue("originalLink", dataInfo.link || jjwxcLink);
-        setValue("status", dataInfo.is_completed ? "Hoàn thành" : "Đang cập nhật");
+        setValue("title", data.title_vi || "");
+        setValue("author", data.author_cv || "");
+        setValue("imageUrl", data.cover || "");
+        setValue("description",data.desc_vi || "");
+        setValue("originalLink", data.link || jjwxcLink);
+        setValue("status", data.is_completed ? "Hoàn thành" : "Đang cập nhật");
         
         toast.success("Đã tải thông tin truyện thành công!");
       } else {
