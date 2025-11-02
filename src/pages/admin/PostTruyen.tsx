@@ -55,14 +55,9 @@ const PostTruyen = () => {
 
     try {
       const encodedUrl = encodeURIComponent(jjwxcLink);
-      const response = await fetch(`https://truyenwikidich.net/info?u=${encodedUrl}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Headers': 'Accept,Authorization,Cache-Control,Content-Type,DNT,If-Modified-Since,Keep-Alive,Origin,User-Agent,X-Mx-ReqToken,X-Requested-With'
-        },
-      });
+      const { data: response, error } = await supabase.functions.invoke('proxyTruyenInfo', {
+  body: { u: jjwxcLink }
+});
 
       const data = await response.json();
 
