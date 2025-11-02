@@ -51,7 +51,7 @@ const PostTruyen = () => {
       return;
     }
 
-    const { data, error } = await supabase.functions.invoke('proxyTruyenInfo', {
+    const { data, error } = await supabase.functions.invoke('info', {
   body: { u: jjwxcLink }
 });
 
