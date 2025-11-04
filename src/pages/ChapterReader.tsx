@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
+import { CommentSection } from "@/components/CommentSection";
 
 const ChapterReader = () => {
   const { mangaId, chapterId } = useParams();
@@ -132,6 +133,13 @@ const ChapterReader = () => {
             </Link>
           )}
         </div>
+
+        {/* Comments Section */}
+        <Card className="mt-8">
+          <CardContent className="p-6">
+            <CommentSection chapterId={chapterId} />
+          </CardContent>
+        </Card>
       </main>
     </div>
   );

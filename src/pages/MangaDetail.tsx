@@ -12,6 +12,7 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { BookOpen, Eye, Star } from "lucide-react";
 import { Header } from "@/components/Header";
+import { CommentSection } from "@/components/CommentSection";
 
 const MangaDetail = () => {
   const { mangaId } = useParams();
@@ -166,6 +167,13 @@ const MangaDetail = () => {
                     ))}
                   </div>
                 )}
+              </CardContent>
+            </Card>
+
+            {/* Comments Section */}
+            <Card>
+              <CardContent className="p-6">
+                <CommentSection mangaId={mangaId} />
               </CardContent>
             </Card>
           </div>
