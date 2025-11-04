@@ -23,11 +23,18 @@ CREATE INDEX idx_comments_created_at ON public.comments(created_at DESC);
 -- Enable Row Level Security
 ALTER TABLE public.comments ENABLE ROW LEVEL SECURITY;
 
--- Anyone can read non-hidden comments
+-- Non-authenticated users can read non-hidden comments
 CREATE POLICY "Anyone can read non-hidden comments"
 ON public.comments
 FOR SELECT
 USING (is_hidden = false);
+
+-- Admins can read all comments (including hidden)
+CREATE POLICY "Admins can read all comments"
+ON public.comments
+FOR SELECT
+TO authenticated
+USING (has_role(auth.uid(), 'admin'::app_role));
 
 -- Anyone can insert comments (anonymous allowed)
 CREATE POLICY "Anyone can insert comments"
@@ -39,10 +46,13 @@ WITH CHECK (true);
 CREATE POLICY "Admins can update comments"
 ON public.comments
 FOR UPDATE
-USING (has_role(auth.uid(), 'admin'::app_role));
+TO authenticated
+USING (has_role(auth.uid(), 'admin'::app_role))
+WITH CHECK (has_role(auth.uid(), 'admin'::app_role));
 
 -- Admins can delete comments
 CREATE POLICY "Admins can delete comments"
 ON public.comments
 FOR DELETE
+TO authenticated
 USING (has_role(auth.uid(), 'admin'::app_role));
