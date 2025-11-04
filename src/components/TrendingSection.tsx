@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useManga } from "@/hooks/useManga";
 import { Link } from "react-router-dom";
+import { FeedbackSection } from "@/components/FeedbackSection";
 
 export const TrendingSection = () => {
   const { t } = useTranslation();
@@ -73,6 +74,8 @@ export const TrendingSection = () => {
           </p>
         </div>
       </Card>
+
+      <FeedbackSection />
     </aside>
   );
 };
