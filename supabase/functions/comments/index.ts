@@ -68,7 +68,14 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
     const supabaseAnonKey = Deno.env.get('SUPABASE_ANON_KEY')!;
-    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+    
+    // Create authenticated client if Authorization header is present
+    const authHeader = req.headers.get('Authorization');
+    const supabaseClient = authHeader
+      ? createClient(supabaseUrl, supabaseAnonKey, {
+          global: { headers: { Authorization: authHeader } }
+        })
+      : createClient(supabaseUrl, supabaseAnonKey);
 
     const url = new URL(req.url);
     const pathParts = url.pathname.split('/').filter(Boolean);
@@ -86,7 +93,7 @@ Deno.serve(async (req) => {
         );
       }
 
-      let query = supabase
+      let query = supabaseClient
         .from('comments')
         .select('*')
         .order('created_at', { ascending: false });
@@ -143,11 +150,11 @@ Deno.serve(async (req) => {
 
       // If parentId is provided, verify it exists
       if (parentId) {
-        const { data: parentComment, error: parentError } = await supabase
+        const { data: parentComment, error: parentError } = await supabaseClient
           .from('comments')
           .select('id')
           .eq('id', parentId)
-          .single();
+          .maybeSingle();
 
         if (parentError || !parentComment) {
           return new Response(
@@ -157,7 +164,7 @@ Deno.serve(async (req) => {
         }
       }
 
-      const { data: newComment, error: insertError } = await supabase
+      const { data: newComment, error: insertError } = await supabaseClient
         .from('comments')
         .insert({
           manga_id: mangaId || null,
@@ -185,7 +192,7 @@ Deno.serve(async (req) => {
 
     // PUT - Update comment (admin only - to hide/unhide)
     if (req.method === 'PUT') {
-      const { user, error: authError } = await checkAdminRole(req, supabase);
+      const { user, error: authError } = await checkAdminRole(req, supabaseClient);
       
       if (authError) {
         return new Response(
@@ -209,7 +216,7 @@ Deno.serve(async (req) => {
 
       const { isHidden } = validationResult.data;
 
-      const { data: updatedComment, error: updateError } = await supabase
+      const { data: updatedComment, error: updateError } = await supabaseClient
         .from('comments')
         .update({ is_hidden: isHidden })
         .eq('id', commentId)
@@ -232,7 +239,7 @@ Deno.serve(async (req) => {
 
     // DELETE - Delete comment (admin only)
     if (req.method === 'DELETE') {
-      const { user, error: authError } = await checkAdminRole(req, supabase);
+      const { user, error: authError } = await checkAdminRole(req, supabaseClient);
       
       if (authError) {
         return new Response(
@@ -241,7 +248,7 @@ Deno.serve(async (req) => {
         );
       }
 
-      const { error: deleteError } = await supabase
+      const { error: deleteError } = await supabaseClient
         .from('comments')
         .delete()
         .eq('id', commentId);

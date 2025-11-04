@@ -29,7 +29,7 @@ interface CommentSectionProps {
 
 interface CommentItemProps {
   comment: Comment;
-  onReply: (commentId: string) => void;
+  onReply: (commentId: string, nickname: string) => void;
   onDelete: (commentId: string) => void;
   onToggleHidden: (commentId: string, isHidden: boolean) => void;
   isAdmin: boolean;
@@ -64,7 +64,7 @@ const CommentItem = ({ comment, onReply, onDelete, onToggleHidden, isAdmin, repl
               <Button 
                 variant="ghost" 
                 size="sm" 
-                onClick={() => onReply(comment.id)}
+                onClick={() => onReply(comment.id, comment.nickname)}
                 className="h-7 px-2 text-xs"
               >
                 <Reply className="w-3 h-3 mr-1" />
@@ -131,6 +131,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
   const [nickname, setNickname] = useState('');
   const [content, setContent] = useState('');
   const [replyToId, setReplyToId] = useState<string | null>(null);
+  const [replyToNickname, setReplyToNickname] = useState<string>('');
   const { isAdmin } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
@@ -190,6 +191,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       setNickname('');
       setContent('');
       setReplyToId(null);
+      setReplyToNickname('');
       toast({
         title: 'Thành công',
         description: 'Bình luận của bạn đã được đăng',
@@ -222,7 +224,10 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
         },
       });
       
-      if (!response.ok) throw new Error('Failed to delete comment');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to delete comment');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -230,6 +235,13 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       toast({
         title: 'Thành công',
         description: 'Đã xóa bình luận',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Lỗi',
+        description: error.message || 'Không thể xóa bình luận',
+        variant: 'destructive',
       });
     },
   });
@@ -254,7 +266,10 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
         body: JSON.stringify({ isHidden }),
       });
       
-      if (!response.ok) throw new Error('Failed to update comment');
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update comment');
+      }
       return response.json();
     },
     onSuccess: () => {
@@ -262,6 +277,13 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       toast({
         title: 'Thành công',
         description: 'Đã cập nhật bình luận',
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        title: 'Lỗi',
+        description: error.message || 'Không thể cập nhật bình luận',
+        variant: 'destructive',
       });
     },
   });
@@ -279,9 +301,15 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
     createCommentMutation.mutate({ nickname, content, parentId: replyToId || undefined });
   };
 
-  const handleReply = (commentId: string) => {
+  const handleReply = (commentId: string, commentNickname: string) => {
     setReplyToId(commentId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setReplyToNickname(commentNickname);
+    document.getElementById('comment-form')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const cancelReply = () => {
+    setReplyToId(null);
+    setReplyToNickname('');
   };
 
   const topLevelComments = comments.filter((c: Comment) => !c.parent_id);
@@ -298,15 +326,21 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       </div>
 
       <Card className="p-4">
-        <form onSubmit={handleSubmit} className="space-y-3">
+        <form onSubmit={handleSubmit} className="space-y-3" id="comment-form">
           {replyToId && (
-            <div className="flex items-center justify-between p-2 bg-muted rounded">
-              <span className="text-sm">Đang trả lời bình luận</span>
+            <div className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border">
+              <div className="flex items-center gap-2">
+                <Reply className="w-4 h-4 text-muted-foreground" />
+                <span className="text-sm">
+                  Đang trả lời <span className="font-semibold text-primary">{replyToNickname}</span>
+                </span>
+              </div>
               <Button
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => setReplyToId(null)}
+                onClick={cancelReply}
+                className="h-7"
               >
                 Hủy
               </Button>
