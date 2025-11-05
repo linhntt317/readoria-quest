@@ -49,14 +49,14 @@ const EditManga = () => {
     try {
       const { data: result, error } = await supabase.functions.invoke('truyen', {
         body: {
+          action: 'update',
           id: mangaId,
           title: data.title,
           author: data.author,
           description: data.description,
           imageUrl: data.image_url,
           tagIds: data.tags
-        },
-        method: 'PUT'
+        }
       });
 
       if (error) throw error;

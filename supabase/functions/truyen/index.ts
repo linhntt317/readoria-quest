@@ -296,12 +296,12 @@ serve(async (req) => {
       await supabase
         .from('manga_tags')
         .delete()
-        .eq('manga_id', truyenId);
+        .eq('manga_id', mangaId);
 
       // Insert new tags
       if (tagIds && tagIds.length > 0) {
         const mangaTags = tagIds.map((tagId: string) => ({
-          manga_id: truyenId,
+          manga_id: mangaId,
           tag_id: tagId
         }));
 
