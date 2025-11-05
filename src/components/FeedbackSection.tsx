@@ -29,7 +29,7 @@ export const FeedbackSection = () => {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
-          'apikey': import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
           'Content-Type': 'application/json',
         },
         body: JSON.stringify(data),
