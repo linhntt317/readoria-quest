@@ -47,24 +47,34 @@ const EditManga = () => {
 
   const onSubmit = async (data: MangaForm) => {
     try {
-      const { data: result, error } = await supabase.functions.invoke(`truyen/${mangaId}`, {
-        method: 'PUT',
-        body: {
-          title: data.title,
-          author: data.author,
-          description: data.description,
-          imageUrl: data.image_url,
-          tagIds: data.tags
+      const response = await fetch(
+        `https://ljmoqseafxhncpwzuwex.supabase.co/functions/v1/truyen/${mangaId}`,
+        {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+          },
+          body: JSON.stringify({
+            title: data.title,
+            author: data.author,
+            description: data.description,
+            imageUrl: data.image_url,
+            tagIds: data.tags
+          })
         }
-      });
+      );
 
-      if (error) throw error;
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update manga');
+      }
 
       toast.success("Cập nhật truyện thành công!");
       navigate(`/admin/manga-detail/${mangaId}`);
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error updating manga:', error);
-      toast.error("Có lỗi xảy ra khi cập nhật truyện");
+      toast.error(error.message || "Có lỗi xảy ra khi cập nhật truyện");
     }
   };
 

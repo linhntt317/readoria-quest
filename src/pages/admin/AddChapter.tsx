@@ -15,7 +15,7 @@ import { useMangaById } from "@/hooks/useManga";
 
 const chapterSchema = z.object({
   chapterNumber: z.string().min(1, "Số chương không được để trống"),
-  chapterTitle: z.string().min(1, "Tên chương không được để trống"),
+  chapterTitle: z.string().optional(),
   content: z.string().min(10, "Nội dung phải có ít nhất 10 ký tự"),
 });
 
@@ -101,7 +101,7 @@ const AddChapter = () => {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="chapterTitle">Tên chương</Label>
+                <Label htmlFor="chapterTitle">Tên chương (không bắt buộc)</Label>
                 <Input 
                   id="chapterTitle" 
                   {...register("chapterTitle")} 
