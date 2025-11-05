@@ -47,13 +47,20 @@ const EditManga = () => {
 
   const onSubmit = async (data: MangaForm) => {
     try {
+      const { data: sessionData } = await supabase.auth.getSession();
+      const token = sessionData.session?.access_token;
+
+      if (!token) {
+        throw new Error('Bạn cần đăng nhập để cập nhật truyện');
+      }
+
       const response = await fetch(
         `https://ljmoqseafxhncpwzuwex.supabase.co/functions/v1/truyen/${mangaId}`,
         {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${(await supabase.auth.getSession()).data.session?.access_token}`
+            'Authorization': `Bearer ${token}`
           },
           body: JSON.stringify({
             title: data.title,
