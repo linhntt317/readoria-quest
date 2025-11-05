@@ -228,7 +228,7 @@ serve(async (req) => {
     }
 
     // PUT update truyen (requires admin role)
-    if (req.method === 'PUT' && truyenId && truyenId !== 'truyen') {
+    if (req.method === 'PUT') {
       const { user, error: authError } = await checkAdminRole(req, supabase);
       if (authError) {
         return new Response(JSON.stringify({ error: authError }), {
@@ -238,6 +238,16 @@ serve(async (req) => {
       }
 
       const rawBody = await req.json();
+      
+      // Get manga ID from body or URL
+      const mangaId = rawBody.id || truyenId;
+      
+      if (!mangaId || mangaId === 'truyen') {
+        return new Response(
+          JSON.stringify({ error: 'Manga ID is required' }),
+          { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+        );
+      }
       
       // Validate input
       const validation = updateMangaSchema.safeParse(rawBody);
@@ -250,7 +260,7 @@ serve(async (req) => {
 
       const { title, author, description, imageUrl, tagIds } = validation.data;
       
-      console.log('Updating truyen:', truyenId, { title, author, tagIds });
+      console.log('Updating truyen:', mangaId, { title, author, tagIds });
 
       // Verify all tags exist
       if (tagIds && tagIds.length > 0) {
@@ -276,7 +286,7 @@ serve(async (req) => {
           description,
           image_url: imageUrl
         })
-        .eq('id', truyenId)
+        .eq('id', mangaId)
         .select()
         .single();
 
