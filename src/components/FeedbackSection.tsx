@@ -6,6 +6,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
 import { Send, MessageSquare } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
 
 interface FeedbackData {
   name: string;
@@ -23,24 +24,15 @@ export const FeedbackSection = () => {
 
   const feedbackMutation = useMutation({
     mutationFn: async (data: FeedbackData) => {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const apiUrl = `${supabaseUrl}/functions/v1/feedback`;
-
-      const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: {
-          'apikey': import.meta.env.VITE_SUPABASE_ANON_KEY,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
+      const { data: result, error } = await supabase.functions.invoke('feedback', {
+        body: data,
       });
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || 'Failed to submit feedback');
+      if (error) {
+        throw new Error(error.message || 'Failed to submit feedback');
       }
 
-      return response.json();
+      return result;
     },
     onSuccess: () => {
       setFormData({ name: '', email: '', message: '' });
