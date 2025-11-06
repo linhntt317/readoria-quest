@@ -1,5 +1,4 @@
 import { useParams, Link } from "react-router-dom";
-import { useEffect } from "react";
 import { useMangaById } from "@/hooks/useManga";
 import {
   Card,
@@ -14,28 +13,10 @@ import { Separator } from "@/components/ui/separator";
 import { BookOpen, Eye, Star } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
-import { supabase } from "@/integrations/supabase/client";
 
 const MangaDetail = () => {
   const { mangaId } = useParams();
   const { data: manga, isLoading } = useMangaById(mangaId);
-
-  // Increment view count when page loads
-  useEffect(() => {
-    const incrementViews = async () => {
-      if (mangaId) {
-        try {
-          await supabase.rpc('increment_manga_views', {
-            manga_uuid: mangaId
-          });
-        } catch (error) {
-          console.error('Failed to increment views:', error);
-        }
-      }
-    };
-
-    incrementViews();
-  }, [mangaId]);
 
   if (isLoading) {
     return (

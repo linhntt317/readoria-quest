@@ -1,4 +1,5 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
+import { useEffect } from "react";
 import { useChapterById } from "@/hooks/useChapter";
 import { useMangaById } from "@/hooks/useManga";
 import { Button } from "@/components/ui/button";
@@ -6,12 +7,38 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
+import { supabase } from "@/integrations/supabase/client";
 
 const ChapterReader = () => {
   const { mangaId, chapterId } = useParams();
   const navigate = useNavigate();
   const { data: chapter, isLoading: chapterLoading } = useChapterById(chapterId);
   const { data: manga, isLoading: mangaLoading } = useMangaById(mangaId);
+
+  // Increment view count once per session when reading any chapter
+  useEffect(() => {
+    const incrementViews = async () => {
+      if (mangaId) {
+        // Check if view already counted in this session
+        const viewKey = `manga_view_${mangaId}`;
+        const hasViewed = sessionStorage.getItem(viewKey);
+        
+        if (!hasViewed) {
+          try {
+            await supabase.rpc('increment_manga_views', {
+              manga_uuid: mangaId
+            });
+            // Mark as viewed in session
+            sessionStorage.setItem(viewKey, 'true');
+          } catch (error) {
+            console.error('Failed to increment views:', error);
+          }
+        }
+      }
+    };
+
+    incrementViews();
+  }, [mangaId]);
 
   if (chapterLoading || mangaLoading) {
     return (
