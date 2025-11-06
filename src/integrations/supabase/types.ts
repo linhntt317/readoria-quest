@@ -254,6 +254,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_manga_views: {
+        Args: { manga_uuid: string }
+        Returns: undefined
+      }
     }
     Enums: {
       app_role: "admin" | "moderator" | "user"
