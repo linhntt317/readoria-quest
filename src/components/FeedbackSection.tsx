@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Send, MessageSquare } from 'lucide-react';
+import { Send, MessageSquare, Loader2 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 
 interface FeedbackData {
@@ -69,8 +69,18 @@ export const FeedbackSection = () => {
   };
 
   return (
-    <Card className="bg-card/50 border-border/50 hover:border-border/80 transition-colors">
-      <CardHeader className="pb-3">
+    <>
+      {feedbackMutation.isPending && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="flex flex-col items-center gap-3">
+            <Loader2 className="w-8 h-8 animate-spin text-primary" />
+            <p className="text-sm font-medium text-foreground">Đang gửi góp ý...</p>
+          </div>
+        </div>
+      )}
+      
+      <Card className="bg-card/50 border-border/50 hover:border-border/80 transition-colors">
+        <CardHeader className="pb-3">
         <div className="flex items-center gap-2">
           <MessageSquare className="w-5 h-5 text-primary" />
           <div>
@@ -154,5 +164,6 @@ export const FeedbackSection = () => {
         </form>
       </CardContent>
     </Card>
+    </>
   );
 };
