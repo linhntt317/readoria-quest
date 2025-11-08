@@ -15,12 +15,12 @@ const ChapterReader = () => {
   const { data: chapter, isLoading: chapterLoading } = useChapterById(chapterId);
   const { data: manga, isLoading: mangaLoading } = useMangaById(mangaId);
 
-  // Increment view count once per session when reading any chapter
+  // Increment view count for each chapter read
   useEffect(() => {
     const incrementViews = async () => {
-      if (mangaId) {
-        // Check if view already counted in this session
-        const viewKey = `manga_view_${mangaId}`;
+      if (mangaId && chapterId) {
+        // Check if this specific chapter view already counted in this session
+        const viewKey = `manga_view_${mangaId}_${chapterId}`;
         const hasViewed = sessionStorage.getItem(viewKey);
         
         if (!hasViewed) {
@@ -28,7 +28,7 @@ const ChapterReader = () => {
             await supabase.rpc('increment_manga_views', {
               manga_uuid: mangaId
             });
-            // Mark as viewed in session
+            // Mark this chapter as viewed in session
             sessionStorage.setItem(viewKey, 'true');
           } catch (error) {
             console.error('Failed to increment views:', error);
@@ -38,7 +38,7 @@ const ChapterReader = () => {
     };
 
     incrementViews();
-  }, [mangaId]);
+  }, [mangaId, chapterId]);
 
   if (chapterLoading || mangaLoading) {
     return (
