@@ -92,10 +92,10 @@ serve(async (req) => {
 
       if (tagsError) throw tagsError;
 
-      // Get chapters
+      // Get chapters (only metadata, not content for performance)
       const { data: chapters, error: chaptersError } = await supabase
         .from('chapters')
-        .select('*')
+        .select('id, chapter_number, title, created_at')
         .eq('manga_id', truyenId)
         .order('chapter_number', { ascending: true });
 
