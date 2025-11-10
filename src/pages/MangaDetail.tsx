@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { BookOpen, Eye, Star } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
+import DOMPurify from "dompurify";
 
 const MangaDetail = () => {
   const { mangaId } = useParams();
@@ -120,7 +121,14 @@ const MangaDetail = () => {
                 <h3 className="font-semibold mb-2">Giới thiệu</h3>
                 <div
                   className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
-                  dangerouslySetInnerHTML={{ __html: manga.description }}
+                  dangerouslySetInnerHTML={{ 
+                    __html: DOMPurify.sanitize(manga.description, {
+                      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'span', 'div'],
+                      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
+                      FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
+                      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
+                    })
+                  }}
                 />
               </CardContent>
             </Card>

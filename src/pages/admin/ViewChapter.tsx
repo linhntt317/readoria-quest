@@ -5,6 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Chapter } from "@/hooks/useManga";
+import DOMPurify from "dompurify";
 
 const ViewChapter = () => {
   const navigate = useNavigate();
@@ -72,7 +73,14 @@ const ViewChapter = () => {
           <CardContent>
               <div 
                 className="prose prose-sm md:prose-base max-w-none dark:prose-invert whitespace-pre-wrap"
-                dangerouslySetInnerHTML={{ __html: chapter.content || '' }}
+                dangerouslySetInnerHTML={{ 
+                  __html: DOMPurify.sanitize(chapter.content || '', {
+                    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'span', 'div'],
+                    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
+                    FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
+                    FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
+                  })
+                }}
               />
           </CardContent>
         </Card>
