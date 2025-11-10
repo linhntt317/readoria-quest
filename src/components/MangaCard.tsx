@@ -31,7 +31,7 @@ export const MangaCard = ({
         <div className="relative aspect-[2/3] overflow-hidden">
           <img
             src={image}
-            alt={title}
+            alt={`Ảnh bìa truyện ${title}`}
             loading="lazy"
             className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
           />

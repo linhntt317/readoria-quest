@@ -40,8 +40,8 @@ export const Header = () => {
   const ThemeIcon = themeIcons[theme];
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
-      <div className="container flex h-16 items-center justify-between px-4">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80" role="banner">
+      <nav className="container flex h-16 items-center justify-between px-4" aria-label="Main navigation">
         <div className="flex items-center gap-6">
           {/* <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
@@ -50,8 +50,9 @@ export const Header = () => {
           <a
             href="/"
             className="flex items-center gap-2 transition-transform hover:scale-105"
+            aria-label="Web Truyện Nhanh - Trang chủ"
           >
-            <BookOpen className="h-8 w-8 text-primary" />
+            <BookOpen className="h-8 w-8 text-primary" aria-hidden="true" />
             <span className="text-xl w-[max-content] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {t.header.siteName}
             </span>
@@ -136,7 +137,7 @@ export const Header = () => {
             </Button>
           )}
         </div>
-      </div>
+      </nav>
     </header>
   );
 };

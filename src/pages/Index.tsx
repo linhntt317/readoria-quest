@@ -2,6 +2,7 @@ import { Header } from "@/components/Header";
 import { HeroSection } from "@/components/HeroSection";
 import { MangaCard } from "@/components/MangaCard";
 import { TrendingSection } from "@/components/TrendingSection";
+import { SEO } from "@/components/SEO";
 import { Sparkles, Clock, Star } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useManga } from "@/hooks/useManga";
@@ -27,20 +28,42 @@ const Index = () => {
     );
   }
 
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Web Truyện Nhanh",
+    "description": "Website đọc truyện online miễn phí với hàng nghìn đầu truyện hay, cập nhật liên tục mỗi ngày. Đọc truyện ngôn tình, đam mỹ, huyền huyễn, tiên hiệp, xuyên không.",
+    "url": typeof window !== 'undefined' ? window.location.origin : '',
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": {
+        "@type": "EntryPoint",
+        "urlTemplate": `${typeof window !== 'undefined' ? window.location.origin : ''}/search?q={search_term_string}`
+      },
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title="Đọc Truyện Online Miễn Phí"
+        description="Website đọc truyện online miễn phí với hàng nghìn đầu truyện hay, cập nhật liên tục mỗi ngày. Đọc truyện ngôn tình, đam mỹ, huyền huyễn, tiên hiệp, xuyên không, học đường và nhiều thể loại khác."
+        keywords="đọc truyện online, truyện hay, web truyện, truyện ngôn tình, truyện đam mỹ, truyện xuyên không, truyện full, đọc truyện miễn phí"
+        structuredData={websiteSchema}
+      />
       <Header />
       <HeroSection />
       
-      <main className="container px-4 py-8">
+      <main className="container px-4 py-8" role="main">
         <div className="grid lg:grid-cols-4 gap-8">
           <div className="lg:col-span-3 space-y-12">
             {/* Featured Section */}
-            <section>
+            <section aria-labelledby="featured-heading">
               <div className="flex items-center gap-3 mb-6">
-                <Sparkles className="h-6 w-6 text-primary" />
-                <h2 className="text-2xl font-bold">{t.sections.featured}</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
+                <Sparkles className="h-6 w-6 text-primary" aria-hidden="true" />
+                <h2 id="featured-heading" className="text-2xl font-bold">{t.sections.featured}</h2>
+                <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" aria-hidden="true" />
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -60,11 +83,11 @@ const Index = () => {
             </section>
 
             {/* Latest Updates Section */}
-            <section>
+            <section aria-labelledby="latest-heading">
               <div className="flex items-center gap-3 mb-6">
-                <Clock className="h-6 w-6 text-primary" />
-                <h2 className="text-2xl font-bold">{t.sections.latest}</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
+                <Clock className="h-6 w-6 text-primary" aria-hidden="true" />
+                <h2 id="latest-heading" className="text-2xl font-bold">{t.sections.latest}</h2>
+                <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" aria-hidden="true" />
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -84,11 +107,11 @@ const Index = () => {
             </section>
 
             {/* Top Rated Section */}
-            <section>
+            <section aria-labelledby="toprated-heading">
               <div className="flex items-center gap-3 mb-6">
-                <Star className="h-6 w-6 text-primary fill-primary" />
-                <h2 className="text-2xl font-bold">{t.sections.topRated}</h2>
-                <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" />
+                <Star className="h-6 w-6 text-primary fill-primary" aria-hidden="true" />
+                <h2 id="toprated-heading" className="text-2xl font-bold">{t.sections.topRated}</h2>
+                <div className="flex-1 h-px bg-gradient-to-r from-border to-transparent" aria-hidden="true" />
               </div>
               
               <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
@@ -108,11 +131,13 @@ const Index = () => {
             </section>
           </div>
 
-          <TrendingSection />
+          <aside aria-label="Trending content">
+            <TrendingSection />
+          </aside>
         </div>
       </main>
 
-      <footer className="border-t border-border mt-12 py-8 bg-card/50">
+      <footer className="border-t border-border mt-12 py-8 bg-card/50" role="contentinfo">
         <div className="container px-4 text-center text-sm text-muted-foreground">
           <p className="mb-2">{t.footer.copyright}</p>
           <p>{t.footer.description}</p>

@@ -13,6 +13,7 @@ import { Separator } from "@/components/ui/separator";
 import { BookOpen, Eye, Star } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
+import { SEO } from "@/components/SEO";
 import DOMPurify from "dompurify";
 
 const MangaDetail = () => {
@@ -38,6 +39,10 @@ const MangaDetail = () => {
   if (!manga) {
     return (
       <div className="min-h-screen bg-background">
+        <SEO
+          title="Không tìm thấy truyện"
+          description="Truyện bạn đang tìm kiếm không tồn tại hoặc đã bị xóa."
+        />
         <Header />
         <div className="container mx-auto px-4 py-8">
           <Card>
@@ -58,8 +63,43 @@ const MangaDetail = () => {
     );
   }
 
+  // Strip HTML tags for clean description
+  const cleanDescription = manga.description
+    .replace(/<[^>]*>/g, '')
+    .substring(0, 155) + '...';
+
+  const mangaSchema = {
+    "@context": "https://schema.org",
+    "@type": "Book",
+    "name": manga.title,
+    "author": {
+      "@type": "Person",
+      "name": manga.author
+    },
+    "description": cleanDescription,
+    "image": manga.image_url,
+    "aggregateRating": manga.rating ? {
+      "@type": "AggregateRating",
+      "ratingValue": manga.rating,
+      "ratingCount": manga.views || 1,
+      "bestRating": 5,
+      "worstRating": 1
+    } : undefined,
+    "numberOfPages": manga.chapters?.length || 0,
+    "genre": manga.tags?.map(tag => tag.name).join(', ')
+  };
+
   return (
     <div className="min-h-screen bg-background">
+      <SEO
+        title={`${manga.title} - ${manga.author}`}
+        description={cleanDescription}
+        image={manga.image_url}
+        type="article"
+        keywords={`${manga.title}, ${manga.author}, ${manga.tags?.map(t => t.name).join(', ')}, đọc truyện online, truyện hay`}
+        author={manga.author}
+        structuredData={mangaSchema}
+      />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
@@ -70,7 +110,7 @@ const MangaDetail = () => {
               <CardContent className="p-6">
                 <img
                   src={manga.image_url}
-                  alt={manga.title}
+                  alt={`Ảnh bìa truyện ${manga.title} - ${manga.author}`}
                   loading="lazy"
                   className="w-full rounded-lg shadow-lg mb-4"
                 />
@@ -110,9 +150,9 @@ const MangaDetail = () => {
           {/* Right Column - Details & Chapters */}
           <div className="lg:col-span-2 space-y-6">
             {/* Manga Details */}
-            <Card>
+            <Card role="article">
               <CardHeader>
-                <CardTitle className="text-3xl">{manga.title}</CardTitle>
+                <h1 className="text-3xl font-bold">{manga.title}</h1>
                 <CardDescription className="text-base">
                   Tác giả: {manga.author}
                 </CardDescription>
