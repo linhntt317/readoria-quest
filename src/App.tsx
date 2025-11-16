@@ -10,6 +10,7 @@ import Index from "./pages/Index";
 import NotFound from "./pages/NotFound";
 import MangaDetail from "./pages/MangaDetail";
 import ChapterReader from "./pages/ChapterReader";
+import TagPage from "./pages/TagPage";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AddChapter from "./pages/admin/AddChapter";
@@ -37,6 +38,7 @@ const App = () => (
               <Routes>
                 <Route path="/" element={<Index />} />
                 <Route path="/truyen/:mangaId" element={<MangaDetail />} />
+                <Route path="/the-loai/:tagName" element={<TagPage />} />
                 <Route
                   path="/truyen/:mangaId/chuong/:chapterId"
                   element={<ChapterReader />}

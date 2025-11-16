@@ -14,6 +14,7 @@ import { BookOpen, Eye, Star } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
 import DOMPurify from "dompurify";
+import Seo from "@/components/Seo";
 
 const MangaDetail = () => {
   const { mangaId } = useParams();
@@ -60,6 +61,21 @@ const MangaDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${manga.title} - Truyện Nhà Mèo`}
+        description={
+          manga.description?.slice(0, 150) || "Đọc truyện online miễn phí"
+        }
+        url={`${
+          import.meta.env.SITE_ORIGIN || "https://truyennhameo.vercel.app"
+        }/truyen/${manga.id}`}
+        image={manga.image_url}
+        keywords={[
+          ...(manga.tags?.map((t) => t.name) || []),
+          "truyện ngôn tình",
+          "đọc truyện",
+        ]}
+      />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
@@ -92,15 +108,25 @@ const MangaDetail = () => {
                 <div>
                   <h3 className="font-semibold mb-2">Thể loại</h3>
                   <div className="flex flex-wrap gap-2">
-                    {manga.tags?.map((tag) => (
-                      <Badge
-                        key={tag.id}
-                        variant="secondary"
-                        style={{ backgroundColor: tag.color, color: "#fff" }}
-                      >
-                        {tag.name}
-                      </Badge>
-                    ))}
+                    {manga.tags?.map((tag) => {
+                      const slug = (tag.name || "")
+                        .toLowerCase()
+                        .replace(/[^a-z0-9]+/g, "-")
+                        .replace(/(^-|-$)/g, "");
+                      return (
+                        <Link key={tag.id} to={`/the-loai/${slug}`}>
+                          <Badge
+                            variant="secondary"
+                            style={{
+                              backgroundColor: tag.color,
+                              color: "#fff",
+                            }}
+                          >
+                            {tag.name}
+                          </Badge>
+                        </Link>
+                      );
+                    })}
                   </div>
                 </div>
               </CardContent>
@@ -121,13 +147,47 @@ const MangaDetail = () => {
                 <h3 className="font-semibold mb-2">Giới thiệu</h3>
                 <div
                   className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
-                  dangerouslySetInnerHTML={{ 
+                  dangerouslySetInnerHTML={{
                     __html: DOMPurify.sanitize(manga.description, {
-                      ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'span', 'div'],
-                      ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
-                      FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
-                      FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
-                    })
+                      ALLOWED_TAGS: [
+                        "p",
+                        "br",
+                        "strong",
+                        "em",
+                        "u",
+                        "h1",
+                        "h2",
+                        "h3",
+                        "h4",
+                        "h5",
+                        "h6",
+                        "ul",
+                        "ol",
+                        "li",
+                        "blockquote",
+                        "a",
+                        "img",
+                        "span",
+                        "div",
+                      ],
+                      ALLOWED_ATTR: ["href", "src", "alt", "title", "class"],
+                      FORBID_TAGS: [
+                        "script",
+                        "iframe",
+                        "object",
+                        "embed",
+                        "form",
+                        "input",
+                      ],
+                      FORBID_ATTR: [
+                        "onerror",
+                        "onload",
+                        "onclick",
+                        "onmouseover",
+                        "onfocus",
+                        "onblur",
+                      ],
+                    }),
                   }}
                 />
               </CardContent>

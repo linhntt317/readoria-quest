@@ -12,3 +12,6 @@ Allow: /
 
 User-agent: *
 Allow: /
+
+# Sitemap location (replace with your production domain)
+Sitemap: https://truyennhameo.vercel.app/sitemap.xml
