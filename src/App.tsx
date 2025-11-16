@@ -108,9 +108,9 @@ const App = () => (
                 />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
-                <Analytics />
-                <SpeedInsights />
               </Routes>
+              <Analytics />
+              <SpeedInsights />
             </BrowserRouter>
           </AuthProvider>
         </LanguageProvider>
