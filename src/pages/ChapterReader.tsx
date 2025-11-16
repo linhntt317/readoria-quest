@@ -7,7 +7,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
-import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
 
@@ -59,10 +58,6 @@ const ChapterReader = () => {
   if (!chapter || !manga) {
     return (
       <div className="min-h-screen bg-background">
-        <SEO
-          title="Không tìm thấy chương"
-          description="Chương truyện bạn đang tìm kiếm không tồn tại."
-        />
         <Header />
         <div className="container mx-auto px-4 py-8">
           <Card>
@@ -80,32 +75,6 @@ const ChapterReader = () => {
     );
   }
 
-  const cleanContent = chapter.content
-    ? chapter.content.replace(/<[^>]*>/g, '').substring(0, 155) + '...'
-    : 'Đọc chương truyện online miễn phí';
-
-  const chapterSchema = {
-    "@context": "https://schema.org",
-    "@type": "Article",
-    "headline": `${manga.title} - Chương ${chapter.chapter_number}: ${chapter.title}`,
-    "description": cleanContent,
-    "author": {
-      "@type": "Person",
-      "name": manga.author
-    },
-    "datePublished": chapter.created_at,
-    "dateModified": chapter.created_at,
-    "image": manga.image_url,
-    "publisher": {
-      "@type": "Organization",
-      "name": "Web Truyện Nhanh"
-    },
-    "isPartOf": {
-      "@type": "Book",
-      "name": manga.title
-    }
-  };
-
   // Find current chapter index and neighbors
   const currentIndex = manga.chapters?.findIndex((c) => c.id === chapter.id) ?? -1;
   const prevChapter = currentIndex > 0 ? manga.chapters![currentIndex - 1] : null;
@@ -113,16 +82,6 @@ const ChapterReader = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <SEO
-        title={`Chương ${chapter.chapter_number}: ${chapter.title} - ${manga.title}`}
-        description={cleanContent}
-        image={manga.image_url}
-        type="article"
-        keywords={`${manga.title}, chương ${chapter.chapter_number}, ${manga.author}, đọc truyện online`}
-        author={manga.author}
-        publishedTime={chapter.created_at}
-        structuredData={chapterSchema}
-      />
       <Header />
       
       <main className="container mx-auto px-4 py-8">
