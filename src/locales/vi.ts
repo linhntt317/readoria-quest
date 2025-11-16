@@ -8,7 +8,7 @@ export const vi = {
     rating: "Đánh giá",
   },
   header: {
-    siteName: "Web Truyện Nhanh",
+    siteName: "Truyện Nhà Mèo",
     categories: "Thể Loại",
     list: "Danh Sách",
     forum: "Hỏi Đáp",
@@ -18,7 +18,8 @@ export const vi = {
     featured: "Truyện Nổi Bật",
     title: "Đại Lục Thu Nhân",
     subtitle: "Giống Cải Tất Là Ý Thiên Tài",
-    description: "Một câu chuyện hấp dẫn về phép thuật, phiêu lưu và khám phá thế giới mới đầy bí ẩn.",
+    description:
+      "Một câu chuyện hấp dẫn về phép thuật, phiêu lưu và khám phá thế giới mới đầy bí ẩn.",
     readNow: "Đọc Ngay",
     addBookmark: "Thêm Bookmark",
     genreLabel: "Thể loại",
@@ -38,7 +39,7 @@ export const vi = {
     notification3: "Hệ thống bảo trì 2h sáng mai",
   },
   footer: {
-    copyright: "© 2025 Web Truyện Nhanh. Tất cả quyền được bảo lưu.",
+    copyright: "© 2025 Truyện Nhà Mèo. Tất cả quyền được bảo lưu.",
     description: "Website đọc truyện online miễn phí",
   },
   manga: {

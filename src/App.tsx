@@ -20,6 +20,8 @@ import ViewChapter from "./pages/admin/ViewChapter";
 import ManageTags from "./pages/admin/ManageTags";
 import PostTruyen from "./pages/admin/PostTruyen";
 import { ProtectedRoute } from "./components/admin/ProtectedRoute";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 const queryClient = new QueryClient();
 
@@ -32,55 +34,84 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/truyen/:mangaId" element={<MangaDetail />} />
-              <Route path="/truyen/:mangaId/chuong/:chapterId" element={<ChapterReader />} />
-              <Route path="/admin/post-truyen" element={
-                <ProtectedRoute>
-                  <PostTruyen />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/login" element={<AdminLogin />} />
-              <Route path="/admin/dashboard" element={
-                <ProtectedRoute>
-                  <AdminDashboard />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/add-chapter/:mangaId" element={
-                <ProtectedRoute>
-                  <AddChapter />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/manga-detail/:mangaId" element={
-                <ProtectedRoute>
-                  <AdminMangaDetail />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/edit-manga/:mangaId" element={
-                <ProtectedRoute>
-                  <EditManga />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/edit-chapter/:chapterId" element={
-                <ProtectedRoute>
-                  <EditChapter />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/view-chapter/:chapterId" element={
-                <ProtectedRoute>
-                  <ViewChapter />
-                </ProtectedRoute>
-              } />
-              <Route path="/admin/tags" element={
-                <ProtectedRoute>
-                  <ManageTags />
-                </ProtectedRoute>
-              } />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </BrowserRouter>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/truyen/:mangaId" element={<MangaDetail />} />
+                <Route
+                  path="/truyen/:mangaId/chuong/:chapterId"
+                  element={<ChapterReader />}
+                />
+                <Route
+                  path="/admin/post-truyen"
+                  element={
+                    <ProtectedRoute>
+                      <PostTruyen />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route path="/admin/login" element={<AdminLogin />} />
+                <Route
+                  path="/admin/dashboard"
+                  element={
+                    <ProtectedRoute>
+                      <AdminDashboard />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/add-chapter/:mangaId"
+                  element={
+                    <ProtectedRoute>
+                      <AddChapter />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/manga-detail/:mangaId"
+                  element={
+                    <ProtectedRoute>
+                      <AdminMangaDetail />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/edit-manga/:mangaId"
+                  element={
+                    <ProtectedRoute>
+                      <EditManga />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/edit-chapter/:chapterId"
+                  element={
+                    <ProtectedRoute>
+                      <EditChapter />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/view-chapter/:chapterId"
+                  element={
+                    <ProtectedRoute>
+                      <ViewChapter />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/admin/tags"
+                  element={
+                    <ProtectedRoute>
+                      <ManageTags />
+                    </ProtectedRoute>
+                  }
+                />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+                <Analytics />
+                <SpeedInsights />
+              </Routes>
+            </BrowserRouter>
           </AuthProvider>
         </LanguageProvider>
       </ThemeProvider>
