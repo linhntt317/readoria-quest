@@ -126,7 +126,7 @@ export const Header = () => {
             <Globe className="h-5 w-5" />
           </Button>
 
-          {!isAdminLoginRoute && (
+          {/* {!isAdminLoginRoute && (
             <Button
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
               onClick={() => navigate("/admin/dashboard")}
@@ -134,7 +134,7 @@ export const Header = () => {
               <Upload className="mr-2 h-4 w-4" />
               {t.header.upload}
             </Button>
-          )}
+          )} */}
         </div>
       </div>
     </header>
