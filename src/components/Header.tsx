@@ -7,6 +7,7 @@ import {
   Sun,
   Moon,
   Monitor,
+  LogIn,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,13 +20,14 @@ import {
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTheme } from "@/hooks/useTheme";
 import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
   const location = useLocation();
   const navigate = useNavigate();
-  const isAdminLoginRoute = location.pathname === "/admin/post-truyen";
+  const { isAdmin } = useAuth();
 
   const toggleLanguage = () => {
     setLanguage(language === "vi" ? "en" : "vi");
@@ -126,15 +128,13 @@ export const Header = () => {
             <Globe className="h-5 w-5" />
           </Button>
 
-          {/* {!isAdminLoginRoute && (
-            <Button
-              className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => navigate("/admin/dashboard")}
-            >
-              <Upload className="mr-2 h-4 w-4" />
-              {t.header.upload}
-            </Button>
-          )} */}
+          <Button
+            className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
+            onClick={() => navigate("/admin/dashboard")}
+          >
+            {!isAdmin ? <LogIn className="mr-2 h-4 w-4" /> : <Upload className="mr-2 h-4 w-4" />}
+            {!isAdmin ? t.header.login : t.header.upload}
+          </Button>
         </div>
       </div>
     </header>

@@ -13,6 +13,7 @@ export const vi = {
     list: "Danh Sách",
     forum: "Hỏi Đáp",
     upload: "Đăng Truyện",
+    login: "Đăng Nhập",
   },
   hero: {
     featured: "Truyện Nổi Bật",

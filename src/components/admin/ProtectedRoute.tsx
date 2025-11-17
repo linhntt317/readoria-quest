@@ -19,7 +19,7 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     );
   }
 
-  if (!isAdmin) {
+  if (!user || !isAdmin) {
     return <Navigate to="/admin/login" replace />;
   }
 
