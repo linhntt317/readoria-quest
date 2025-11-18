@@ -1,7 +1,7 @@
-import { createContext, useState, useEffect, ReactNode } from 'react';
-import { vi, en, TranslationKeys } from '@/locales';
+import { createContext, useState, useEffect, ReactNode } from "react";
+import { vi, en, TranslationKeys } from "@/locales";
 
-export type Language = 'vi' | 'en';
+export type Language = "vi" | "en";
 
 interface LanguageContextType {
   language: Language;
@@ -9,13 +9,24 @@ interface LanguageContextType {
   t: TranslationKeys;
 }
 
-export const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+export const LanguageContext = createContext<LanguageContextType | undefined>(
+  undefined
+);
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
-  const [language, setLanguageState] = useState<Language>(() => {
-    const saved = localStorage.getItem('language');
-    return (saved === 'vi' || saved === 'en') ? saved : 'vi';
-  });
+  const [language, setLanguageState] = useState<Language>("vi");
+  const [mounted, setMounted] = useState(false);
+
+  // Load language from localStorage after mount
+  useEffect(() => {
+    setMounted(true);
+    if (typeof window !== "undefined") {
+      const saved = localStorage.getItem("language");
+      if (saved === "vi" || saved === "en") {
+        setLanguageState(saved);
+      }
+    }
+  }, []);
 
   const translations: Record<Language, TranslationKeys> = {
     vi,
@@ -24,19 +35,25 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
 
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
-    localStorage.setItem('language', lang);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("language", lang);
+    }
   };
 
   useEffect(() => {
-    document.documentElement.lang = language;
-  }, [language]);
+    if (mounted && typeof document !== "undefined") {
+      document.documentElement.lang = language;
+    }
+  }, [language, mounted]);
 
   return (
-    <LanguageContext.Provider value={{ 
-      language, 
-      setLanguage, 
-      t: translations[language] 
-    }}>
+    <LanguageContext.Provider
+      value={{
+        language,
+        setLanguage,
+        t: translations[language],
+      }}
+    >
       {children}
     </LanguageContext.Provider>
   );

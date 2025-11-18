@@ -19,14 +19,14 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTheme } from "@/hooks/useTheme";
-import { useLocation, useNavigate } from "react-router-dom";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 
 export const Header = () => {
   const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const location = useLocation();
-  const navigate = useNavigate();
+  const router = useRouter();
   const { isAdmin } = useAuth();
 
   const toggleLanguage = () => {
@@ -49,7 +49,7 @@ export const Header = () => {
             <Menu className="h-5 w-5" />
           </Button> */}
 
-          <a
+          <Link
             href="/"
             className="flex items-center gap-2 transition-transform hover:scale-105"
           >
@@ -57,7 +57,7 @@ export const Header = () => {
             <span className="text-xl w-[max-content] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {t.header.siteName}
             </span>
-          </a>
+          </Link>
 
           {/* <nav className="hidden md:flex items-center gap-6">
             <a
@@ -130,9 +130,13 @@ export const Header = () => {
 
           <Button
             className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-            onClick={() => navigate("/admin/dashboard")}
+            onClick={() => router.push("/admin/dashboard")}
           >
-            {!isAdmin ? <LogIn className="mr-2 h-4 w-4" /> : <Upload className="mr-2 h-4 w-4" />}
+            {!isAdmin ? (
+              <LogIn className="mr-2 h-4 w-4" />
+            ) : (
+              <Upload className="mr-2 h-4 w-4" />
+            )}
             {!isAdmin ? t.header.login : t.header.upload}
           </Button>
         </div>

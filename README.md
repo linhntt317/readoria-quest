@@ -1,73 +1,180 @@
-# Welcome to your Lovable project
+# Truyện Nhà Mèo - Readoria Quest
 
-## Project info
+A modern manga reading platform built with Next.js and React.
 
-**URL**: https://lovable.dev/projects/c59127a0-b0ea-4aef-85f5-e73a1a486be6
+## Project Status
 
-## How can I edit this code?
+🚧 **Currently migrating from Vite + React Router to Next.js App Router**
 
-There are several ways of editing your application.
+See [NEXTJS_MIGRATION.md](./NEXTJS_MIGRATION.md) for migration progress and details.
 
-**Use Lovable**
+## Technologies
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/c59127a0-b0ea-4aef-85f5-e73a1a486be6) and start prompting.
+This project uses:
 
-Changes made via Lovable will be committed automatically to this repo.
+- **Next.js 14** - React framework with App Router
+- **React 18** - UI library
+- **TypeScript** - Type safety
+- **Tailwind CSS** - Styling
+- **shadcn/ui** - UI components
+- **Supabase** - Backend and database
+- **React Query** - Data fetching and caching
+- **Vercel** - Deployment platform
 
-**Use your preferred IDE**
+## Getting Started
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+### Prerequisites
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+- Node.js 18+ 
+- npm, yarn, or pnpm
 
-Follow these steps:
+### Installation
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
+```bash
+# Clone the repository
 git clone <YOUR_GIT_URL>
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+# Navigate to project directory
+cd readoria-quest
 
-# Step 3: Install the necessary dependencies.
-npm i
+# Install dependencies
+npm install
+# or
+yarn install
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
+# Copy environment variables
+cp .env.example .env
+
+# Configure your .env file with Supabase credentials
 ```
 
-**Edit a file directly in GitHub**
+### Development
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```bash
+# Run Next.js development server (recommended)
+npm run dev
 
-**Use GitHub Codespaces**
+# Or run legacy Vite server
+npm run vite:dev
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+# Open http://localhost:3000 (Next.js) or http://localhost:8080 (Vite)
+```
 
-## What technologies are used for this project?
+### Setup Next.js Structure
 
-This project is built with:
+```bash
+# Create Next.js App Router structure
+npm run setup:nextjs
+```
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+This will create all necessary directories and page files for the Next.js App Router.
 
-## How can I deploy this project?
+### Build
 
-Simply open [Lovable](https://lovable.dev/projects/c59127a0-b0ea-4aef-85f5-e73a1a486be6) and click on Share -> Publish.
+```bash
+# Build for production (Next.js)
+npm run build
 
-## Can I connect a custom domain to my Lovable project?
+# Start production server
+npm run start
 
-Yes, you can!
+# Or build with Vite (legacy)
+npm run build:vite
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Project Structure
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+```
+readoria-quest/
+├── app/                    # Next.js App Router (new)
+│   ├── layout.tsx         # Root layout
+│   ├── page.tsx           # Home page
+│   ├── providers.tsx      # Client-side providers
+│   ├── api/               # API routes
+│   ├── truyen/            # Manga pages
+│   ├── admin/             # Admin pages
+│   └── the-loai/          # Tag/category pages
+├── src/                   # Legacy Vite app
+│   ├── pages/            # React Router pages
+│   ├── components/       # React components
+│   ├── contexts/         # React contexts
+│   ├── hooks/            # Custom hooks
+│   └── lib/              # Utilities
+├── public/               # Static assets
+├── scripts/              # Build and utility scripts
+└── supabase/             # Supabase configuration
+```
+
+## Features
+
+- 📖 Read manga online
+- 🔍 Search and filter manga
+- 🏷️ Browse by categories/tags
+- 👤 User authentication
+- 🔐 Admin dashboard
+- 📱 Responsive design
+- 🌙 Dark/Light mode
+- 🌐 Multi-language support (Vietnamese/English)
+- ⚡ Server-side rendering (SSR)
+- 🔍 SEO optimized
+- 📊 Analytics integration
+
+## Environment Variables
+
+Required environment variables (see `.env.example`):
+
+- `VITE_SUPABASE_URL` - Your Supabase project URL
+- `VITE_SUPABASE_PUBLISHABLE_KEY` - Supabase publishable key
+- `SUPABASE_SERVICE_ROLE` - Supabase service role key (server-side only)
+- `SITE_ORIGIN` - Your site URL for sitemap generation
+
+## Scripts
+
+- `npm run dev` - Start Next.js development server
+- `npm run build` - Build for production (Next.js)
+- `npm run start` - Start production server
+- `npm run lint` - Run ESLint
+- `npm run setup:nextjs` - Create Next.js structure
+- `npm run generate:sitemap` - Generate sitemap
+- `npm run vite:dev` - Start Vite dev server (legacy)
+- `npm run build:vite` - Build with Vite (legacy)
+
+## Deployment
+
+### Vercel (Recommended)
+
+1. Push your code to GitHub
+2. Import project in Vercel
+3. Configure environment variables
+4. Deploy
+
+Or use the Vercel CLI:
+
+```bash
+vercel
+```
+
+### Manual Deployment
+
+```bash
+npm run build
+npm run start
+```
+
+## Contributing
+
+This is a private project. For authorized contributors:
+
+1. Create a feature branch
+2. Make your changes
+3. Test thoroughly
+4. Submit a pull request
+
+## License
+
+Private - All rights reserved
+
+## Project Links
+
+- **Lovable Project**: https://lovable.dev/projects/c59127a0-b0ea-4aef-85f5-e73a1a486be6
+- **Documentation**: See [NEXTJS_MIGRATION.md](./NEXTJS_MIGRATION.md) for migration guide

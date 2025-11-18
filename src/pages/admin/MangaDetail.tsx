@@ -1,4 +1,5 @@
-import { useNavigate, useParams } from "react-router-dom";
+"use client";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -16,9 +17,8 @@ import { Chapter } from "@/hooks/useManga";
 import { toast } from "sonner";
 import DOMPurify from "dompurify";
 
-const MangaDetail = () => {
-  const navigate = useNavigate();
-  const { mangaId } = useParams();
+const MangaDetail = ({ mangaId }: { mangaId: string }) => {
+  const router = useRouter();
   const queryClient = useQueryClient();
   const { data: manga, isLoading } = useMangaById(mangaId);
 
@@ -100,7 +100,7 @@ const MangaDetail = () => {
       if (error) throw error;
 
       toast.success("Xoá truyện thành công!");
-      navigate("/admin/dashboard");
+      router.push("/admin/dashboard");
     } catch (error) {
       console.error("Error deleting manga:", error);
       toast.error("Có lỗi xảy ra khi xoá truyện");
@@ -114,7 +114,7 @@ const MangaDetail = () => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => navigate("/admin/dashboard")}
+            onClick={() => router.push("/admin/dashboard")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
@@ -122,12 +122,14 @@ const MangaDetail = () => {
           <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={() => navigate(`/admin/edit-manga/${mangaId}`)}
+              onClick={() => router.push(`/admin/edit-manga/${mangaId}`)}
             >
               <Edit className="h-4 w-4 mr-2" />
               Sửa truyện
             </Button>
-            <Button onClick={() => navigate(`/admin/add-chapter/${mangaId}`)}>
+            <Button
+              onClick={() => router.push(`/admin/add-chapter/${mangaId}`)}
+            >
               <Plus className="h-4 w-4 mr-2" />
               Thêm chương
             </Button>
@@ -168,13 +170,47 @@ const MangaDetail = () => {
             <h3 className="font-semibold mb-2">Giới thiệu:</h3>
             <div
               className="prose prose-sm max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
-              dangerouslySetInnerHTML={{ 
+              dangerouslySetInnerHTML={{
                 __html: DOMPurify.sanitize(manga.description, {
-                  ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'span', 'div'],
-                  ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
-                  FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
-                  FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
-                })
+                  ALLOWED_TAGS: [
+                    "p",
+                    "br",
+                    "strong",
+                    "em",
+                    "u",
+                    "h1",
+                    "h2",
+                    "h3",
+                    "h4",
+                    "h5",
+                    "h6",
+                    "ul",
+                    "ol",
+                    "li",
+                    "blockquote",
+                    "a",
+                    "img",
+                    "span",
+                    "div",
+                  ],
+                  ALLOWED_ATTR: ["href", "src", "alt", "title", "class"],
+                  FORBID_TAGS: [
+                    "script",
+                    "iframe",
+                    "object",
+                    "embed",
+                    "form",
+                    "input",
+                  ],
+                  FORBID_ATTR: [
+                    "onerror",
+                    "onload",
+                    "onclick",
+                    "onmouseover",
+                    "onfocus",
+                    "onblur",
+                  ],
+                }),
               }}
             />
           </CardContent>
@@ -212,7 +248,7 @@ const MangaDetail = () => {
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          navigate(`/admin/view-chapter/${chapter.id}`)
+                          router.push(`/admin/view-chapter/${chapter.id}`)
                         }
                       >
                         <Eye className="h-4 w-4" />
@@ -221,7 +257,7 @@ const MangaDetail = () => {
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          navigate(`/admin/edit-chapter/${chapter.id}`)
+                          router.push(`/admin/edit-chapter/${chapter.id}`)
                         }
                       >
                         <Pencil className="h-4 w-4" />

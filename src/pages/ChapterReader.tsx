@@ -1,4 +1,4 @@
-import { useParams, useNavigate, Link } from "react-router-dom";
+import Link from "next/link";
 import { useEffect } from "react";
 import { useChapterById } from "@/hooks/useChapter";
 import { useMangaById } from "@/hooks/useManga";
@@ -10,10 +10,15 @@ import { CommentSection } from "@/components/CommentSection";
 import { supabase } from "@/integrations/supabase/client";
 import DOMPurify from "dompurify";
 
-const ChapterReader = () => {
-  const { mangaId, chapterId } = useParams();
-  const navigate = useNavigate();
-  const { data: chapter, isLoading: chapterLoading } = useChapterById(chapterId);
+const ChapterReader = ({
+  mangaId,
+  chapterId,
+}: {
+  mangaId?: string;
+  chapterId?: string;
+}) => {
+  const { data: chapter, isLoading: chapterLoading } =
+    useChapterById(chapterId);
   const { data: manga, isLoading: mangaLoading } = useMangaById(mangaId);
 
   // Increment view count for each chapter read
@@ -23,16 +28,16 @@ const ChapterReader = () => {
         // Check if this specific chapter view already counted in this session
         const viewKey = `manga_view_${mangaId}_${chapterId}`;
         const hasViewed = sessionStorage.getItem(viewKey);
-        
+
         if (!hasViewed) {
           try {
-            await supabase.rpc('increment_manga_views', {
-              manga_uuid: mangaId
+            await supabase.rpc("increment_manga_views", {
+              manga_uuid: mangaId,
             });
             // Mark this chapter as viewed in session
-            sessionStorage.setItem(viewKey, 'true');
+            sessionStorage.setItem(viewKey, "true");
           } catch (error) {
-            console.error('Failed to increment views:', error);
+            console.error("Failed to increment views:", error);
           }
         }
       }
@@ -65,7 +70,7 @@ const ChapterReader = () => {
               <CardTitle>Không tìm thấy chương</CardTitle>
             </CardHeader>
             <CardContent>
-              <Link to={`/truyen/${mangaId}`}>
+              <Link href={`/truyen/${mangaId}`}>
                 <Button>Quay về trang truyện</Button>
               </Link>
             </CardContent>
@@ -76,43 +81,46 @@ const ChapterReader = () => {
   }
 
   // Find current chapter index and neighbors
-  const currentIndex = manga.chapters?.findIndex((c) => c.id === chapter.id) ?? -1;
-  const prevChapter = currentIndex > 0 ? manga.chapters![currentIndex - 1] : null;
-  const nextChapter = currentIndex < (manga.chapters?.length ?? 0) - 1 ? manga.chapters![currentIndex + 1] : null;
+  const currentIndex =
+    manga.chapters?.findIndex((c) => c.id === chapter.id) ?? -1;
+  const prevChapter =
+    currentIndex > 0 ? manga.chapters![currentIndex - 1] : null;
+  const nextChapter =
+    currentIndex < (manga.chapters?.length ?? 0) - 1
+      ? manga.chapters![currentIndex + 1]
+      : null;
 
   return (
     <div className="min-h-screen bg-background">
       <Header />
-      
       <main className="container mx-auto px-4 py-8">
         {/* Navigation Header */}
         <Card className="mb-6">
           <CardHeader>
             <div className="flex items-center justify-between flex-wrap gap-4">
-              <Link to={`/truyen/${mangaId}`}>
+              <Link href={`/truyen/${mangaId}`}>
                 <Button variant="ghost" size="sm">
                   <ArrowLeft className="h-4 w-4 mr-2" />
                   Quay lại truyện
                 </Button>
               </Link>
-              
               <div className="text-center flex-1">
                 <h1 className="text-xl font-bold">{manga.title}</h1>
                 <p className="text-sm text-muted-foreground">
                   Chương {chapter.chapter_number}: {chapter.title}
                 </p>
               </div>
-              
+
               <div className="flex gap-2">
                 {prevChapter && (
-                  <Link to={`/truyen/${mangaId}/chuong/${prevChapter.id}`}>
+                  <Link href={`/truyen/${mangaId}/chuong/${prevChapter.id}`}>
                     <Button variant="outline" size="sm">
                       <ChevronLeft className="h-4 w-4" />
                     </Button>
                   </Link>
                 )}
                 {nextChapter && (
-                  <Link to={`/truyen/${mangaId}/chuong/${nextChapter.id}`}>
+                  <Link href={`/truyen/${mangaId}/chuong/${nextChapter.id}`}>
                     <Button variant="outline" size="sm">
                       <ChevronRight className="h-4 w-4" />
                     </Button>
@@ -126,20 +134,54 @@ const ChapterReader = () => {
         {/* Chapter Content */}
         <Card>
           <CardContent className="p-6">
-            {!chapter.content || chapter.content.trim() === '' ? (
+            {!chapter.content || chapter.content.trim() === "" ? (
               <p className="text-center text-muted-foreground py-8">
                 Chương này chưa có nội dung
               </p>
             ) : (
-              <div 
+              <div
                 className="prose prose-sm md:prose-base lg:prose-lg max-w-none dark:prose-invert whitespace-pre-wrap"
-                dangerouslySetInnerHTML={{ 
+                dangerouslySetInnerHTML={{
                   __html: DOMPurify.sanitize(chapter.content, {
-                    ALLOWED_TAGS: ['p', 'br', 'strong', 'em', 'u', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'ul', 'ol', 'li', 'blockquote', 'a', 'img', 'span', 'div'],
-                    ALLOWED_ATTR: ['href', 'src', 'alt', 'title', 'class'],
-                    FORBID_TAGS: ['script', 'iframe', 'object', 'embed', 'form', 'input'],
-                    FORBID_ATTR: ['onerror', 'onload', 'onclick', 'onmouseover', 'onfocus', 'onblur']
-                  })
+                    ALLOWED_TAGS: [
+                      "p",
+                      "br",
+                      "strong",
+                      "em",
+                      "u",
+                      "h1",
+                      "h2",
+                      "h3",
+                      "h4",
+                      "h5",
+                      "h6",
+                      "ul",
+                      "ol",
+                      "li",
+                      "blockquote",
+                      "a",
+                      "img",
+                      "span",
+                      "div",
+                    ],
+                    ALLOWED_ATTR: ["href", "src", "alt", "title", "class"],
+                    FORBID_TAGS: [
+                      "script",
+                      "iframe",
+                      "object",
+                      "embed",
+                      "form",
+                      "input",
+                    ],
+                    FORBID_ATTR: [
+                      "onerror",
+                      "onload",
+                      "onclick",
+                      "onmouseover",
+                      "onfocus",
+                      "onblur",
+                    ],
+                  }),
                 }}
               />
             )}
@@ -149,18 +191,18 @@ const ChapterReader = () => {
         {/* Bottom Navigation */}
         <div className="mt-6 flex justify-center gap-4">
           {prevChapter && (
-            <Link to={`/truyen/${mangaId}/chuong/${prevChapter.id}`}>
+            <Link href={`/truyen/${mangaId}/chuong/${prevChapter.id}`}>
               <Button variant="outline">
                 <ChevronLeft className="h-4 w-4 mr-2" />
                 Chương trước
               </Button>
             </Link>
           )}
-          <Link to={`/truyen/${mangaId}`}>
+          <Link href={`/truyen/${mangaId}`}>
             <Button variant="outline">Danh sách chương</Button>
           </Link>
           {nextChapter && (
-            <Link to={`/truyen/${mangaId}/chuong/${nextChapter.id}`}>
+            <Link href={`/truyen/${mangaId}/chuong/${nextChapter.id}`}>
               <Button variant="outline">
                 Chương tiếp
                 <ChevronRight className="h-4 w-4 ml-2" />

@@ -1,12 +1,11 @@
+"use client";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
 import { Header } from "@/components/Header";
 import Seo from "@/components/Seo";
 import { MangaCard } from "@/components/MangaCard";
 import { supabase } from "@/integrations/supabase/client";
 
-const TagPage = () => {
-  const { tagName } = useParams();
+const TagPage = ({ tagName }: { tagName?: string }) => {
   const [mangaList, setMangaList] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -67,7 +66,7 @@ const TagPage = () => {
   const title = `${prettyTag} - Truyện Nhà Mèo`;
   const description = `Tổng hợp truyện ${prettyTag} hay nhất, cập nhật liên tục trên Truyện Nhà Mèo.`;
   const url = `${
-    import.meta.env.SITE_ORIGIN || "https://truyennhameo.vercel.app"
+    process.env.SITE_ORIGIN || "https://truyennhameo.vercel.app"
   }/the-loai/${tagName}`;
 
   // Build simple JSON-LD ItemList for SEO

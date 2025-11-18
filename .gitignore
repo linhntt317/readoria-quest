@@ -12,6 +12,13 @@ dist
 dist-ssr
 *.local
 
+.next/
+*.gz
+*.rscinfo
+trace
+next-devtools-config.json
+
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json

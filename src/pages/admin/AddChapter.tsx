@@ -1,5 +1,6 @@
+"use client";
 import { useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -8,7 +9,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMangaById } from "@/hooks/useManga";
@@ -21,36 +28,40 @@ const chapterSchema = z.object({
 
 type ChapterForm = z.infer<typeof chapterSchema>;
 
-const AddChapter = () => {
-  const { mangaId } = useParams();
-  const navigate = useNavigate();
+const AddChapter = ({ mangaId }: { mangaId: string }) => {
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: manga, isLoading } = useMangaById(mangaId);
 
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<ChapterForm>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm<ChapterForm>({
     resolver: zodResolver(chapterSchema),
   });
 
   const onSubmit = async (data: ChapterForm) => {
     setIsSubmitting(true);
-    
+
     try {
-      const { error } = await supabase.functions.invoke('chapters', {
-        method: 'POST',
+      const { error } = await supabase.functions.invoke("chapters", {
+        method: "POST",
         body: {
           mangaId,
           chapterNumber: parseInt(data.chapterNumber),
           title: data.chapterTitle,
-          content: data.content
-        }
+          content: data.content,
+        },
       });
 
       if (error) throw error;
-      
+
       toast.success("Đã thêm chương thành công!");
       reset();
     } catch (error: any) {
-      console.error('Error adding chapter:', error);
+      console.error("Error adding chapter:", error);
       toast.error(error.message || "Có lỗi xảy ra khi thêm chương!");
     } finally {
       setIsSubmitting(false);
@@ -62,7 +73,9 @@ const AddChapter = () => {
       <div className="min-h-screen bg-background flex items-center justify-center">
         <div className="text-center">
           <div className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-current border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]" />
-          <p className="mt-4 text-muted-foreground">Đang tải thông tin truyện...</p>
+          <p className="mt-4 text-muted-foreground">
+            Đang tải thông tin truyện...
+          </p>
         </div>
       </div>
     );
@@ -72,7 +85,11 @@ const AddChapter = () => {
     <div className="min-h-screen bg-background">
       <header className="border-b bg-card">
         <div className="container mx-auto px-4 py-4">
-          <Button variant="ghost" size="sm" onClick={() => navigate("/admin/dashboard")}>
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => router.push("/admin/dashboard")}
+          >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>
@@ -89,43 +106,52 @@ const AddChapter = () => {
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
               <div className="space-y-2">
                 <Label htmlFor="chapterNumber">Số chương</Label>
-                <Input 
-                  id="chapterNumber" 
-                  {...register("chapterNumber")} 
-                  placeholder="Ví dụ: 1, 2, 3..." 
+                <Input
+                  id="chapterNumber"
+                  {...register("chapterNumber")}
+                  placeholder="Ví dụ: 1, 2, 3..."
                   type="number"
                 />
                 {errors.chapterNumber && (
-                  <p className="text-sm text-destructive">{errors.chapterNumber.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.chapterNumber.message}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="chapterTitle">Tên chương (không bắt buộc)</Label>
-                <Input 
-                  id="chapterTitle" 
-                  {...register("chapterTitle")} 
-                  placeholder="Nhập tên chương..." 
+                <Label htmlFor="chapterTitle">
+                  Tên chương (không bắt buộc)
+                </Label>
+                <Input
+                  id="chapterTitle"
+                  {...register("chapterTitle")}
+                  placeholder="Nhập tên chương..."
                 />
                 {errors.chapterTitle && (
-                  <p className="text-sm text-destructive">{errors.chapterTitle.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.chapterTitle.message}
+                  </p>
                 )}
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="content">Nội dung (HTML)</Label>
-                <Textarea 
-                  id="content" 
-                  {...register("content")} 
+                <Textarea
+                  id="content"
+                  {...register("content")}
                   placeholder="<p>Nội dung chương...</p>&#10;<p>Hoặc thêm ảnh: <img src='url' /></p>"
                   rows={15}
                   className="font-mono text-sm"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Hỗ trợ HTML: &lt;p&gt;, &lt;br&gt;, &lt;img&gt;, &lt;strong&gt;, &lt;em&gt;, v.v.
+                  Hỗ trợ HTML: &lt;p&gt;, &lt;br&gt;, &lt;img&gt;,
+                  &lt;strong&gt;, &lt;em&gt;, v.v.
                 </p>
                 {errors.content && (
-                  <p className="text-sm text-destructive">{errors.content.message}</p>
+                  <p className="text-sm text-destructive">
+                    {errors.content.message}
+                  </p>
                 )}
               </div>
 

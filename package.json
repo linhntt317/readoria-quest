@@ -4,11 +4,18 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "next dev",
+    "vite:dev": "vite",
+    "build": "next build",
+    "build:vite": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
+    "start": "next start",
+    "next:dev": "next dev",
+    "next:build": "next build",
+    "next:start": "next start",
+    "setup:nextjs": "node scripts/setup-nextjs.mjs",
     "generate:sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
@@ -54,6 +61,7 @@
     "embla-carousel-react": "^8.6.0",
     "input-otp": "^1.4.2",
     "lucide-react": "^0.462.0",
+    "next": "^15.1.3",
     "next-themes": "^0.3.0",
     "react": "^18.3.1",
     "react-day-picker": "^8.10.1",
@@ -88,6 +96,5 @@
     "typescript-eslint": "^8.38.0",
     "vite": "^5.4.19"
   },
-  "generate:sitemap": "node scripts/generate-sitemap.js",
   "packageManager": "yarn@4.9.3+sha512.8295ee814f6b253e16f516416481b481a215ed03ef1ae38524d108084872560a9ed75aeb23b91ab64222062ac4149a594150ae538c2a9536fdbcefd4e49b11cc"
 }

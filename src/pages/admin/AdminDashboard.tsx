@@ -1,18 +1,19 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+("use client");
+import { useRouter } from "next/navigation";
 import { LogOut, Home, Tags, Upload } from "lucide-react";
 import AddManga from "./AddManga";
 import ManageManga from "./ManageManga";
 import { useAuth } from "@/contexts/AuthContext";
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { signOut } = useAuth();
 
   const handleLogout = async () => {
     await signOut();
-    navigate("/");
+    router.push("/");
   };
 
   return (
@@ -21,15 +22,27 @@ const AdminDashboard = () => {
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
           <h1 className="text-2xl font-bold">Quản trị Truyện</h1>
           <div className="flex gap-2">
-            <Button variant="default" size="sm" onClick={() => navigate("/admin/post-truyen")}>
+            <Button
+              variant="default"
+              size="sm"
+              onClick={() => router.push("/admin/post-truyen")}
+            >
               <Upload className="h-4 w-4 mr-2" />
               Đăng truyện
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/admin/tags")}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/admin/tags")}
+            >
               <Tags className="h-4 w-4 mr-2" />
               Quản lý thể loại
             </Button>
-            <Button variant="outline" size="sm" onClick={() => navigate("/")}>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => router.push("/")}
+            >
               <Home className="h-4 w-4 mr-2" />
               Trang chủ
             </Button>
@@ -47,11 +60,11 @@ const AdminDashboard = () => {
             <TabsTrigger value="manage">Quản lý Truyện</TabsTrigger>
             <TabsTrigger value="add">Thêm Truyện</TabsTrigger>
           </TabsList>
-          
+
           <TabsContent value="manage" className="mt-6">
             <ManageManga />
           </TabsContent>
-          
+
           <TabsContent value="add" className="mt-6">
             <AddManga />
           </TabsContent>

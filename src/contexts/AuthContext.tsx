@@ -1,6 +1,12 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  ReactNode,
+} from "react";
+import { User, Session } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 
 interface AuthContextType {
   user: User | null;
@@ -21,50 +27,56 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Only run on client-side
+    if (typeof window === "undefined") {
+      setLoading(false);
+      return;
+    }
+
     // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        
-        // Check admin role when user changes
-        if (session?.user) {
-          setTimeout(async () => {
-            try {
-              const { data: hasAdminRole } = await supabase.rpc('has_role', {
-                _user_id: session.user.id,
-                _role: 'admin'
-              });
-              setIsAdmin(!!hasAdminRole);
-            } catch (error) {
-              console.error('Error checking admin role:', error);
-              setIsAdmin(false);
-            } finally {
-              setLoading(false);
-            }
-          }, 0);
-        } else {
-          setIsAdmin(false);
-          setLoading(false);
-        }
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
+      setUser(session?.user ?? null);
+
+      // Check admin role when user changes
+      if (session?.user) {
+        setTimeout(async () => {
+          try {
+            const { data: hasAdminRole } = await supabase.rpc("has_role", {
+              _user_id: session.user.id,
+              _role: "admin",
+            });
+            setIsAdmin(!!hasAdminRole);
+          } catch (error) {
+            console.error("Error checking admin role:", error);
+            setIsAdmin(false);
+          } finally {
+            setLoading(false);
+          }
+        }, 0);
+      } else {
+        setIsAdmin(false);
+        setLoading(false);
       }
-    );
+    });
 
     // Check for existing session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
-      
+
       if (session?.user) {
         setTimeout(async () => {
           try {
-            const { data: hasAdminRole } = await supabase.rpc('has_role', {
+            const { data: hasAdminRole } = await supabase.rpc("has_role", {
               _user_id: session.user.id,
-              _role: 'admin'
+              _role: "admin",
             });
             setIsAdmin(!!hasAdminRole);
           } catch (error) {
-            console.error('Error checking admin role:', error);
+            console.error("Error checking admin role:", error);
             setIsAdmin(false);
           } finally {
             setLoading(false);
@@ -87,13 +99,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const signUp = async (email: string, password: string) => {
-    const redirectUrl = `${window.location.origin}/`;
+    const redirectUrl =
+      typeof window !== "undefined" ? `${window.location.origin}/` : "";
     const { error } = await supabase.auth.signUp({
       email,
       password,
       options: {
-        emailRedirectTo: redirectUrl
-      }
+        emailRedirectTo: redirectUrl,
+      },
     });
     return { error };
   };
@@ -103,7 +116,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}>
+    <AuthContext.Provider
+      value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -112,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 export function useAuth() {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 }

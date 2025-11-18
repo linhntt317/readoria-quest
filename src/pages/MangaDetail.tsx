@@ -1,4 +1,5 @@
-import { useParams, Link } from "react-router-dom";
+import Link from "next/link";
+import Image from "next/image";
 import { useMangaById } from "@/hooks/useManga";
 import {
   Card,
@@ -14,10 +15,16 @@ import { BookOpen, Eye, Star } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
 import DOMPurify from "dompurify";
-import Seo from "@/components/Seo";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from "@/components/ui/breadcrumb";
 
-const MangaDetail = () => {
-  const { mangaId } = useParams();
+const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
   const { data: manga, isLoading } = useMangaById(mangaId);
 
   if (isLoading) {
@@ -49,7 +56,7 @@ const MangaDetail = () => {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <Link to="/">
+              <Link href="/">
                 <Button>Quay về trang chủ</Button>
               </Link>
             </CardContent>
@@ -61,35 +68,46 @@ const MangaDetail = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Seo
-        title={`${manga.title} - Truyện Nhà Mèo`}
-        description={
-          manga.description?.slice(0, 150) || "Đọc truyện online miễn phí"
-        }
-        url={`${
-          import.meta.env.SITE_ORIGIN || "https://truyennhameo.vercel.app"
-        }/truyen/${manga.id}`}
-        image={manga.image_url}
-        keywords={[
-          ...(manga.tags?.map((t) => t.name) || []),
-          "truyện ngôn tình",
-          "đọc truyện",
-        ]}
-      />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/">Trang chủ</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/truyen">Truyện</Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>{manga.title}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Left Column - Manga Info */}
           <div className="lg:col-span-1">
             <Card>
               <CardContent className="p-6">
-                <img
-                  src={manga.image_url}
-                  alt={manga.title}
-                  loading="lazy"
-                  className="w-full rounded-lg shadow-lg mb-4"
-                />
+                <div className="w-full rounded-lg shadow-lg mb-4 overflow-hidden">
+                  <Image
+                    src={
+                      (manga.image_url || "").trim().replace(/[)]+$/, "") ||
+                      "/placeholder.svg"
+                    }
+                    alt={manga.title}
+                    width={600}
+                    height={900}
+                    className="w-full h-auto object-cover"
+                    priority={false}
+                  />
+                </div>
 
                 <div className="space-y-4">
                   <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -114,7 +132,7 @@ const MangaDetail = () => {
                         .replace(/[^a-z0-9]+/g, "-")
                         .replace(/(^-|-$)/g, "");
                       return (
-                        <Link key={tag.id} to={`/the-loai/${slug}`}>
+                        <Link key={tag.id} href={`/the-loai/${slug}`}>
                           <Badge
                             variant="secondary"
                             style={{
@@ -211,7 +229,7 @@ const MangaDetail = () => {
                     {manga.chapters.map((chapter) => (
                       <Link
                         key={chapter.id}
-                        to={`/truyen/${mangaId}/chuong/${chapter.id}`}
+                        href={`/truyen/${mangaId}/chuong/${chapter.id}`}
                       >
                         <Button
                           variant="outline"
