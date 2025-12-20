@@ -15,6 +15,7 @@ export const en: TranslationKeys = {
     list: "List",
     forum: "Forum",
     upload: "Upload",
+    login: "Login",
   },
   hero: {
     featured: "Featured Manga",
