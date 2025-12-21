@@ -249,7 +249,7 @@ export const Header = () => {
               onClick={() => router.push("/dang-nhap")}
             >
               <LogIn className="mr-2 h-4 w-4" />
-              {t.header.login}
+              Đăng nhập/Đăng ký
             </Button>
           )}
         </div>
