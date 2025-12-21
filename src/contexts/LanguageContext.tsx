@@ -3,7 +3,7 @@ import { vi, en, TranslationKeys } from "@/locales";
 
 export type Language = "vi" | "en";
 
-interface LanguageContextType {
+export interface LanguageContextType {
   language: Language;
   setLanguage: (lang: Language) => void;
   t: TranslationKeys;
