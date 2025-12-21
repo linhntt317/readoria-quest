@@ -27,6 +27,66 @@ const SENSITIVE_WORDS = [
   'spam', 'scam', 'hack', 'đụ', 'địt', 'lồn', 'cặc', 'vãi', 'đéo', 'đm', 'vcl', 'cc', 'dm'
 ];
 
+// Rate limiting configuration
+const RATE_LIMIT_WINDOW_MS = 60000; // 1 minute
+const MAX_COMMENTS_PER_WINDOW = 5; // 5 comments per minute per IP
+
+// In-memory rate limit store (resets on function cold start)
+const rateLimitStore = new Map<string, { count: number; resetTime: number }>();
+
+// Rate limiting function
+function checkRateLimit(clientIp: string): { allowed: boolean; retryAfterSeconds?: number } {
+  const now = Date.now();
+  const record = rateLimitStore.get(clientIp);
+  
+  // Clean up expired entries periodically
+  if (rateLimitStore.size > 1000) {
+    for (const [key, value] of rateLimitStore.entries()) {
+      if (now > value.resetTime) {
+        rateLimitStore.delete(key);
+      }
+    }
+  }
+  
+  if (!record || now > record.resetTime) {
+    // New window or expired - allow and start fresh
+    rateLimitStore.set(clientIp, { count: 1, resetTime: now + RATE_LIMIT_WINDOW_MS });
+    return { allowed: true };
+  }
+  
+  if (record.count >= MAX_COMMENTS_PER_WINDOW) {
+    // Rate limit exceeded
+    const retryAfterSeconds = Math.ceil((record.resetTime - now) / 1000);
+    return { allowed: false, retryAfterSeconds };
+  }
+  
+  // Increment count and allow
+  record.count++;
+  return { allowed: true };
+}
+
+// Get client IP from request headers
+function getClientIp(req: Request): string {
+  // Try various headers that might contain the real IP
+  const forwardedFor = req.headers.get('x-forwarded-for');
+  if (forwardedFor) {
+    // x-forwarded-for can contain multiple IPs, take the first one
+    return forwardedFor.split(',')[0].trim();
+  }
+  
+  const realIp = req.headers.get('x-real-ip');
+  if (realIp) {
+    return realIp;
+  }
+  
+  const cfConnectingIp = req.headers.get('cf-connecting-ip');
+  if (cfConnectingIp) {
+    return cfConnectingIp;
+  }
+  
+  return 'unknown';
+}
+
 // Validation schemas
 const createCommentSchema = z.object({
   mangaId: z.string().uuid().optional(),
@@ -141,6 +201,28 @@ Deno.serve(async (req) => {
 
     // POST - Create new comment
     if (req.method === 'POST') {
+      // Rate limiting check
+      const clientIp = getClientIp(req);
+      const rateCheck = checkRateLimit(clientIp);
+      
+      if (!rateCheck.allowed) {
+        console.log(`Rate limit exceeded for IP: ${clientIp}`);
+        return new Response(
+          JSON.stringify({ 
+            error: 'Too many comments. Please wait before submitting again.',
+            retryAfter: rateCheck.retryAfterSeconds
+          }),
+          { 
+            status: 429, 
+            headers: { 
+              ...corsHeaders, 
+              'Content-Type': 'application/json',
+              'Retry-After': String(rateCheck.retryAfterSeconds)
+            } 
+          }
+        );
+      }
+
       const body = await req.json();
       
       const validationResult = createCommentSchema.safeParse(body);
