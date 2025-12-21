@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
@@ -22,6 +22,32 @@ import ManageTags from '@/pages/admin/ManageTags';
 import MangaDetailAdmin from '@/pages/admin/MangaDetail';
 import './index.css';
 
+// Wrapper components for routes requiring URL params
+const EditMangaWrapper = () => {
+  const { mangaId } = useParams<{ mangaId: string }>();
+  return <EditManga mangaId={mangaId!} />;
+};
+
+const MangaDetailAdminWrapper = () => {
+  const { mangaId } = useParams<{ mangaId: string }>();
+  return <MangaDetailAdmin mangaId={mangaId!} />;
+};
+
+const AddChapterWrapper = () => {
+  const { mangaId } = useParams<{ mangaId: string }>();
+  return <AddChapter mangaId={mangaId!} />;
+};
+
+const EditChapterWrapper = () => {
+  const { chapterId } = useParams<{ chapterId: string }>();
+  return <EditChapter chapterId={chapterId!} />;
+};
+
+const ViewChapterWrapper = () => {
+  const { chapterId } = useParams<{ chapterId: string }>();
+  return <ViewChapter chapterId={chapterId!} />;
+};
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -40,11 +66,11 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                 <Route path="/admin/login" element={<AdminLogin />} />
                 <Route path="/admin/dashboard" element={<AdminDashboard />} />
                 <Route path="/admin/post-truyen" element={<AddManga />} />
-                <Route path="/admin/edit-manga/:mangaId" element={<EditManga />} />
-                <Route path="/admin/manga-detail/:mangaId" element={<MangaDetailAdmin />} />
-                <Route path="/admin/add-chapter/:mangaId" element={<AddChapter />} />
-                <Route path="/admin/edit-chapter/:chapterId" element={<EditChapter />} />
-                <Route path="/admin/view-chapter/:chapterId" element={<ViewChapter />} />
+                <Route path="/admin/edit-manga/:mangaId" element={<EditMangaWrapper />} />
+                <Route path="/admin/manga-detail/:mangaId" element={<MangaDetailAdminWrapper />} />
+                <Route path="/admin/add-chapter/:mangaId" element={<AddChapterWrapper />} />
+                <Route path="/admin/edit-chapter/:chapterId" element={<EditChapterWrapper />} />
+                <Route path="/admin/view-chapter/:chapterId" element={<ViewChapterWrapper />} />
                 <Route path="/admin/tags" element={<ManageTags />} />
                 <Route path="*" element={<NotFound />} />
               </Routes>
