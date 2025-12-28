@@ -68,17 +68,17 @@ const ManageTags = () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      const response = await fetch(
-        `${process.env.VITE_SUPABASE_URL as string}/functions/v1/tags`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/tags`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session?.access_token}`,
+        },
+        body: JSON.stringify(formData),
+      });
 
       if (!response.ok) throw new Error("Failed to create tag");
 
@@ -99,10 +99,11 @@ const ManageTags = () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
       const response = await fetch(
-        `${process.env.VITE_SUPABASE_URL as string}/functions/v1/tags/${
-          editingTag.id
-        }`,
+        `${supabaseUrl}/functions/v1/tags/${editingTag.id}`,
         {
           method: "PUT",
           headers: {
@@ -132,10 +133,11 @@ const ManageTags = () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
+
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+
       const response = await fetch(
-        `${
-          process.env.VITE_SUPABASE_URL as string
-        }/functions/v1/tags/${deleteTagId}`,
+        `${supabaseUrl}/functions/v1/tags/${deleteTagId}`,
         {
           method: "DELETE",
           headers: {
