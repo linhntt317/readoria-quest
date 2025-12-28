@@ -1,6 +1,5 @@
-"use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -51,7 +50,7 @@ const CATEGORIES = [
 ];
 
 const ManageTags = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { data: tags, refetch } = useTags();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -181,7 +180,7 @@ const ManageTags = () => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => router.push("/admin/dashboard")}
+            onClick={() => navigate("/admin/dashboard")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại

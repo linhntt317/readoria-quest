@@ -1,5 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +17,7 @@ import { toast } from "sonner";
 import DOMPurify from "dompurify";
 
 const MangaDetail = ({ mangaId }: { mangaId: string }) => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const { data: manga, isLoading } = useMangaById(mangaId);
 
@@ -100,7 +99,7 @@ const MangaDetail = ({ mangaId }: { mangaId: string }) => {
       if (error) throw error;
 
       toast.success("Xoá truyện thành công!");
-      router.push("/admin/dashboard");
+      navigate("/admin/dashboard");
     } catch (error) {
       console.error("Error deleting manga:", error);
       toast.error("Có lỗi xảy ra khi xoá truyện");
@@ -114,7 +113,7 @@ const MangaDetail = ({ mangaId }: { mangaId: string }) => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => router.push("/admin/dashboard")}
+            onClick={() => navigate("/admin/dashboard")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
@@ -122,13 +121,13 @@ const MangaDetail = ({ mangaId }: { mangaId: string }) => {
           <div className="flex gap-2">
             <Button
               variant="outline"
-              onClick={() => router.push(`/admin/edit-manga/${mangaId}`)}
+              onClick={() => navigate(`/admin/edit-manga/${mangaId}`)}
             >
               <Edit className="h-4 w-4 mr-2" />
               Sửa truyện
             </Button>
             <Button
-              onClick={() => router.push(`/admin/add-chapter/${mangaId}`)}
+              onClick={() => navigate(`/admin/add-chapter/${mangaId}`)}
             >
               <Plus className="h-4 w-4 mr-2" />
               Thêm chương
@@ -248,7 +247,7 @@ const MangaDetail = ({ mangaId }: { mangaId: string }) => {
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          router.push(`/admin/view-chapter/${chapter.id}`)
+                          navigate(`/admin/view-chapter/${chapter.id}`)
                         }
                       >
                         <Eye className="h-4 w-4" />
@@ -257,7 +256,7 @@ const MangaDetail = ({ mangaId }: { mangaId: string }) => {
                         size="sm"
                         variant="outline"
                         onClick={() =>
-                          router.push(`/admin/edit-chapter/${chapter.id}`)
+                          navigate(`/admin/edit-chapter/${chapter.id}`)
                         }
                       >
                         <Pencil className="h-4 w-4" />

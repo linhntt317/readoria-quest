@@ -1,5 +1,4 @@
-"use client";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,15 +12,15 @@ import { BookOpen, Plus, Eye } from "lucide-react";
 import { useManga } from "@/hooks/useManga";
 
 const ManageManga = () => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const { data: mangaList, isLoading } = useManga();
 
   const handleAddChapter = (mangaId: string) => {
-    router.push(`/admin/add-chapter/${mangaId}`);
+    navigate(`/admin/add-chapter/${mangaId}`);
   };
 
   const handleViewDetail = (mangaId: string) => {
-    router.push(`/admin/manga-detail/${mangaId}`);
+    navigate(`/admin/manga-detail/${mangaId}`);
   };
 
   if (isLoading) {

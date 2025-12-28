@@ -1,6 +1,5 @@
-"use client";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -29,7 +28,7 @@ const chapterSchema = z.object({
 type ChapterForm = z.infer<typeof chapterSchema>;
 
 const AddChapter = ({ mangaId }: { mangaId: string }) => {
-  const router = useRouter();
+  const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: manga, isLoading } = useMangaById(mangaId);
 
@@ -88,7 +87,7 @@ const AddChapter = ({ mangaId }: { mangaId: string }) => {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/admin/dashboard")}
+            onClick={() => navigate("/admin/dashboard")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
