@@ -1,6 +1,6 @@
-"use client";
-import { useRouter } from "next/navigation";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
+import { useEffect } from "react";
 
 interface ProtectedRouteProps {
   children: React.ReactNode;
@@ -8,7 +8,13 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isAdmin, loading } = useAuth();
-  const router = useRouter();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!loading && (!user || !isAdmin)) {
+      navigate("/admin/login", { replace: true });
+    }
+  }, [user, isAdmin, loading, navigate]);
 
   if (loading) {
     return (
@@ -22,7 +28,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   }
 
   if (!user || !isAdmin) {
-    router.replace("/admin/login");
     return null;
   }
 

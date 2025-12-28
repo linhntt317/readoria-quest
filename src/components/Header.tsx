@@ -1,5 +1,3 @@
-"use client";
-
 import {
   Search,
   BookOpen,
@@ -27,8 +25,7 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTheme } from "@/hooks/useTheme";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -42,7 +39,7 @@ interface Profile {
 export const Header = () => {
   const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const router = useRouter();
+  const navigate = useNavigate();
   const { user, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
@@ -75,7 +72,7 @@ export const Header = () => {
       title: language === "vi" ? "Đã đăng xuất" : "Signed out",
       description: language === "vi" ? "Hẹn gặp lại bạn!" : "See you again!",
     });
-    router.push("/");
+    navigate("/");
   };
 
   const themeIcons = {
@@ -101,7 +98,7 @@ export const Header = () => {
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <Link
-            href="/"
+            to="/"
             className="flex items-center gap-2 transition-transform hover:scale-105"
           >
             <BookOpen className="h-8 w-8 text-primary" />
@@ -205,19 +202,19 @@ export const Header = () => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/tai-khoan" className="cursor-pointer">
+                  <Link to="/tai-khoan" className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
                     {language === "vi" ? "Tài khoản" : "My Account"}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/yeu-thich" className="cursor-pointer">
+                  <Link to="/yeu-thich" className="cursor-pointer">
                     <Heart className="mr-2 h-4 w-4" />
                     {language === "vi" ? "Truyện yêu thích" : "Favorites"}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/lich-su" className="cursor-pointer">
+                  <Link to="/lich-su" className="cursor-pointer">
                     <History className="mr-2 h-4 w-4" />
                     {language === "vi" ? "Lịch sử đọc" : "Reading History"}
                   </Link>
@@ -226,7 +223,7 @@ export const Header = () => {
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/dashboard" className="cursor-pointer">
+                      <Link to="/admin/dashboard" className="cursor-pointer">
                         <Settings className="mr-2 h-4 w-4" />
                         {language === "vi" ? "Quản trị" : "Admin Dashboard"}
                       </Link>
@@ -246,7 +243,7 @@ export const Header = () => {
           ) : (
             <Button
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => router.push("/dang-nhap")}
+              onClick={() => navigate("/dang-nhap")}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Đăng nhập/Đăng ký
