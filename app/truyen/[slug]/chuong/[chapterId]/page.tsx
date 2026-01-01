@@ -5,8 +5,21 @@ import ChapterReader from '@/pages/ChapterReader'
 type Params = { slug: string; chapterId: string }
 
 function extractId(slug: string): string | null {
-  const match = slug.match(/(\d+)$/)
-  return match ? match[1] : null
+  // Check if the entire slug is a UUID
+  const uuidPattern = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  if (uuidPattern.test(slug)) {
+    return slug
+  }
+
+  // Try to extract UUID from the end of the slug (e.g., "ten-truyen-uuid")
+  const uuidMatch = slug.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i)
+  if (uuidMatch) {
+    return uuidMatch[0]
+  }
+
+  // Fallback: try to find numeric ID at the end
+  const numericMatch = slug.match(/(\d+)$/)
+  return numericMatch ? numericMatch[1] : null
 }
 
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
