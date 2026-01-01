@@ -24,7 +24,7 @@ export interface Manga {
 
 export interface Chapter {
   id: string;
-  manga_id: string;
+  manga_id?: string;
   chapter_number: number;
   title?: string;
   content?: string;
@@ -79,12 +79,40 @@ export const useMangaById = (id: string | undefined) => {
     queryFn: async () => {
       if (!id) throw new Error("Truyen ID is required");
 
-      const { data, error } = await supabase.functions.invoke(`truyen/${id}`, {
-        method: "GET",
-      });
+      // Fetch manga details directly from database
+      const { data: manga, error: mangaError } = await supabase
+        .from("manga")
+        .select("*")
+        .eq("id", id)
+        .maybeSingle();
 
-      if (error) throw error;
-      return data as Manga;
+      if (mangaError) throw mangaError;
+      if (!manga) return null;
+
+      // Fetch tags
+      const { data: mangaTags, error: tagsError } = await supabase
+        .from("manga_tags")
+        .select(`
+          tag:tags(*)
+        `)
+        .eq("manga_id", id);
+
+      if (tagsError) throw tagsError;
+
+      // Fetch chapters
+      const { data: chapters, error: chaptersError } = await supabase
+        .from("chapters")
+        .select("id, chapter_number, title, created_at")
+        .eq("manga_id", id)
+        .order("chapter_number", { ascending: true });
+
+      if (chaptersError) throw chaptersError;
+
+      return {
+        ...manga,
+        tags: mangaTags?.map((mt: any) => mt.tag).filter(Boolean) || [],
+        chapters: chapters || [],
+      } as Manga;
     },
     enabled: !!id,
   });
