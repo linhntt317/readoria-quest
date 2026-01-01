@@ -48,6 +48,11 @@ const ViewChapterWrapper = () => {
   return <ViewChapter chapterId={chapterId!} />;
 };
 
+const MangaDetailWrapper = () => {
+  const { slug } = useParams<{ slug: string }>();
+  return <MangaDetail mangaId={slug} />;
+};
+
 const queryClient = new QueryClient();
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
@@ -59,7 +64,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <BrowserRouter>
               <Routes>
                 <Route path="/" element={<Index />} />
-                <Route path="/truyen/:slug" element={<MangaDetail />} />
+                <Route path="/truyen/:slug" element={<MangaDetailWrapper />} />
                 <Route path="/truyen/:slug/chuong/:chapterId" element={<ChapterReader />} />
                 <Route path="/the-loai/:tagName" element={<TagPage />} />
                 <Route path="/dang-nhap" element={<AdminLogin />} />
