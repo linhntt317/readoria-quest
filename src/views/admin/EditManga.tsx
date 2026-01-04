@@ -13,13 +13,14 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { ArrowLeft, Search } from "lucide-react";
 import { useMangaById, useTags } from "@/hooks/useManga";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 
 const mangaSchema = z.object({
   title: z.string().min(1, "Tiêu đề không được để trống"),
@@ -43,6 +44,7 @@ const EditManga = ({ mangaId }: { mangaId: string }) => {
     formState: { errors, isSubmitting },
     setValue,
     watch,
+    control,
   } = useForm<MangaForm>({
     resolver: zodResolver(mangaSchema),
     values: manga
@@ -138,19 +140,18 @@ const EditManga = ({ mangaId }: { mangaId: string }) => {
                 )}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="image_url">URL ảnh bìa *</Label>
-                <Input
-                  id="image_url"
-                  {...register("image_url")}
-                  placeholder="https://..."
-                />
-                {errors.image_url && (
-                  <p className="text-sm text-destructive">
-                    {errors.image_url.message}
-                  </p>
+              <Controller
+                name="image_url"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    error={errors.image_url?.message}
+                    label="Ảnh bìa truyện"
+                  />
                 )}
-              </div>
+              />
 
               <div className="space-y-2">
                 <Label htmlFor="description">Giới thiệu (HTML) *</Label>
