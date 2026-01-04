@@ -1,7 +1,7 @@
 import { Metadata } from 'next'
 import { createClient } from '@supabase/supabase-js'
 import React from 'react'
-import MangaDetail from '@/pages/MangaDetail'
+import MangaDetail from '@/views/MangaDetail'
 
 type Params = { slug: string }
 
