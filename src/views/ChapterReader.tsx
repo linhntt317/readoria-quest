@@ -21,7 +21,7 @@ const ChapterReader = ({
     useChapterById(chapterId);
   const { data: manga, isLoading: mangaLoading } = useMangaById(mangaId);
 
-  // Increment view count for each chapter read
+  // Increment view count for each chapter read via rate-limited Edge Function
   useEffect(() => {
     const incrementViews = async () => {
       if (mangaId && chapterId) {
@@ -31,11 +31,17 @@ const ChapterReader = ({
 
         if (!hasViewed) {
           try {
-            await supabase.rpc("increment_manga_views", {
-              manga_uuid: mangaId,
+            // Use the rate-limited Edge Function instead of direct RPC
+            const { data, error } = await supabase.functions.invoke("increment-views", {
+              body: { mangaId },
             });
-            // Mark this chapter as viewed in session
-            sessionStorage.setItem(viewKey, "true");
+            
+            if (!error && data?.success) {
+              // Mark this chapter as viewed in session
+              sessionStorage.setItem(viewKey, "true");
+            } else if (error) {
+              console.error("Failed to increment views:", error);
+            }
           } catch (error) {
             console.error("Failed to increment views:", error);
           }
