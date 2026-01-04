@@ -4,7 +4,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -16,6 +15,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useTags } from "@/hooks/useManga";
 import { Search, Link2, Loader2, ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ImageUploader } from "@/components/admin/ImageUploader";
 
 const mangaSchema = z.object({
   title: z.string().min(1, "Tên truyện không được để trống"),
@@ -182,11 +182,18 @@ const PostTruyen = () => {
                 {errors.author && <p className="text-sm text-destructive">{errors.author.message}</p>}
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="imageUrl">URL Hình ảnh</Label>
-                <Input id="imageUrl" {...register("imageUrl")} placeholder="https://example.com/image.jpg" />
-                {errors.imageUrl && <p className="text-sm text-destructive">{errors.imageUrl.message}</p>}
-              </div>
+              <Controller
+                name="imageUrl"
+                control={control}
+                render={({ field }) => (
+                  <ImageUploader
+                    value={field.value || ""}
+                    onChange={field.onChange}
+                    error={errors.imageUrl?.message}
+                    label="Ảnh bìa truyện"
+                  />
+                )}
+              />
 
               <div className="space-y-2">
                 <Label htmlFor="status">Trạng thái</Label>
