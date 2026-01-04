@@ -1,6 +1,6 @@
 import { Metadata } from 'next'
 import React from 'react'
-import ChapterReader from '@/pages/ChapterReader'
+import ChapterReader from '@/views/ChapterReader'
 
 type Params = { slug: string; chapterId: string }
 
