@@ -2,8 +2,16 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_PUBLISHABLE_KEY = import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY;
+// Support both Vite and Next.js environment variables
+const SUPABASE_URL =
+  typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_URL
+    ? process.env.NEXT_PUBLIC_SUPABASE_URL
+    : (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_SUPABASE_URL) || "";
+
+const SUPABASE_PUBLISHABLE_KEY =
+  typeof process !== "undefined" && process.env?.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    ? process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY
+    : (typeof import.meta !== "undefined" && (import.meta as any).env?.VITE_SUPABASE_PUBLISHABLE_KEY) || "";
 
 const missingConfig = !SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY;
 
@@ -21,7 +29,7 @@ const createStubClient = (message: string) =>
 // import { supabase } from "@/integrations/supabase/client";
 export const supabase = missingConfig
   ? createStubClient(
-      "Backend config is missing (VITE_SUPABASE_URL / VITE_SUPABASE_PUBLISHABLE_KEY). Please ensure environment variables are configured for this deployment."
+      "Backend config is missing (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY). Please ensure environment variables are configured for this deployment."
     )
   : createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
       auth: {
