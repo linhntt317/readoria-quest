@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useState, useEffect, ReactNode } from "react";
 import { vi, en, TranslationKeys } from "@/locales";
 
