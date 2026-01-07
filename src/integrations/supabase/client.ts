@@ -2,33 +2,17 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "./types";
 
-// Next.js environment variables - must be accessed directly for build-time inlining
-const SUPABASE_URL = process.env.NEXT_PUBLIC_SUPABASE_URL || "";
-const SUPABASE_PUBLISHABLE_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "";
-
-const missingConfig = !SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY;
-
-const createStubClient = (message: string) =>
-  new Proxy(
-    {},
-    {
-      get() {
-        throw new Error(message);
-      },
-    }
-  ) as unknown as ReturnType<typeof createClient<Database>>;
+// Hardcoded Supabase config - anon key is publishable and safe to expose
+const SUPABASE_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbW9xc2VhZnhobmNwd3p1d2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTIzODksImV4cCI6MjA3NzA2ODM4OX0.y0s_VRhxIrq23q5nBkjm6v3rlenqf6OeQGGdah981n4";
 
 // Import the supabase client like this:
 // import { supabase } from "@/integrations/supabase/client";
-export const supabase = missingConfig
-  ? createStubClient(
-      "Backend config is missing (SUPABASE_URL / SUPABASE_PUBLISHABLE_KEY). Please ensure environment variables are configured for this deployment."
-    )
-  : createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
-      auth: {
-        storage: typeof window !== "undefined" ? localStorage : undefined,
-        persistSession: true,
-        autoRefreshToken: true,
-      },
-    });
+export const supabase = createClient<Database>(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, {
+  auth: {
+    storage: typeof window !== "undefined" ? localStorage : undefined,
+    persistSession: true,
+    autoRefreshToken: true,
+  },
+});
 
