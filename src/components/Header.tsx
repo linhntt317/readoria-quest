@@ -4,7 +4,6 @@ import {
   Search,
   BookOpen,
   Globe,
-  Upload,
   Sun,
   Moon,
   Monitor,
@@ -27,8 +26,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useTheme } from "@/hooks/useTheme";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -39,17 +36,20 @@ interface Profile {
   avatar_url: string | null;
 }
 
+// Simple navigation helper that works in both Vite and Next.js
+const navigateTo = (path: string) => {
+  window.location.href = path;
+};
+
 export const Header = () => {
   const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
-  const router = useRouter();
   const { user, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
   const [profile, setProfile] = useState<Profile | null>(null);
 
   useEffect(() => {
     if (user) {
-      // Fetch user profile
       supabase
         .from("profiles")
         .select("display_name, avatar_url")
@@ -75,7 +75,7 @@ export const Header = () => {
       title: language === "vi" ? "Đã đăng xuất" : "Signed out",
       description: language === "vi" ? "Hẹn gặp lại bạn!" : "See you again!",
     });
-    router.push("/");
+    navigateTo("/");
   };
 
   const themeIcons = {
@@ -100,7 +100,7 @@ export const Header = () => {
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
-          <Link
+          <a
             href="/"
             className="flex items-center gap-2 transition-transform hover:scale-105"
           >
@@ -108,7 +108,7 @@ export const Header = () => {
             <span className="text-xl w-[max-content] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               {t.header.siteName}
             </span>
-          </Link>
+          </a>
         </div>
 
         <div className="flex items-center gap-3">
@@ -205,31 +205,31 @@ export const Header = () => {
                 </div>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link href="/tai-khoan" className="cursor-pointer">
+                  <a href="/tai-khoan" className="cursor-pointer">
                     <User className="mr-2 h-4 w-4" />
                     {language === "vi" ? "Tài khoản" : "My Account"}
-                  </Link>
+                  </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/yeu-thich" className="cursor-pointer">
+                  <a href="/yeu-thich" className="cursor-pointer">
                     <Heart className="mr-2 h-4 w-4" />
                     {language === "vi" ? "Truyện yêu thích" : "Favorites"}
-                  </Link>
+                  </a>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link href="/lich-su" className="cursor-pointer">
+                  <a href="/lich-su" className="cursor-pointer">
                     <History className="mr-2 h-4 w-4" />
                     {language === "vi" ? "Lịch sử đọc" : "Reading History"}
-                  </Link>
+                  </a>
                 </DropdownMenuItem>
                 {isAdmin && (
                   <>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link href="/admin/dashboard" className="cursor-pointer">
+                      <a href="/admin/dashboard" className="cursor-pointer">
                         <Settings className="mr-2 h-4 w-4" />
                         {language === "vi" ? "Quản trị" : "Admin Dashboard"}
-                      </Link>
+                      </a>
                     </DropdownMenuItem>
                   </>
                 )}
@@ -246,7 +246,7 @@ export const Header = () => {
           ) : (
             <Button
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => router.push("/dang-nhap")}
+              onClick={() => navigateTo("/dang-nhap")}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Đăng nhập/Đăng ký
