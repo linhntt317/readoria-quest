@@ -16,6 +16,7 @@ import { useTags } from "@/hooks/useManga";
 import { Search, Link2, Loader2, ArrowLeft } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { ImageUploader } from "@/components/admin/ImageUploader";
+import { useImageReupload } from "@/hooks/useImageReupload";
 
 const mangaSchema = z.object({
   title: z.string().min(1, "Tên truyện không được để trống"),
@@ -37,6 +38,7 @@ const PostTruyen = () => {
   const [jjwxcLink, setJjwxcLink] = useState("");
   const [fetchError, setFetchError] = useState("");
   const { data: tags, isLoading: tagsLoading } = useTags();
+  const { reuploadFromUrl, isReuploading } = useImageReupload();
   
   const { register, handleSubmit, control, formState: { errors }, reset, setValue } = useForm<MangaForm>({
     resolver: zodResolver(mangaSchema),
@@ -51,32 +53,45 @@ const PostTruyen = () => {
       return;
     }
 
-    const { data, error } = await supabase.functions.invoke('info', {
-  body: { u: jjwxcLink }
-});
-
-
     setIsFetching(true);
     setFetchError("");
 
     try {
-      const encodedUrl = encodeURIComponent(jjwxcLink);
+      const { data, error } = await supabase.functions.invoke('info', {
+        body: { u: jjwxcLink }
+      });
+
+      if (error) {
+        throw error;
+      }
 
       if (data.err === 0 && data.exists !== false) {
-        // Auto-fill form
+        // Auto-fill form fields
         setValue("title", data.title_vi || "");
         setValue("author", data.author_cv || "");
-        setValue("imageUrl", data.cover || "");
-        setValue("description",data.desc_vi || "");
+        setValue("description", data.desc_vi || "");
         setValue("originalLink", data.link || jjwxcLink);
         setValue("status", data.is_completed ? "Hoàn thành" : "Đang cập nhật");
+        
+        // Re-upload cover image from external URL to Supabase storage
+        if (data.cover) {
+          toast.info("Đang tải ảnh bìa lên hệ thống...");
+          const supabaseImageUrl = await reuploadFromUrl(data.cover);
+          if (supabaseImageUrl) {
+            setValue("imageUrl", supabaseImageUrl);
+          } else {
+            // Fallback to original URL if re-upload fails
+            setValue("imageUrl", data.cover);
+            toast.warning("Không thể tải ảnh lên hệ thống, sử dụng URL gốc");
+          }
+        }
         
         toast.success("Đã tải thông tin truyện thành công!");
       } else {
         setFetchError("Không tìm thấy thông tin truyện từ link này.");
         toast.error("Không tìm thấy thông tin truyện từ link này.");
       }
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error fetching story info:', error);
       setFetchError("Có lỗi xảy ra khi lấy thông tin truyện.");
       toast.error("Có lỗi xảy ra khi lấy thông tin truyện.");
@@ -149,10 +164,10 @@ const PostTruyen = () => {
               <Button 
                 type="button" 
                 onClick={fetchStoryInfo}
-                disabled={isFetching}
+                disabled={isFetching || isReuploading}
                 variant="outline"
               >
-                {isFetching ? (
+                {(isFetching || isReuploading) ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
                   <Link2 className="h-4 w-4" />
