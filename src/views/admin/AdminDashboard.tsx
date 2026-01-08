@@ -1,18 +1,19 @@
+"use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { LogOut, Home, Tags, Upload } from "lucide-react";
 import AddManga from "./AddManga";
 import ManageManga from "./ManageManga";
 import { useAuth } from "@/contexts/AuthContext";
 
 const AdminDashboard = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { signOut } = useAuth();
 
   const handleLogout = async () => {
     await signOut();
-    navigate("/");
+    router.push("/");
   };
 
   return (
@@ -24,7 +25,7 @@ const AdminDashboard = () => {
             <Button
               variant="default"
               size="sm"
-              onClick={() => navigate("/admin/post-truyen")}
+              onClick={() => router.push("/admin/post-truyen")}
             >
               <Upload className="h-4 w-4 mr-2" />
               Đăng truyện
@@ -32,7 +33,7 @@ const AdminDashboard = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate("/admin/tags")}
+              onClick={() => router.push("/admin/tags")}
             >
               <Tags className="h-4 w-4 mr-2" />
               Quản lý thể loại
@@ -40,7 +41,7 @@ const AdminDashboard = () => {
             <Button
               variant="outline"
               size="sm"
-              onClick={() => navigate("/")}
+              onClick={() => router.push("/")}
             >
               <Home className="h-4 w-4 mr-2" />
               Trang chủ
