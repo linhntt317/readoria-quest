@@ -21,6 +21,18 @@ const nextConfig = {
         port: "",
         pathname: "/**",
       },
+      {
+        protocol: "https",
+        hostname: "img.tytnovel.app",
+        port: "",
+        pathname: "/**",
+      },
+      {
+        protocol: "https",
+        hostname: "**.tytnovel.app",
+        port: "",
+        pathname: "/**",
+      },
     ],
   },
   // Redirect sitemap requests to API route
