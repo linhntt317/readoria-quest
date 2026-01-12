@@ -1,5 +1,6 @@
+"use client";
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import {
@@ -22,14 +23,14 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const navigate = useNavigate();
+  const router = useRouter();
   const { signIn, user, isAdmin } = useAuth();
 
   useEffect(() => {
     if (user && isAdmin) {
-      navigate("/admin/dashboard");
+      router.push("/admin/dashboard");
     }
-  }, [user, isAdmin, navigate]);
+  }, [user, isAdmin, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

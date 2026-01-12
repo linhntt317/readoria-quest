@@ -1,4 +1,5 @@
-import { useNavigate } from "react-router-dom";
+"use client";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 
@@ -8,13 +9,13 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isAdmin, loading } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {
-      navigate("/admin/login", { replace: true });
+      router.replace("/admin/login");
     }
-  }, [user, isAdmin, loading, navigate]);
+  }, [user, isAdmin, loading, router]);
 
   if (loading) {
     return (
