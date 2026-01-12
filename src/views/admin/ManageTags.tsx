@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -40,6 +42,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+
 const CATEGORIES = [
   { name: "Tình cảm", color: "#EC4899" },
   { name: "Huyền ảo", color: "#8B5CF6" },
@@ -50,7 +54,7 @@ const CATEGORIES = [
 ];
 
 const ManageTags = () => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { data: tags, refetch } = useTags();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
@@ -68,9 +72,7 @@ const ManageTags = () => {
         data: { session },
       } = await supabase.auth.getSession();
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-
-      const response = await fetch(`${supabaseUrl}/functions/v1/tags`, {
+      const response = await fetch(`${BACKEND_URL}/functions/v1/tags`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -99,10 +101,8 @@ const ManageTags = () => {
         data: { session },
       } = await supabase.auth.getSession();
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/tags/${editingTag.id}`,
+        `${BACKEND_URL}/functions/v1/tags/${editingTag.id}`,
         {
           method: "PUT",
           headers: {
@@ -133,10 +133,8 @@ const ManageTags = () => {
         data: { session },
       } = await supabase.auth.getSession();
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-
       const response = await fetch(
-        `${supabaseUrl}/functions/v1/tags/${deleteTagId}`,
+        `${BACKEND_URL}/functions/v1/tags/${deleteTagId}`,
         {
           method: "DELETE",
           headers: {
@@ -180,7 +178,7 @@ const ManageTags = () => {
         <div className="flex items-center justify-between">
           <Button
             variant="outline"
-            onClick={() => navigate("/admin/dashboard")}
+            onClick={() => router.push("/admin/dashboard")}
           >
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại

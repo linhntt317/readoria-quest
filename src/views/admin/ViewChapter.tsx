@@ -1,4 +1,6 @@
-import { useNavigate } from "react-router-dom";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
@@ -8,7 +10,7 @@ import { Chapter } from "@/hooks/useManga";
 import DOMPurify from "dompurify";
 
 const ViewChapter = ({ chapterId }: { chapterId: string }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const { data: chapter, isLoading } = useQuery({
     queryKey: ["chapter", chapterId],
@@ -61,7 +63,7 @@ const ViewChapter = ({ chapterId }: { chapterId: string }) => {
       <div className="max-w-4xl mx-auto space-y-6">
         <Button
           variant="outline"
-          onClick={() => navigate(`/admin/manga-detail/${chapter.manga_id}`)}
+          onClick={() => router.push(`/admin/manga-detail/${chapter.manga_id}`)}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Quay lại

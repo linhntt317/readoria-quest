@@ -1,4 +1,6 @@
-import { useNavigate } from "react-router-dom";
+"use client";
+
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -28,7 +30,7 @@ const chapterSchema = z.object({
 type ChapterForm = z.infer<typeof chapterSchema>;
 
 const EditChapter = ({ chapterId }: { chapterId: string }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
 
   const { data: chapter, isLoading } = useQuery({
     queryKey: ["chapter", chapterId],
@@ -75,7 +77,7 @@ const EditChapter = ({ chapterId }: { chapterId: string }) => {
       if (error) throw error;
 
       toast.success("Cập nhật chương thành công!");
-      navigate(`/admin/manga-detail/${chapter?.manga_id}`);
+      router.push(`/admin/manga-detail/${chapter?.manga_id}`);
     } catch (error) {
       console.error("Error updating chapter:", error);
       toast.error("Có lỗi xảy ra khi cập nhật chương");
@@ -103,7 +105,7 @@ const EditChapter = ({ chapterId }: { chapterId: string }) => {
         <Button
           variant="outline"
           onClick={() =>
-            navigate(`/admin/manga-detail/${chapter?.manga_id}`)
+            router.push(`/admin/manga-detail/${chapter?.manga_id}`)
           }
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
@@ -168,7 +170,7 @@ const EditChapter = ({ chapterId }: { chapterId: string }) => {
                   type="button"
                   variant="outline"
                   onClick={() =>
-                    navigate(`/admin/manga-detail/${chapter?.manga_id}`)
+                    router.push(`/admin/manga-detail/${chapter?.manga_id}`)
                   }
                 >
                   Huỷ
