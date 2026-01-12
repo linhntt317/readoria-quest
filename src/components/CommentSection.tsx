@@ -13,6 +13,9 @@ import { MessageCircle, Reply, Trash2, EyeOff, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 
+const BACKEND_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const BACKEND_API_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
+
 interface Comment {
   id: string;
   manga_id: string | null;
@@ -149,11 +152,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const backendUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const backendApiKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
-
   const queryKey = ["comments", mangaId || chapterId];
-
 
   const { data: comments = [], isLoading } = useQuery({
     queryKey,
@@ -162,12 +161,11 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       if (mangaId) params.append("mangaId", mangaId);
       if (chapterId) params.append("chapterId", chapterId);
 
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const url = `${supabaseUrl}/functions/v1/comments?${params.toString()}`;
+      const url = `${BACKEND_URL}/functions/v1/comments?${params.toString()}`;
 
       const response = await fetch(url, {
         headers: {
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          apikey: BACKEND_API_KEY,
         },
       });
 
@@ -182,13 +180,12 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       content: string;
       parentId?: string;
     }) => {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const url = `${supabaseUrl}/functions/v1/comments`;
+      const url = `${BACKEND_URL}/functions/v1/comments`;
 
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          apikey: BACKEND_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -229,8 +226,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
 
   const deleteCommentMutation = useMutation({
     mutationFn: async (commentId: string) => {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const url = `${supabaseUrl}/functions/v1/comments/${commentId}`;
+      const url = `${BACKEND_URL}/functions/v1/comments/${commentId}`;
 
       const { data: session } = await supabase.auth.getSession();
       const authHeader = session.session?.access_token
@@ -241,7 +237,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
         method: "DELETE",
         headers: {
           Authorization: authHeader,
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          apikey: BACKEND_API_KEY,
         },
       });
 
@@ -275,8 +271,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       commentId: string;
       isHidden: boolean;
     }) => {
-      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-      const url = `${supabaseUrl}/functions/v1/comments/${commentId}`;
+      const url = `${BACKEND_URL}/functions/v1/comments/${commentId}`;
 
       const { data: session } = await supabase.auth.getSession();
       const authHeader = session.session?.access_token
@@ -287,7 +282,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
         method: "PUT",
         headers: {
           Authorization: authHeader,
-          apikey: import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY,
+          apikey: BACKEND_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ isHidden }),

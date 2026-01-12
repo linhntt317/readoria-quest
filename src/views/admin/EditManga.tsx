@@ -1,5 +1,7 @@
+"use client";
+
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -33,7 +35,7 @@ const mangaSchema = z.object({
 type MangaForm = z.infer<typeof mangaSchema>;
 
 const EditManga = ({ mangaId }: { mangaId: string }) => {
-  const navigate = useNavigate();
+  const router = useRouter();
   const { data: manga, isLoading: mangaLoading } = useMangaById(mangaId);
   const { data: tags, isLoading: tagsLoading } = useTags();
   const [searchTag, setSearchTag] = useState("");
@@ -80,7 +82,7 @@ const EditManga = ({ mangaId }: { mangaId: string }) => {
       if (error) throw error;
 
       toast.success("Cập nhật truyện thành công!");
-      navigate(`/admin/manga-detail/${mangaId}`);
+      router.push(`/admin/manga-detail/${mangaId}`);
     } catch (error: any) {
       console.error("Error updating manga:", error);
       toast.error(error.message || "Có lỗi xảy ra khi cập nhật truyện");
@@ -107,7 +109,7 @@ const EditManga = ({ mangaId }: { mangaId: string }) => {
       <div className="max-w-2xl mx-auto space-y-6">
         <Button
           variant="outline"
-          onClick={() => navigate(`/admin/manga-detail/${mangaId}`)}
+          onClick={() => router.push(`/admin/manga-detail/${mangaId}`)}
         >
           <ArrowLeft className="h-4 w-4 mr-2" />
           Quay lại
@@ -287,7 +289,7 @@ const EditManga = ({ mangaId }: { mangaId: string }) => {
                 <Button
                   type="button"
                   variant="outline"
-                  onClick={() => navigate(`/admin/manga-detail/${mangaId}`)}
+                  onClick={() => router.push(`/admin/manga-detail/${mangaId}`)}
                 >
                   Huỷ
                 </Button>
