@@ -149,7 +149,11 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
+  const backendUrl = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+  const backendApiKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
+
   const queryKey = ["comments", mangaId || chapterId];
+
 
   const { data: comments = [], isLoading } = useQuery({
     queryKey,
