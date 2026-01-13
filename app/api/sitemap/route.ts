@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@supabase/supabase-js';
 
-const SUPABASE_URL = process.env.VITE_SUPABASE_URL;
-// Use a server-only SERVICE_ROLE key stored in environment (set in Vercel as SUPABASE_SERVICE_ROLE)
-const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE || process.env.VITE_SUPABASE_SERVICE_ROLE;
+// Hardcoded Supabase URL - this is public/publishable
+const SUPABASE_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
+// Service role key - MUST use server-only env var (never VITE_ or NEXT_PUBLIC_ prefix)
+const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
 const SITE_ORIGIN = process.env.SITE_ORIGIN || 'https://truyennhameo.vercel.app';
 
 export async function GET() {
