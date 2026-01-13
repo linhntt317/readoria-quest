@@ -1,3 +1,5 @@
+"use client";
+
 import { Eye, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
