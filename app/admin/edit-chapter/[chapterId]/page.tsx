@@ -1,12 +1,17 @@
 "use client";
-import React from 'react';
-import EditChapter from '@/views/admin/EditChapter';
-import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
+import React, { use } from "react";
+import EditChapter from "@/views/admin/EditChapter";
+import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 
-export default function EditChapterPage({ params }: { params: { chapterId: string } }) {
+export default function EditChapterPage({
+  params,
+}: {
+  params: Promise<{ chapterId: string }>;
+}) {
+  const { chapterId } = use(params);
   return (
     <ProtectedRoute>
-      <EditChapter chapterId={params.chapterId} />
+      <EditChapter chapterId={chapterId} />
     </ProtectedRoute>
   );
 }

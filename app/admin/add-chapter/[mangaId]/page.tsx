@@ -1,12 +1,17 @@
 "use client";
-import React from 'react';
-import AddChapter from '@/views/admin/AddChapter';
-import { ProtectedRoute } from '@/components/admin/ProtectedRoute';
+import React, { use } from "react";
+import AddChapter from "@/views/admin/AddChapter";
+import { ProtectedRoute } from "@/components/admin/ProtectedRoute";
 
-export default function AddChapterPage({ params }: { params: { mangaId: string } }) {
+export default function AddChapterPage({
+  params,
+}: {
+  params: Promise<{ mangaId: string }>;
+}) {
+  const { mangaId } = use(params);
   return (
     <ProtectedRoute>
-      <AddChapter mangaId={params.mangaId} />
+      <AddChapter mangaId={mangaId} />
     </ProtectedRoute>
   );
 }
