@@ -28,7 +28,11 @@ const AdminLogin = () => {
 
   useEffect(() => {
     if (user && isAdmin) {
-      router.push("/admin/dashboard");
+      // Small delay to ensure state is settled
+      const timer = setTimeout(() => {
+        router.push("/admin/dashboard");
+      }, 300);
+      return () => clearTimeout(timer);
     }
   }, [user, isAdmin, router]);
 
@@ -62,14 +66,12 @@ const AdminLogin = () => {
           toast.error("Đăng nhập thất bại: " + error.message);
         }
         setPassword("");
-      } else {
-        toast.success("Đăng nhập thành công!");
-        // Navigation will happen via useEffect when user state updates
+        setIsSubmitting(false);
       }
+      // If success, don't clear setIsSubmitting - let navigation happen
     } catch (error) {
       console.error("Unexpected error:", error);
       toast.error("Có lỗi xảy ra, vui lòng thử lại!");
-    } finally {
       setIsSubmitting(false);
     }
   };
@@ -115,7 +117,14 @@ const AdminLogin = () => {
               />
             </div>
             <Button type="submit" className="w-full" disabled={isSubmitting}>
-              {isSubmitting ? "Đang đăng nhập..." : "Đăng nhập"}
+              {isSubmitting ? (
+                <>
+                  <div className="w-4 h-4 border-2 border-background border-t-transparent rounded-full animate-spin mr-2" />
+                  Đang đăng nhập...
+                </>
+              ) : (
+                "Đăng nhập"
+              )}
             </Button>
           </form>
         </CardContent>

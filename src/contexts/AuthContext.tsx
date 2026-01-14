@@ -92,11 +92,47 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (
+    email: string,
+    password: string
+  ): Promise<{ error: any }> => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
+
+    // If login successful, wait for auth state to update
+    if (!error) {
+      return new Promise((resolve) => {
+        const checkAuth = setInterval(async () => {
+          const {
+            data: { session: currentSession },
+          } = await supabase.auth.getSession();
+          if (currentSession?.user) {
+            clearInterval(checkAuth);
+            // Check admin role
+            try {
+              const { data: hasAdminRole } = await supabase.rpc("has_role", {
+                _user_id: currentSession.user.id,
+                _role: "admin",
+              });
+              setIsAdmin(!!hasAdminRole);
+            } catch (error) {
+              console.error("Error checking admin role:", error);
+              setIsAdmin(false);
+            }
+            resolve({ error: null });
+          }
+        }, 100);
+
+        // Timeout after 5 seconds
+        setTimeout(() => {
+          clearInterval(checkAuth);
+          resolve({ error });
+        }, 5000);
+      });
+    }
+
     return { error };
   };
 
