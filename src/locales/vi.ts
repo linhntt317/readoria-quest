@@ -21,7 +21,7 @@ export const vi = {
     subtitle: "Giống Cải Tất Là Ý Thiên Tài",
     description:
       "Một câu chuyện hấp dẫn về phép thuật, phiêu lưu và khám phá thế giới mới đầy bí ẩn.",
-    readNow: "Đọc Ngay",
+    readNow: "111 Đọc Ngay",
     addBookmark: "Thêm Bookmark",
     genreLabel: "Thể loại",
     genreValue: "Hành Động, Phiêu Lưu",

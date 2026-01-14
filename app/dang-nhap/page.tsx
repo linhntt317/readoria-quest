@@ -272,7 +272,8 @@ export default function AuthPage() {
 
           <CardContent className="space-y-6">
             {/* Social Login Buttons */}
-            <div className="space-y-3">
+            {/* Todo Login by Social */}
+            {/* <div className="space-y-3">
               <Button
                 variant="outline"
                 className="w-full h-11 gap-3"
@@ -322,7 +323,7 @@ export default function AuthPage() {
               <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-4 text-xs text-muted-foreground">
                 hoặc
               </span>
-            </div>
+            </div> */}
 
             {/* Email Auth Tabs */}
             <Tabs

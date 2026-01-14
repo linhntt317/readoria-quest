@@ -115,11 +115,8 @@ export const Header = () => {
 
   return (
     <>
-      <LoadingOverlay
-        isVisible={isLoading}
-        message="Đang tải thông tin truyện..."
-      />
-      <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+      <LoadingOverlay isVisible={isLoading} />
+      <header className="sticky top-0 z-10 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
         <div className="container flex h-16 items-center justify-between px-4">
           <div className="flex items-center gap-6">
             <a

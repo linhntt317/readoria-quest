@@ -22,9 +22,9 @@ export const HeroSection = () => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleReadNow = (mangaId: string) => {
+  const handleNavigate = (id: string) => {
     setIsLoading(true);
-    router.push(`/truyen/${mangaId}`);
+    router.push(`/truyen/${id}`);
   };
 
   const featured = mangaList?.slice(0, 10) || [];
@@ -89,7 +89,7 @@ export const HeroSection = () => {
                       <Button
                         size="default"
                         className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
-                        onClick={() => handleReadNow(manga.id)}
+                        onClick={() => handleNavigate(manga.id)}
                       >
                         <PlayCircle className="mr-2 h-5 w-5" />
                         {t.hero.readNow}
