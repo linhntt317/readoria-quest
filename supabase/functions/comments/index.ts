@@ -188,7 +188,7 @@ Deno.serve(async (req) => {
       if (error) {
         console.error('Error fetching comments:', error);
         return new Response(
-          JSON.stringify({ error: error.message }),
+          JSON.stringify({ error: 'Unable to fetch comments' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -280,7 +280,7 @@ Deno.serve(async (req) => {
       if (insertError) {
         console.error('Error creating comment:', insertError);
         return new Response(
-          JSON.stringify({ error: insertError.message }),
+          JSON.stringify({ error: 'Unable to create comment' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -327,7 +327,7 @@ Deno.serve(async (req) => {
       if (updateError) {
         console.error('Error updating comment:', updateError);
         return new Response(
-          JSON.stringify({ error: updateError.message }),
+          JSON.stringify({ error: 'Unable to update comment' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
@@ -357,7 +357,7 @@ Deno.serve(async (req) => {
       if (deleteError) {
         console.error('Error deleting comment:', deleteError);
         return new Response(
-          JSON.stringify({ error: deleteError.message }),
+          JSON.stringify({ error: 'Unable to delete comment' }),
           { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
         );
       }
