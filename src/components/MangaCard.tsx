@@ -4,7 +4,7 @@ import { Eye, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useNavigationWithLoading } from "@/hooks/useNavigationWithLoading";
+import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 interface MangaCardProps {
@@ -27,12 +27,12 @@ export const MangaCard = ({
   isNew,
 }: MangaCardProps) => {
   const { t } = useTranslation();
-  const { push } = useNavigationWithLoading();
+  const router = useRouter();
   const sanitizedImage =
     (image || "").trim().replace(/[)]+$/, "") || "/placeholder.svg";
 
   const handleNavigate = () => {
-    push(`/truyen/${id}`);
+    router.push(`/truyen/${id}`);
   };
 
   return (
