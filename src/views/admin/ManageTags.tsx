@@ -23,6 +23,8 @@ import { ArrowLeft, Plus, Pencil, Trash2 } from "lucide-react";
 import { useTags } from "@/hooks/useManga";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAsyncWithLoading } from "@/hooks/useAsyncWithLoading";
+import { useNavigationWithLoading } from "@/hooks/useNavigationWithLoading";
 import {
   Dialog,
   DialogContent,
@@ -55,7 +57,9 @@ const CATEGORIES = [
 
 const ManageTags = () => {
   const router = useRouter();
+  const { push } = useNavigationWithLoading();
   const { data: tags, refetch } = useTags();
+  const { execute } = useAsyncWithLoading();
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [deleteTagId, setDeleteTagId] = useState<string | null>(null);
@@ -68,25 +72,27 @@ const ManageTags = () => {
 
   const handleAdd = async () => {
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      await execute(async () => {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      const response = await fetch(`${BACKEND_URL}/functions/v1/tags`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${session?.access_token}`,
-        },
-        body: JSON.stringify(formData),
+        const response = await fetch(`${BACKEND_URL}/functions/v1/tags`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${session?.access_token}`,
+          },
+          body: JSON.stringify(formData),
+        });
+
+        if (!response.ok) throw new Error("Failed to create tag");
+
+        toast.success("Thêm thể loại thành công!");
+        setIsAddDialogOpen(false);
+        setFormData({ name: "", category: "Khác", color: "#6B7280" });
+        refetch();
       });
-
-      if (!response.ok) throw new Error("Failed to create tag");
-
-      toast.success("Thêm thể loại thành công!");
-      setIsAddDialogOpen(false);
-      setFormData({ name: "", category: "Khác", color: "#6B7280" });
-      refetch();
     } catch (error) {
       console.error("Error creating tag:", error);
       toast.error("Có lỗi xảy ra khi thêm thể loại");
@@ -97,28 +103,30 @@ const ManageTags = () => {
     if (!editingTag) return;
 
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      await execute(async () => {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      const response = await fetch(
-        `${BACKEND_URL}/functions/v1/tags/${editingTag.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+        const response = await fetch(
+          `${BACKEND_URL}/functions/v1/tags/${editingTag.id}`,
+          {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${session?.access_token}`,
+            },
+            body: JSON.stringify(formData),
+          }
+        );
 
-      if (!response.ok) throw new Error("Failed to update tag");
+        if (!response.ok) throw new Error("Failed to update tag");
 
-      toast.success("Cập nhật thể loại thành công!");
-      setIsEditDialogOpen(false);
-      setEditingTag(null);
-      refetch();
+        toast.success("Cập nhật thể loại thành công!");
+        setIsEditDialogOpen(false);
+        setEditingTag(null);
+        refetch();
+      });
     } catch (error) {
       console.error("Error updating tag:", error);
       toast.error("Có lỗi xảy ra khi cập nhật thể loại");
@@ -129,25 +137,27 @@ const ManageTags = () => {
     if (!deleteTagId) return;
 
     try {
-      const {
-        data: { session },
-      } = await supabase.auth.getSession();
+      await execute(async () => {
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
 
-      const response = await fetch(
-        `${BACKEND_URL}/functions/v1/tags/${deleteTagId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${session?.access_token}`,
-          },
-        }
-      );
+        const response = await fetch(
+          `${BACKEND_URL}/functions/v1/tags/${deleteTagId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Authorization: `Bearer ${session?.access_token}`,
+            },
+          }
+        );
 
-      if (!response.ok) throw new Error("Failed to delete tag");
+        if (!response.ok) throw new Error("Failed to delete tag");
 
-      toast.success("Xóa thể loại thành công!");
-      setDeleteTagId(null);
-      refetch();
+        toast.success("Xóa thể loại thành công!");
+        setDeleteTagId(null);
+        refetch();
+      });
     } catch (error) {
       console.error("Error deleting tag:", error);
       toast.error("Có lỗi xảy ra khi xóa thể loại");
@@ -176,10 +186,7 @@ const ManageTags = () => {
     <div className="min-h-screen bg-background p-4">
       <div className="max-w-6xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            onClick={() => router.push("/admin/dashboard")}
-          >
+          <Button variant="outline" onClick={() => push("/admin/dashboard")}>
             <ArrowLeft className="h-4 w-4 mr-2" />
             Quay lại
           </Button>

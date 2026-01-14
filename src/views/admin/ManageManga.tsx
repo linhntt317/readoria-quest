@@ -12,17 +12,19 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { BookOpen, Plus, Eye } from "lucide-react";
 import { useManga } from "@/hooks/useManga";
+import { useNavigationWithLoading } from "@/hooks/useNavigationWithLoading";
 
 const ManageManga = () => {
   const router = useRouter();
+  const { push } = useNavigationWithLoading();
   const { data: mangaList, isLoading } = useManga();
 
   const handleAddChapter = (mangaId: string) => {
-    router.push(`/admin/add-chapter/${mangaId}`);
+    push(`/admin/add-chapter/${mangaId}`);
   };
 
   const handleViewDetail = (mangaId: string) => {
-    router.push(`/admin/manga-detail/${mangaId}`);
+    push(`/admin/manga-detail/${mangaId}`);
   };
 
   if (isLoading) {
