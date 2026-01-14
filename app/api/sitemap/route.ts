@@ -1,31 +1,46 @@
-import { NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
+import { NextResponse } from "next/server";
+import { createServerSupabaseClient } from "@/lib/supabase-server";
 
-// Hardcoded Supabase URL - this is public/publishable
-const SUPABASE_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
-// Service role key - MUST use server-only env var (never VITE_ or NEXT_PUBLIC_ prefix)
-const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SITE_ORIGIN = 'https://truyennhameo.vercel.app';
+// Ensure we run in Node.js runtime (avoids Edge bundling incompatibilities)
+export const runtime = "nodejs";
+export const dynamic = "force-dynamic";
 
-export async function GET() {
-  if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {
-    return new NextResponse('Supabase env not configured', { status: 500 });
-  }
+const DEFAULT_SITE_ORIGIN = "https://truyennhameo.vercel.app";
 
-  const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE);
+export async function GET(req: Request) {
   try {
-    const { data, error } = await supabase.from('manga').select('id, updated_at');
-    if (error) throw error;
+    const siteOrigin = new URL(req.url).origin || DEFAULT_SITE_ORIGIN;
 
-    const urls = (data || []).map((row: any) => {
-      const lastmod = row.updated_at ? new Date(row.updated_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
-      return `  <url>\n    <loc>${SITE_ORIGIN}/truyen/${row.id}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
-    }).join('\n');
+    const supabase = createServerSupabaseClient();
+    const { data, error } = await supabase
+      .from("manga")
+      .select("id, updated_at")
+      .order("updated_at", { ascending: false });
 
-    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${SITE_ORIGIN}/</loc>\n    <lastmod>${new Date().toISOString().split('T')[0]}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n${urls}\n</urlset>`;
+    if (error) {
+      console.error("Sitemap query failed:", error);
+      return new NextResponse("Unable to generate sitemap", { status: 500 });
+    }
 
-    return new NextResponse(xml, { headers: { 'Content-Type': 'application/xml' } });
+    const today = new Date().toISOString().split("T")[0];
+
+    const urls = (data || [])
+      .map((row: any) => {
+        const lastmod = row.updated_at
+          ? new Date(row.updated_at).toISOString().split("T")[0]
+          : today;
+        return `  <url>\n    <loc>${siteOrigin}/truyen/${row.id}</loc>\n    <lastmod>${lastmod}</lastmod>\n    <changefreq>weekly</changefreq>\n    <priority>0.8</priority>\n  </url>`;
+      })
+      .join("\n");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n  <url>\n    <loc>${siteOrigin}/</loc>\n    <lastmod>${today}</lastmod>\n    <changefreq>daily</changefreq>\n    <priority>1.0</priority>\n  </url>\n${urls}\n</urlset>`;
+
+    return new NextResponse(xml, {
+      headers: { "Content-Type": "application/xml" },
+    });
   } catch (err: any) {
-    return new NextResponse('Failed to generate sitemap: ' + (err.message || err), { status: 500 });
+    console.error("Sitemap generation failed:", err);
+    return new NextResponse("Unable to generate sitemap", { status: 500 });
   }
 }
+
