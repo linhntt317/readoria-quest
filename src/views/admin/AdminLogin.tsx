@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { useLoading } from "@/contexts/LoadingContext";
 import {
   Card,
   CardContent,
@@ -25,6 +26,7 @@ const AdminLogin = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const router = useRouter();
   const { signIn, user, isAdmin } = useAuth();
+  const { showLoading } = useLoading();
 
   useEffect(() => {
     if (user && isAdmin) {
@@ -52,6 +54,7 @@ const AdminLogin = () => {
     }
 
     setIsSubmitting(true);
+    showLoading();
 
     try {
       const { error } = await signIn(email, password);

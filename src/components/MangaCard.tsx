@@ -4,7 +4,7 @@ import { Eye, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/hooks/useTranslation";
-import Link from "next/link";
+import { useNavigationWithLoading } from "@/hooks/useNavigationWithLoading";
 import Image from "next/image";
 
 interface MangaCardProps {
@@ -27,11 +27,16 @@ export const MangaCard = ({
   isNew,
 }: MangaCardProps) => {
   const { t } = useTranslation();
+  const { push } = useNavigationWithLoading();
   const sanitizedImage =
     (image || "").trim().replace(/[)]+$/, "") || "/placeholder.svg";
 
+  const handleNavigate = () => {
+    push(`/truyen/${id}`);
+  };
+
   return (
-    <Link href={`/truyen/${id}`}>
+    <div onClick={handleNavigate} className="cursor-pointer">
       <Card className="group relative overflow-hidden bg-card border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer animate-fade-in">
         <div className="relative aspect-[2/3] overflow-hidden">
           <Image
@@ -76,6 +81,6 @@ export const MangaCard = ({
           </h3>
         </div>
       </Card>
-    </Link>
+    </div>
   );
 };
