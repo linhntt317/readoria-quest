@@ -22,9 +22,10 @@ function extractId(slug: string): string | null {
   return numericMatch ? numericMatch[1] : null
 }
 
+const SITE_ORIGIN = 'https://truyennhameo.vercel.app';
+
 export async function generateMetadata({ params }: { params: Params }): Promise<Metadata> {
-  const siteOrigin = process.env.SITE_ORIGIN || 'https://truyennhameo.vercel.app'
-  const pageUrl = `${siteOrigin}/truyen/${params.slug}/chuong/${params.chapterId}`
+  const pageUrl = `${SITE_ORIGIN}/truyen/${params.slug}/chuong/${params.chapterId}`
   return {
     title: `Chương ${params.chapterId} | Truyện Nhà Mèo`,
     alternates: { canonical: pageUrl },

@@ -5,7 +5,7 @@ import { createClient } from '@supabase/supabase-js';
 const SUPABASE_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
 // Service role key - MUST use server-only env var (never VITE_ or NEXT_PUBLIC_ prefix)
 const SUPABASE_SERVICE_ROLE = process.env.SUPABASE_SERVICE_ROLE_KEY;
-const SITE_ORIGIN = process.env.SITE_ORIGIN || 'https://truyennhameo.vercel.app';
+const SITE_ORIGIN = 'https://truyennhameo.vercel.app';
 
 export async function GET() {
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE) {

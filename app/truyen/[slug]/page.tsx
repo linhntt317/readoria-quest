@@ -23,22 +23,23 @@ function extractId(slug: string): string | null {
   return numericMatch ? numericMatch[1] : null
 }
 
+// Hardcoded Supabase config - anon key is publishable and safe to expose
+const SUPABASE_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
+const SUPABASE_PUBLISHABLE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbW9xc2VhZnhobmNwd3p1d2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTIzODksImV4cCI6MjA3NzA2ODM4OX0.y0s_VRhxIrq23q5nBkjm6v3rlenqf6OeQGGdah981n4";
+const SITE_ORIGIN = 'https://truyennhameo.vercel.app';
+
 export async function generateMetadata(
   { params }: { params: Params }
 ): Promise<Metadata> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.VITE_SUPABASE_URL || ''
-  const key = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || process.env.VITE_SUPABASE_PUBLISHABLE_KEY || ''
-  const siteOrigin = process.env.SITE_ORIGIN || 'https://truyennhameo.vercel.app'
-
   let title = 'Truyện Nhà Mèo'
   let description = 'Đọc truyện online miễn phí tại Truyện Nhà Mèo'
   let image = '/og-image.jpg'
 
   const id = extractId(params.slug)
 
-  if (url && key && id) {
+  if (id) {
     try {
-      const supabase = createClient(url, key)
+      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY)
       const { data } = await supabase
         .from('manga')
         .select('id,title,description,image_url,updated_at')
@@ -53,7 +54,7 @@ export async function generateMetadata(
     } catch {}
   }
 
-  const pageUrl = `${siteOrigin}/truyen/${params.slug}`
+  const pageUrl = `${SITE_ORIGIN}/truyen/${params.slug}`
 
   return {
     title,

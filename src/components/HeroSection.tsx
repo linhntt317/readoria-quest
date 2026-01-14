@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
 import { PlayCircle, BookmarkPlus } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
