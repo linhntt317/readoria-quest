@@ -1,14 +1,31 @@
 "use client";
 
+import { Metadata } from "next";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { z } from "zod";
-import { BookOpen, Mail, Lock, User, Eye, EyeOff, ArrowLeft, Loader2 } from "lucide-react";
+import {
+  BookOpen,
+  Mail,
+  Lock,
+  User,
+  Eye,
+  EyeOff,
+  ArrowLeft,
+  Loader2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
@@ -21,15 +38,20 @@ const loginSchema = z.object({
   password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
 });
 
-const registerSchema = z.object({
-  displayName: z.string().min(2, "Tên hiển thị phải có ít nhất 2 ký tự").max(50, "Tên hiển thị tối đa 50 ký tự"),
-  email: z.string().email("Email không hợp lệ"),
-  password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
-  confirmPassword: z.string(),
-}).refine((data) => data.password === data.confirmPassword, {
-  message: "Mật khẩu xác nhận không khớp",
-  path: ["confirmPassword"],
-});
+const registerSchema = z
+  .object({
+    displayName: z
+      .string()
+      .min(2, "Tên hiển thị phải có ít nhất 2 ký tự")
+      .max(50, "Tên hiển thị tối đa 50 ký tự"),
+    email: z.string().email("Email không hợp lệ"),
+    password: z.string().min(6, "Mật khẩu phải có ít nhất 6 ký tự"),
+    confirmPassword: z.string(),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Mật khẩu xác nhận không khớp",
+    path: ["confirmPassword"],
+  });
 
 export default function AuthPage() {
   const [activeTab, setActiveTab] = useState<"login" | "register">("login");
@@ -37,7 +59,7 @@ export default function AuthPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
-  
+
   // Form states
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
   const [registerForm, setRegisterForm] = useState({
@@ -61,9 +83,8 @@ export default function AuthPage() {
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     setIsLoading(true);
     try {
-      const redirectUrl = typeof window !== "undefined" 
-        ? `${window.location.origin}/` 
-        : "";
+      const redirectUrl =
+        typeof window !== "undefined" ? `${window.location.origin}/` : "";
 
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
@@ -93,7 +114,7 @@ export default function AuthPage() {
   const handleEmailLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    
+
     const validation = loginSchema.safeParse(loginForm);
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
@@ -148,7 +169,7 @@ export default function AuthPage() {
   const handleEmailRegister = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
-    
+
     const validation = registerSchema.safeParse(registerForm);
     if (!validation.success) {
       const fieldErrors: Record<string, string> = {};
@@ -163,9 +184,8 @@ export default function AuthPage() {
 
     setIsLoading(true);
     try {
-      const redirectUrl = typeof window !== "undefined" 
-        ? `${window.location.origin}/` 
-        : "";
+      const redirectUrl =
+        typeof window !== "undefined" ? `${window.location.origin}/` : "";
 
       const { error } = await supabase.auth.signUp({
         email: registerForm.email,
@@ -223,7 +243,10 @@ export default function AuthPage() {
     <div className="min-h-screen flex flex-col bg-gradient-to-br from-background via-background to-primary/5">
       {/* Header */}
       <header className="p-4">
-        <Link href="/" className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors">
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground transition-colors"
+        >
           <ArrowLeft className="h-4 w-4" />
           <span>Quay lại trang chủ</span>
         </Link>
@@ -233,7 +256,10 @@ export default function AuthPage() {
       <main className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md border-border/50 shadow-xl">
           <CardHeader className="text-center space-y-4">
-            <Link href="/" className="inline-flex items-center justify-center gap-2 mx-auto">
+            <Link
+              href="/"
+              className="inline-flex items-center justify-center gap-2 mx-auto"
+            >
               <BookOpen className="h-10 w-10 text-primary" />
               <span className="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 Truyện Nhà Mèo
@@ -280,7 +306,11 @@ export default function AuthPage() {
                 onClick={() => handleSocialLogin("facebook")}
                 disabled={isLoading}
               >
-                <svg className="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="h-5 w-5"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" />
                 </svg>
                 Tiếp tục với Facebook
@@ -295,7 +325,10 @@ export default function AuthPage() {
             </div>
 
             {/* Email Auth Tabs */}
-            <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as "login" | "register")}>
+            <Tabs
+              value={activeTab}
+              onValueChange={(v) => setActiveTab(v as "login" | "register")}
+            >
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="login">Đăng nhập</TabsTrigger>
                 <TabsTrigger value="register">Đăng ký</TabsTrigger>
@@ -314,11 +347,15 @@ export default function AuthPage() {
                         placeholder="email@example.com"
                         className="pl-10"
                         value={loginForm.email}
-                        onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+                        onChange={(e) =>
+                          setLoginForm({ ...loginForm, email: e.target.value })
+                        }
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                    {errors.email && (
+                      <p className="text-sm text-destructive">{errors.email}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -331,7 +368,12 @@ export default function AuthPage() {
                         placeholder="••••••••"
                         className="pl-10 pr-10"
                         value={loginForm.password}
-                        onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+                        onChange={(e) =>
+                          setLoginForm({
+                            ...loginForm,
+                            password: e.target.value,
+                          })
+                        }
                         disabled={isLoading}
                       />
                       <button
@@ -339,14 +381,24 @@ export default function AuthPage() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
-                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                    {errors.password && (
+                      <p className="text-sm text-destructive">
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : null}
                     Đăng nhập
                   </Button>
                 </form>
@@ -365,11 +417,20 @@ export default function AuthPage() {
                         placeholder="Tên của bạn"
                         className="pl-10"
                         value={registerForm.displayName}
-                        onChange={(e) => setRegisterForm({ ...registerForm, displayName: e.target.value })}
+                        onChange={(e) =>
+                          setRegisterForm({
+                            ...registerForm,
+                            displayName: e.target.value,
+                          })
+                        }
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.displayName && <p className="text-sm text-destructive">{errors.displayName}</p>}
+                    {errors.displayName && (
+                      <p className="text-sm text-destructive">
+                        {errors.displayName}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -382,11 +443,18 @@ export default function AuthPage() {
                         placeholder="email@example.com"
                         className="pl-10"
                         value={registerForm.email}
-                        onChange={(e) => setRegisterForm({ ...registerForm, email: e.target.value })}
+                        onChange={(e) =>
+                          setRegisterForm({
+                            ...registerForm,
+                            email: e.target.value,
+                          })
+                        }
                         disabled={isLoading}
                       />
                     </div>
-                    {errors.email && <p className="text-sm text-destructive">{errors.email}</p>}
+                    {errors.email && (
+                      <p className="text-sm text-destructive">{errors.email}</p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
@@ -399,7 +467,12 @@ export default function AuthPage() {
                         placeholder="••••••••"
                         className="pl-10 pr-10"
                         value={registerForm.password}
-                        onChange={(e) => setRegisterForm({ ...registerForm, password: e.target.value })}
+                        onChange={(e) =>
+                          setRegisterForm({
+                            ...registerForm,
+                            password: e.target.value,
+                          })
+                        }
                         disabled={isLoading}
                       />
                       <button
@@ -407,14 +480,24 @@ export default function AuthPage() {
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
                         onClick={() => setShowPassword(!showPassword)}
                       >
-                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
-                    {errors.password && <p className="text-sm text-destructive">{errors.password}</p>}
+                    {errors.password && (
+                      <p className="text-sm text-destructive">
+                        {errors.password}
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-2">
-                    <Label htmlFor="register-confirm-password">Xác nhận mật khẩu</Label>
+                    <Label htmlFor="register-confirm-password">
+                      Xác nhận mật khẩu
+                    </Label>
                     <div className="relative">
                       <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                       <Input
@@ -423,22 +506,39 @@ export default function AuthPage() {
                         placeholder="••••••••"
                         className="pl-10 pr-10"
                         value={registerForm.confirmPassword}
-                        onChange={(e) => setRegisterForm({ ...registerForm, confirmPassword: e.target.value })}
+                        onChange={(e) =>
+                          setRegisterForm({
+                            ...registerForm,
+                            confirmPassword: e.target.value,
+                          })
+                        }
                         disabled={isLoading}
                       />
                       <button
                         type="button"
                         className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }
                       >
-                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                        {showConfirmPassword ? (
+                          <EyeOff className="h-4 w-4" />
+                        ) : (
+                          <Eye className="h-4 w-4" />
+                        )}
                       </button>
                     </div>
-                    {errors.confirmPassword && <p className="text-sm text-destructive">{errors.confirmPassword}</p>}
+                    {errors.confirmPassword && (
+                      <p className="text-sm text-destructive">
+                        {errors.confirmPassword}
+                      </p>
+                    )}
                   </div>
 
                   <Button type="submit" className="w-full" disabled={isLoading}>
-                    {isLoading ? <Loader2 className="h-4 w-4 animate-spin mr-2" /> : null}
+                    {isLoading ? (
+                      <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                    ) : null}
                     Đăng ký
                   </Button>
                 </form>

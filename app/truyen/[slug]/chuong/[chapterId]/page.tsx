@@ -33,16 +33,36 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const resolvedParams = await params;
+  const decodedSlug = decodeURIComponent(resolvedParams.slug);
   const pageUrl = `${SITE_ORIGIN}/truyen/${resolvedParams.slug}/chuong/${resolvedParams.chapterId}`;
+
   return {
-    title: `Chương ${resolvedParams.chapterId} | Truyện Nhà Mèo`,
+    title: `Chương ${resolvedParams.chapterId} - Đọc Truyện Online | Truyện Nhà Mèo`,
+    description: `Đọc chương ${resolvedParams.chapterId} của truyện online miễn phí tại Truyện Nhà Mèo. Cập nhật liên tục, chất lượng cao.`,
+    keywords: [
+      `chương ${resolvedParams.chapterId}`,
+      "truyện tranh online",
+      "manga online",
+      "đọc truyện miễn phí",
+      "chapter truyện",
+    ],
     alternates: { canonical: pageUrl },
     openGraph: {
       type: "article",
       url: pageUrl,
-      title: `Chương ${resolvedParams.chapterId}`,
+      title: `Chương ${resolvedParams.chapterId} - Truyện Nhà Mèo`,
+      description: `Đọc chương ${resolvedParams.chapterId} online miễn phí`,
+      siteName: "Truyện Nhà Mèo",
     },
-    twitter: { card: "summary", title: `Chương ${resolvedParams.chapterId}` },
+    twitter: {
+      card: "summary",
+      title: `Chương ${resolvedParams.chapterId} - Truyện Nhà Mèo`,
+      description: `Đọc chương ${resolvedParams.chapterId} online`,
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
   };
 }
 

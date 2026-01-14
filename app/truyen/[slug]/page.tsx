@@ -38,9 +38,16 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const resolvedParams = await params;
-  let title = "Truyện Nhà Mèo";
+  let title = "Truyện - Truyện Nhà Mèo";
   let description = "Đọc truyện online miễn phí tại Truyện Nhà Mèo";
   let image = "/og-image.jpg";
+  let keywords: string[] = [
+    "truyện tranh online",
+    "manga",
+    "manhwa",
+    "manhua",
+    "đọc truyện miễn phí",
+  ];
 
   const id = extractId(resolvedParams.slug);
 
@@ -54,9 +61,21 @@ export async function generateMetadata({
         .single();
 
       if (data) {
-        title = `${data.title} | Truyện Nhà Mèo`;
-        description = (data.description || "").slice(0, 160) || description;
+        title = `${data.title} - Đọc Truyện Online | Truyện Nhà Mèo`;
+        description =
+          (data.description || "").slice(0, 160) ||
+          `Đọc truyện ${data.title} online miễn phí tại Truyện Nhà Mèo`;
         image = data.image_url || image;
+        keywords = [
+          data.title,
+          `${data.title} online`,
+          `đọc ${data.title}`,
+          "truyện tranh online",
+          "manga",
+          "manhwa",
+          "manhua",
+          "đọc truyện miễn phí",
+        ];
       }
     } catch {}
   }
@@ -66,6 +85,7 @@ export async function generateMetadata({
   return {
     title,
     description,
+    keywords,
     alternates: { canonical: pageUrl },
     openGraph: {
       type: "article",
@@ -73,12 +93,17 @@ export async function generateMetadata({
       title,
       description,
       images: [{ url: image }],
+      siteName: "Truyện Nhà Mèo",
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
       images: [image],
+    },
+    robots: {
+      index: true,
+      follow: true,
     },
   };
 }

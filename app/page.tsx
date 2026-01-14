@@ -7,30 +7,48 @@ import { fetchMangaList } from "@/lib/supabase-server";
 
 // Static metadata for SEO
 export const metadata: Metadata = {
-  title: "Đọc Tiểu Thuyết - Kho truyện online miễn phí",
+  title:
+    "Truyện Nhà Mèo - Đọc Truyện Tranh Online Miễn Phí | Manga, Manhwa, Manhua",
   description:
-    "Đọc truyện online miễn phí với hàng ngàn bộ truyện hay. Cập nhật liên tục các thể loại: Ngôn tình, Đam mỹ, Huyền huyễn, Tiên hiệp, Xuyên không...",
+    "Đọc truyện tranh online miễn phí tại Truyện Nhà Mèo. Kho truyện manga, manhwa, manhua đa dạng với hàng ngàn bộ truyện. Cập nhật chapter mới mỗi ngày. Hành động, romance, kinh dị, hài hước và nhiều thể loại khác.",
   keywords: [
-    "đọc truyện",
-    "truyện online",
-    "tiểu thuyết",
-    "ngôn tình",
-    "đam mỹ",
-    "huyền huyễn",
+    "đọc truyện online",
+    "truyện tranh online",
+    "manga",
+    "manhwa",
+    "manhua",
+    "đọc truyện miễn phí",
+    "truyện tranh miễn phí",
+    "manga tiếng việt",
+    "manhwa tiếng việt",
+    "đọc manga online",
+    "truyện nhà mèo",
+    "truyện tranh hay",
+    "manga hay",
   ],
   openGraph: {
-    title: "Đọc Tiểu Thuyết - Kho truyện online miễn phí",
+    title: "Truyện Nhà Mèo - Đọc Truyện Tranh Online Miễn Phí",
     description:
-      "Đọc truyện online miễn phí với hàng ngàn bộ truyện hay. Cập nhật liên tục các thể loại.",
-    url: "https://doctieuthuyet.com",
-    siteName: "Đọc Tiểu Thuyết",
+      "Đọc truyện tranh online miễn phí tại Truyện Nhà Mèo. Kho truyện manga, manhwa, manhua đa dạng với hàng ngàn bộ truyện. Cập nhật chapter mới mỗi ngày.",
+    url: "https://truyennhameo.vercel.app",
+    siteName: "Truyện Nhà Mèo",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Đọc Tiểu Thuyết - Kho truyện online miễn phí",
+    title: "Truyện Nhà Mèo - Đọc Truyện Tranh Online Miễn Phí",
     description:
-      "Đọc truyện online miễn phí với hàng ngàn bộ truyện hay.",
+      "Đọc truyện tranh online miễn phí tại Truyện Nhà Mèo. Manga, manhwa, manhua hay nhất.",
+  },
+  alternates: {
+    canonical: "https://truyennhameo.vercel.app",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    "max-image-preview": "large",
+    "max-snippet": -1,
+    "max-video-preview": -1,
   },
 };
 
