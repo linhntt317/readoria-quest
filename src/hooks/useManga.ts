@@ -70,6 +70,8 @@ export const useManga = () => {
 
       return formattedData as Manga[];
     },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+    gcTime: 10 * 60 * 1000, // Keep in memory for 10 minutes
   });
 };
 
@@ -92,9 +94,11 @@ export const useMangaById = (id: string | undefined) => {
       // Fetch tags
       const { data: mangaTags, error: tagsError } = await supabase
         .from("manga_tags")
-        .select(`
+        .select(
+          `
           tag:tags(*)
-        `)
+        `
+        )
         .eq("manga_id", id);
 
       if (tagsError) throw tagsError;
@@ -115,6 +119,8 @@ export const useMangaById = (id: string | undefined) => {
       } as Manga;
     },
     enabled: !!id,
+    staleTime: 3 * 60 * 1000, // Cache for 3 minutes
+    gcTime: 10 * 60 * 1000, // Keep in memory for 10 minutes
   });
 };
 
@@ -129,5 +135,7 @@ export const useTags = () => {
       if (error) throw error;
       return data as Tag[];
     },
+    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
+    gcTime: 30 * 60 * 1000, // Keep in memory for 30 minutes
   });
 };

@@ -7,7 +7,10 @@ interface LoadingOverlayProps {
   message?: string;
 }
 
-export const LoadingOverlay = ({ isVisible, message = "Đang tải..." }: LoadingOverlayProps) => {
+export const LoadingOverlay = ({
+  isVisible,
+  message = "Đang tải...",
+}: LoadingOverlayProps) => {
   if (!isVisible) return null;
 
   return (
