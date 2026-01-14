@@ -407,7 +407,7 @@ serve(async (req) => {
     });
   } catch (error) {
     console.error("Error in chapters function:", error);
-    return new Response(JSON.stringify({ error: (error as Error).message }), {
+    return new Response(JSON.stringify({ error: "Unable to process request" }), {
       status: 500,
       headers: { ...getCorsHeaders(null), "Content-Type": "application/json" },
     });
