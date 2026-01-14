@@ -4,6 +4,9 @@ import { Button } from "@/components/ui/button";
 import { PlayCircle, BookmarkPlus } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useManga } from "@/hooks/useManga";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import {
   Carousel,
   CarouselContent,
@@ -16,6 +19,13 @@ import Autoplay from "embla-carousel-autoplay";
 export const HeroSection = () => {
   const { t } = useTranslation();
   const { data: mangaList } = useManga();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleReadNow = (mangaId: string) => {
+    setIsLoading(true);
+    router.push(`/truyen/${mangaId}`);
+  };
 
   const featured = mangaList?.slice(0, 10) || [];
 
@@ -25,6 +35,10 @@ export const HeroSection = () => {
 
   return (
     <section className="relative overflow-hidden">
+      <LoadingOverlay
+        isVisible={isLoading}
+        message="Đang tải thông tin truyện..."
+      />
       <Carousel
         opts={{
           align: "start",
@@ -75,6 +89,7 @@ export const HeroSection = () => {
                       <Button
                         size="default"
                         className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
+                        onClick={() => handleReadNow(manga.id)}
                       >
                         <PlayCircle className="mr-2 h-5 w-5" />
                         {t.hero.readNow}

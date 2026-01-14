@@ -30,6 +30,8 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 interface Profile {
   display_name: string | null;
@@ -46,7 +48,9 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const { user, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
+  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -69,12 +73,25 @@ export const Header = () => {
     setLanguage(language === "vi" ? "en" : "vi");
   };
 
+  const handleHomeClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+    router.push("/");
+  };
+
+  const handleLoginClick = () => {
+    setIsLoading(true);
+    navigateTo("/dang-nhap");
+  };
+
   const handleSignOut = async () => {
+    setIsLoading(true);
     await signOut();
     toast({
       title: language === "vi" ? "Đã đăng xuất" : "Signed out",
       description: language === "vi" ? "Hẹn gặp lại bạn!" : "See you again!",
     });
+    setIsLoading(false);
     navigateTo("/");
   };
 
@@ -98,10 +115,12 @@ export const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-card/95 backdrop-blur supports-[backdrop-filter]:bg-card/80">
+      <LoadingOverlay isVisible={isLoading} message="Đang tải..." />
       <div className="container flex h-16 items-center justify-between px-4">
         <div className="flex items-center gap-6">
           <a
             href="/"
+            onClick={handleHomeClick}
             className="flex items-center gap-2 transition-transform hover:scale-105"
           >
             <BookOpen className="h-8 w-8 text-primary" />
@@ -246,7 +265,7 @@ export const Header = () => {
           ) : (
             <Button
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => navigateTo("/dang-nhap")}
+              onClick={handleLoginClick}
             >
               <LogIn className="mr-2 h-4 w-4" />
               Đăng nhập/Đăng ký
