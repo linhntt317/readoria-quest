@@ -42,7 +42,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
+const BACKEND_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
 
 const CATEGORIES = [
   { name: "Tình cảm", color: "#EC4899" },

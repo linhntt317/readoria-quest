@@ -13,8 +13,8 @@ import { MessageCircle, Reply, Trash2, EyeOff, Eye } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-const BACKEND_API_KEY = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "";
+const BACKEND_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
+const BACKEND_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbW9xc2VhZnhobmNwd3p1d2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTIzODksImV4cCI6MjA3NzA2ODM4OX0.y0s_VRhxIrq23q5nBkjm6v3rlenqf6OeQGGdah981n4";
 
 interface Comment {
   id: string;

@@ -1,3 +1,5 @@
+"use client";
+
 import { TrendingUp, Flame } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";

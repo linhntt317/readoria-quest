@@ -65,9 +65,7 @@ const TagPage = ({ tagName }: { tagName?: string }) => {
   const prettyTag = (tagName || "").replace(/-/g, " ");
   const title = `${prettyTag} - Truyện Nhà Mèo`;
   const description = `Tổng hợp truyện ${prettyTag} hay nhất, cập nhật liên tục trên Truyện Nhà Mèo.`;
-  const url = `${
-    process.env.SITE_ORIGIN || "https://truyennhameo.vercel.app"
-  }/the-loai/${tagName}`;
+  const url = `https://truyennhameo.vercel.app/the-loai/${tagName}`;
 
   // Build simple JSON-LD ItemList for SEO
   const itemList = {
