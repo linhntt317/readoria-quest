@@ -14,6 +14,8 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -36,12 +38,10 @@ interface Profile {
   avatar_url: string | null;
 }
 
-// Simple navigation helper that works in both Vite and Next.js
-const navigateTo = (path: string) => {
-  window.location.href = path;
-};
+// Removed navigateTo - using Next.js Link and router instead
 
 export const Header = () => {
+  const router = useRouter();
   const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { user, isAdmin, signOut } = useAuth();
@@ -75,7 +75,7 @@ export const Header = () => {
       title: language === "vi" ? "Đã đăng xuất" : "Signed out",
       description: language === "vi" ? "Hẹn gặp lại bạn!" : "See you again!",
     });
-    navigateTo("/");
+    router.push("/");
   };
 
   const themeIcons = {
@@ -246,10 +246,12 @@ export const Header = () => {
           ) : (
             <Button
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-              onClick={() => navigateTo("/dang-nhap")}
+              asChild
             >
-              <LogIn className="mr-2 h-4 w-4" />
-              Đăng nhập/Đăng ký
+              <Link href="/dang-nhap">
+                <LogIn className="mr-2 h-4 w-4" />
+                Đăng nhập/Đăng ký
+              </Link>
             </Button>
           )}
         </div>
