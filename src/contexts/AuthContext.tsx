@@ -35,29 +35,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    const checkAdminRole = async (userId: string) => {
+      setLoading(true);
+      try {
+        const { data: hasAdminRole, error } = await supabase.rpc("has_role", {
+          _user_id: userId,
+          _role: "admin",
+        });
+
+        if (error) throw error;
+
+        setIsAdmin(!!hasAdminRole);
+      } catch (error) {
+        console.error("Error checking admin role:", error);
+        setIsAdmin(false);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     // Set up auth state listener
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+      setSession(nextSession);
+      setUser(nextSession?.user ?? null);
 
-      // Check admin role when user changes
-      if (session?.user) {
-        setTimeout(async () => {
-          try {
-            const { data: hasAdminRole } = await supabase.rpc("has_role", {
-              _user_id: session.user.id,
-              _role: "admin",
-            });
-            setIsAdmin(!!hasAdminRole);
-          } catch (error) {
-            console.error("Error checking admin role:", error);
-            setIsAdmin(false);
-          } finally {
-            setLoading(false);
-          }
-        }, 0);
+      if (nextSession?.user) {
+        void checkAdminRole(nextSession.user.id);
       } else {
         setIsAdmin(false);
         setLoading(false);
@@ -65,26 +70,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     });
 
     // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+    supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
+      setSession(initialSession);
+      setUser(initialSession?.user ?? null);
 
-      if (session?.user) {
-        setTimeout(async () => {
-          try {
-            const { data: hasAdminRole } = await supabase.rpc("has_role", {
-              _user_id: session.user.id,
-              _role: "admin",
-            });
-            setIsAdmin(!!hasAdminRole);
-          } catch (error) {
-            console.error("Error checking admin role:", error);
-            setIsAdmin(false);
-          } finally {
-            setLoading(false);
-          }
-        }, 0);
+      if (initialSession?.user) {
+        void checkAdminRole(initialSession.user.id);
       } else {
+        setIsAdmin(false);
         setLoading(false);
       }
     });

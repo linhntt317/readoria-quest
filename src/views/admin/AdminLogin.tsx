@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -24,19 +24,32 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loginSuccess, setLoginSuccess] = useState(false);
   const router = useRouter();
-  const { signIn, user, isAdmin } = useAuth();
-  const { showLoading } = useLoading();
+  const { signIn, user, isAdmin, loading } = useAuth();
+  const hasRedirected = useRef(false);
 
+  // Redirect when user is admin (either on mount or after login)
   useEffect(() => {
-    if (user && isAdmin) {
-      // Small delay to ensure state is settled
-      const timer = setTimeout(() => {
-        router.push("/admin/dashboard");
-      }, 300);
-      return () => clearTimeout(timer);
+    if (!loading && user && isAdmin && !hasRedirected.current) {
+      hasRedirected.current = true;
+      router.replace("/admin/dashboard");
     }
-  }, [user, isAdmin, router]);
+  }, [user, isAdmin, loading, router]);
+
+  // After successful login, wait for auth state to update
+  useEffect(() => {
+    if (loginSuccess && !loading && user) {
+      if (isAdmin) {
+        hasRedirected.current = true;
+        router.replace("/admin/dashboard");
+      } else {
+        // User logged in but not admin
+        toast.error("Bạn không có quyền truy cập trang quản trị!");
+        setLoginSuccess(false);
+      }
+    }
+  }, [loginSuccess, loading, user, isAdmin, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -66,10 +79,13 @@ const AdminLogin = () => {
         } else if (error.message.includes("Email not confirmed")) {
           toast.error("Vui lòng xác nhận email của bạn trước khi đăng nhập!");
         } else {
-          toast.error("Đăng nhập thất bại: " + error.message);
+          toast.error("Đăng nhập thất bại. Vui lòng thử lại!");
         }
         setPassword("");
-        setIsSubmitting(false);
+      } else {
+        toast.success("Đăng nhập thành công!");
+        // Mark login success - redirect will happen via useEffect when auth state updates
+        setLoginSuccess(true);
       }
       // If success, don't clear setIsSubmitting - let navigation happen
     } catch (error) {
