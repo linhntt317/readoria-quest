@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlayCircle, BookmarkPlus } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -75,13 +76,15 @@ export function HeroCarousel({ mangaList }: HeroCarouselProps) {
                     </p>
 
                     <div className="flex flex-wrap gap-3">
-                      <Button
-                        size="default"
-                        className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
-                      >
-                        <PlayCircle className="mr-2 h-5 w-5" />
-                        {t.hero.readNow}
-                      </Button>
+                      <Link href={`/truyen/${manga.id}`}>
+                        <Button
+                          size="default"
+                          className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
+                        >
+                          <PlayCircle className="mr-2 h-5 w-5" />
+                          {t.hero.readNow}
+                        </Button>
+                      </Link>
                       <Button
                         size="default"
                         variant="outline"
