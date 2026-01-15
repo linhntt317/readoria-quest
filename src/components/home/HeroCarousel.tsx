@@ -3,6 +3,9 @@
 import { Button } from "@/components/ui/button";
 import { PlayCircle, BookmarkPlus } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { LoadingOverlay } from "@/components/LoadingOverlay";
 import {
   Carousel,
   CarouselContent,
@@ -19,6 +22,18 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ mangaList }: HeroCarouselProps) {
   const { t } = useTranslation();
+  const router = useRouter();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleNavigate = async (id: string) => {
+    setIsLoading(true);
+    try {
+      router.push(`/truyen/${id}`);
+    } catch (error) {
+      console.error("Navigation error:", error);
+      setIsLoading(false);
+    }
+  };
 
   const featured = mangaList.slice(0, 10);
 
@@ -28,6 +43,10 @@ export function HeroCarousel({ mangaList }: HeroCarouselProps) {
 
   return (
     <section className="relative overflow-hidden">
+      <LoadingOverlay
+        isVisible={isLoading}
+        message="Đang tải thông tin truyện..."
+      />
       <Carousel
         opts={{
           align: "start",
@@ -78,6 +97,7 @@ export function HeroCarousel({ mangaList }: HeroCarouselProps) {
                       <Button
                         size="default"
                         className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
+                        onClick={() => handleNavigate(manga.id)}
                       >
                         <PlayCircle className="mr-2 h-5 w-5" />
                         {t.hero.readNow}

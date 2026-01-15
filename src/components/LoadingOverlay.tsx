@@ -14,7 +14,7 @@ export const LoadingOverlay = ({
   if (!isVisible) return null;
 
   return (
-    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center pointer-events-none">
       <div className="flex flex-col items-center gap-3">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
         <p className="text-sm font-medium text-foreground">{message}</p>
