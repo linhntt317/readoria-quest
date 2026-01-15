@@ -14,8 +14,7 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { AppLink, useAppRouter } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -41,7 +40,7 @@ interface Profile {
 // Removed navigateTo - using Next.js Link and router instead
 
 export const Header = () => {
-  const router = useRouter();
+  const router = useAppRouter();
   const { t, language, setLanguage } = useTranslation();
   const { theme, setTheme } = useTheme();
   const { user, isAdmin, signOut } = useAuth();
@@ -248,10 +247,10 @@ export const Header = () => {
               className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
               asChild
             >
-              <Link href="/dang-nhap">
+              <AppLink href="/dang-nhap">
                 <LogIn className="mr-2 h-4 w-4" />
                 Đăng nhập/Đăng ký
-              </Link>
+              </AppLink>
             </Button>
           )}
         </div>
