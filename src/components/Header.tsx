@@ -14,7 +14,7 @@ import {
   LogOut,
   Settings,
 } from "lucide-react";
-import { AppLink, useAppRouter } from "@/lib/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -31,7 +31,6 @@ import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 
 interface Profile {
@@ -47,7 +46,6 @@ export const Header = () => {
   const { theme, setTheme } = useTheme();
   const { user, isAdmin, signOut } = useAuth();
   const { toast } = useToast();
-  const router = useRouter();
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
