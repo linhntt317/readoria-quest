@@ -26,7 +26,33 @@ import {
 } from "@/components/ui/breadcrumb";
 
 const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
-  const { data: manga, isLoading } = useMangaById(mangaId);
+  const { data: manga, isLoading, error } = useMangaById(mangaId);
+
+  // Debug: log to help troubleshoot
+  console.log("MangaDetail - mangaId:", mangaId, "manga:", manga, "isLoading:", isLoading, "error:", error);
+
+  if (!mangaId) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <div className="container mx-auto px-4 py-8">
+          <Card>
+            <CardHeader>
+              <CardTitle>Không tìm thấy truyện</CardTitle>
+              <CardDescription>
+                Không có ID truyện được cung cấp.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Link href="/">
+                <Button>Quay về trang chủ</Button>
+              </Link>
+            </CardContent>
+          </Card>
+        </div>
+      </div>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -44,7 +70,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
     );
   }
 
-  if (!manga) {
+  if (error || !manga) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
@@ -54,6 +80,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
               <CardTitle>Không tìm thấy truyện</CardTitle>
               <CardDescription>
                 Truyện bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
+                {error && <span className="block mt-2 text-destructive text-sm">Lỗi: {String(error)}</span>}
               </CardDescription>
             </CardHeader>
             <CardContent>

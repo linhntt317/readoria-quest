@@ -2,34 +2,11 @@
 import { createClient } from 'npm:@supabase/supabase-js@2.76.1';
 import { z } from 'https://deno.land/x/zod@v3.22.4/mod.ts';
 
-// Allowed origins for CORS
-const ALLOWED_ORIGINS = [
-  'https://truyennhameo.vercel.app',
-  'https://www.truyennhameo.com',
-  'http://localhost:3000',
-  'http://localhost:5173',
-  'http://localhost:8080',
-];
-
-// Function to check if origin is allowed (includes Lovable preview domains)
-function isAllowedOrigin(origin: string | null): boolean {
-  if (!origin) return false;
-  if (ALLOWED_ORIGINS.includes(origin)) return true;
-  // Allow Lovable preview domains
-  if (origin.includes('.lovable.app')) return true;
-  return false;
-}
-
-// Function to get CORS headers based on origin
-function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowedOrigin = isAllowedOrigin(origin) ? origin! : ALLOWED_ORIGINS[0];
-  return {
-    'Access-Control-Allow-Origin': allowedOrigin,
-    'Access-Control-Allow-Credentials': 'true',
-    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type, Authorization, X-Client-Info, Apikey',
-  };
-}
+// Standard CORS headers for Supabase edge functions
+const corsHeaders = {
+  'Access-Control-Allow-Origin': '*',
+  'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
+};
 
 const feedbackSchema = z.object({
   name: z.string().trim().min(1, 'Name is required').max(100, 'Name must be less than 100 characters'),
@@ -38,14 +15,9 @@ const feedbackSchema = z.object({
 });
 
 Deno.serve(async (req: Request) => {
-  const origin = req.headers.get('origin');
-  const corsHeaders = getCorsHeaders(origin);
-
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
-    return new Response(null, {
-      status: 200,
-      headers: corsHeaders,
-    });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
@@ -57,8 +29,11 @@ Deno.serve(async (req: Request) => {
     if (req.method === 'POST') {
       const body = await req.json();
       
+      console.log('Received feedback request:', body);
+      
       const validationResult = feedbackSchema.safeParse(body);
       if (!validationResult.success) {
+        console.error('Validation failed:', validationResult.error.errors);
         return new Response(
           JSON.stringify({
             error: 'Validation failed',
@@ -94,6 +69,7 @@ Deno.serve(async (req: Request) => {
         );
       }
 
+      console.log('Feedback saved successfully:', data);
       return new Response(
         JSON.stringify({
           message: 'Feedback submitted successfully',
@@ -119,7 +95,7 @@ Deno.serve(async (req: Request) => {
       JSON.stringify({ error: 'Internal server error' }),
       {
         status: 500,
-        headers: { ...getCorsHeaders(null), 'Content-Type': 'application/json' },
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       }
     );
   }
