@@ -7,7 +7,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
   Card,
@@ -43,7 +42,6 @@ const PostTruyen = () => {
   const { push } = useNavigationWithLoading();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
-  const [searchTag, setSearchTag] = useState("");
   const [searchTag, setSearchTag] = useState("");
   const [jjwxcLink, setJjwxcLink] = useState("");
   const [fetchError, setFetchError] = useState("");
