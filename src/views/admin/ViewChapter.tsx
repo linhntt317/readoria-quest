@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft } from "lucide-react";
@@ -10,7 +10,7 @@ import { Chapter } from "@/hooks/useManga";
 import DOMPurify from "dompurify";
 
 const ViewChapter = ({ chapterId }: { chapterId: string }) => {
-  const router = useRouter();
+  const router = useAppRouter();
 
   const { data: chapter, isLoading } = useQuery({
     queryKey: ["chapter", chapterId],

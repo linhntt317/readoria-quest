@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -44,7 +43,7 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
-const BACKEND_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
+const BACKEND_URL = "/";
 
 const CATEGORIES = [
   { name: "Tình cảm", color: "#EC4899" },
@@ -56,7 +55,6 @@ const CATEGORIES = [
 ];
 
 const ManageTags = () => {
-  const router = useRouter();
   const { push } = useNavigationWithLoading();
   const { data: tags, refetch } = useTags();
   const { execute } = useAsyncWithLoading();

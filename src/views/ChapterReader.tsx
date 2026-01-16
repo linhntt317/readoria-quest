@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { AppLink as Link } from "@/lib/navigation";
 import { useEffect } from "react";
 import { useChapterById } from "@/hooks/useChapter";
 import { useMangaById } from "@/hooks/useManga";

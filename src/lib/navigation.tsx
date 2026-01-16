@@ -1,12 +1,15 @@
 "use client";
 
-import React from 'react';
+import React from "react";
 
-// Check if we're in Next.js environment
-const isNextJs = typeof window !== 'undefined' && 
-  (window as any).__NEXT_DATA__ !== undefined;
+// NOTE:
+// This project runs in a Vite-based preview environment, while production uses Next.js.
+// Importing `next/navigation`, `next/link`, or `next/image` inside `src/` causes runtime
+// crashes in preview ("expected app router to be mounted").
+//
+// To keep preview stable, this file provides safe navigation primitives that work
+// everywhere by falling back to regular browser navigation.
 
-// Custom Link component that works in both Vite and Next.js
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
   children: React.ReactNode;
@@ -14,17 +17,6 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 
 export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, ...props }, ref) => {
-    if (isNextJs) {
-      // Dynamic import for Next.js Link
-      const NextLink = require('next/link').default;
-      return (
-        <NextLink href={href} ref={ref} {...props}>
-          {children}
-        </NextLink>
-      );
-    }
-    
-    // Standard anchor for Vite
     return (
       <a href={href} ref={ref} {...props}>
         {children}
@@ -33,37 +25,37 @@ export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
   }
 );
 
-AppLink.displayName = 'AppLink';
+AppLink.displayName = "AppLink";
 
-// Custom useRouter hook that works in both Vite and Next.js
 export function useAppRouter() {
   const push = React.useCallback((path: string) => {
-    if (isNextJs) {
-      try {
-        const { useRouter } = require('next/navigation');
-        const router = useRouter();
-        router.push(path);
-      } catch {
-        window.location.href = path;
-      }
-    } else {
-      window.location.href = path;
-    }
+    if (typeof window === "undefined") return;
+    window.location.assign(path);
   }, []);
 
   const replace = React.useCallback((path: string) => {
-    if (isNextJs) {
-      try {
-        const { useRouter } = require('next/navigation');
-        const router = useRouter();
-        router.replace(path);
-      } catch {
-        window.location.replace(path);
-      }
-    } else {
-      window.location.replace(path);
-    }
+    if (typeof window === "undefined") return;
+    window.location.replace(path);
   }, []);
 
-  return { push, replace };
+  const back = React.useCallback(() => {
+    if (typeof window === "undefined") return;
+    window.history.back();
+  }, []);
+
+  return { push, replace, back };
+}
+
+export function useAppPathname() {
+  const [pathname, setPathname] = React.useState(
+    typeof window !== "undefined" ? window.location.pathname : ""
+  );
+
+  React.useEffect(() => {
+    const onChange = () => setPathname(window.location.pathname);
+    window.addEventListener("popstate", onChange);
+    return () => window.removeEventListener("popstate", onChange);
+  }, []);
+
+  return pathname;
 }

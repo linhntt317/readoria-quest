@@ -8,7 +8,6 @@ import {
   useEffect,
   useRef,
 } from "react";
-import { useRouter } from "next/navigation";
 
 interface LoadingContextType {
   isLoading: boolean;
@@ -22,7 +21,6 @@ const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 export function LoadingProvider({ children }: { children: ReactNode }) {
   const [isLoading, setIsLoading] = useState(false);
   const loadingTimeoutRef = useRef<NodeJS.Timeout>();
-  const router = useRouter();
 
   // Clear timeout when component unmounts
   useEffect(() => {

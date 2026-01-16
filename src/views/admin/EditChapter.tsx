@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -30,7 +30,7 @@ const chapterSchema = z.object({
 type ChapterForm = z.infer<typeof chapterSchema>;
 
 const EditChapter = ({ chapterId }: { chapterId: string }) => {
-  const router = useRouter();
+  const router = useAppRouter();
 
   const { data: chapter, isLoading } = useQuery({
     queryKey: ["chapter", chapterId],

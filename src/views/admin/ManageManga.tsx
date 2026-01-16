@@ -1,6 +1,5 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -15,7 +14,6 @@ import { useManga } from "@/hooks/useManga";
 import { useNavigationWithLoading } from "@/hooks/useNavigationWithLoading";
 
 const ManageManga = () => {
-  const router = useRouter();
   const { push } = useNavigationWithLoading();
   const { data: mangaList, isLoading } = useManga();
 

@@ -1,4 +1,4 @@
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { useLoading } from "@/contexts/LoadingContext";
 import { useCallback } from "react";
 
@@ -7,7 +7,7 @@ import { useCallback } from "react";
  * Automatically shows loading spinner when navigating and hides after 2 seconds
  */
 export function useNavigationWithLoading() {
-  const router = useRouter();
+  const router = useAppRouter();
   const { showLoading, hideLoading } = useLoading();
 
   const push = useCallback(

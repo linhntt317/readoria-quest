@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from "react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useLoading } from "@/contexts/LoadingContext";
@@ -25,7 +25,7 @@ const AdminLogin = () => {
   const [password, setPassword] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState(false);
-  const router = useRouter();
+  const router = useAppRouter();
   const { signIn, user, isAdmin, loading } = useAuth();
   const hasRedirected = useRef(false);
 
