@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -19,7 +19,7 @@ import { toast } from "sonner";
 import DOMPurify from "dompurify";
 
 const MangaDetail = ({ mangaId }: { mangaId: string }) => {
-  const router = useRouter();
+  const router = useAppRouter();
   const queryClient = useQueryClient();
   const { data: manga, isLoading } = useMangaById(mangaId);
 

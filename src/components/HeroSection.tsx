@@ -5,7 +5,7 @@ import { PlayCircle, BookmarkPlus } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
 import { useManga } from "@/hooks/useManga";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import {
   Carousel,
@@ -19,7 +19,7 @@ import Autoplay from "embla-carousel-autoplay";
 export const HeroSection = () => {
   const { t } = useTranslation();
   const { data: mangaList } = useManga();
-  const router = useRouter();
+  const router = useAppRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNavigate = (id: string) => {

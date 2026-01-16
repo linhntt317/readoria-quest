@@ -4,9 +4,9 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import {
@@ -40,10 +40,10 @@ const mangaSchema = z.object({
 type MangaForm = z.infer<typeof mangaSchema>;
 
 const PostTruyen = () => {
-  const router = useRouter();
   const { push } = useNavigationWithLoading();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFetching, setIsFetching] = useState(false);
+  const [searchTag, setSearchTag] = useState("");
   const [searchTag, setSearchTag] = useState("");
   const [jjwxcLink, setJjwxcLink] = useState("");
   const [fetchError, setFetchError] = useState("");

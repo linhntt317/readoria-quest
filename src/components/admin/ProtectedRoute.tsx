@@ -1,5 +1,5 @@
 "use client";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import { useEffect } from "react";
 
@@ -9,7 +9,7 @@ interface ProtectedRouteProps {
 
 export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const { user, isAdmin, loading } = useAuth();
-  const router = useRouter();
+  const router = useAppRouter();
 
   useEffect(() => {
     if (!loading && (!user || !isAdmin)) {

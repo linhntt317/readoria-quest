@@ -1,7 +1,6 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
+import { AppLink as Link } from "@/lib/navigation";
 import { useMangaById } from "@/hooks/useManga";
 import {
   Card,
@@ -98,16 +97,15 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
             <Card>
               <CardContent className="p-6">
                 <div className="w-full rounded-lg shadow-lg mb-4 overflow-hidden">
-                  <Image
+                  <img
                     src={
                       (manga.image_url || "").trim().replace(/[)]+$/, "") ||
                       "/placeholder.svg"
                     }
                     alt={manga.title}
-                    width={600}
-                    height={900}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-auto object-cover"
-                    priority={false}
                   />
                 </div>
 

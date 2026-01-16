@@ -4,10 +4,9 @@ import { Eye, Star } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { useState } from "react";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
-import Image from "next/image";
 
 interface MangaCardProps {
   id: string;
@@ -29,7 +28,7 @@ export const MangaCard = ({
   isNew,
 }: MangaCardProps) => {
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useAppRouter();
   const [isLoading, setIsLoading] = useState(false);
   const sanitizedImage =
     (image || "").trim().replace(/[)]+$/, "") || "/placeholder.svg";
@@ -53,11 +52,11 @@ export const MangaCard = ({
       <div onClick={handleNavigate} className="cursor-pointer">
         <Card className="group relative overflow-hidden bg-card border-border/50 hover:border-primary/50 transition-all duration-300 hover:shadow-lg hover:shadow-primary/20 hover:-translate-y-1 cursor-pointer animate-fade-in">
           <div className="relative aspect-[2/3] overflow-hidden">
-            <Image
+            <img
               src={sanitizedImage}
               alt={title}
-              width={400}
-              height={600}
+              loading="lazy"
+              decoding="async"
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
             />
 

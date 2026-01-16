@@ -1,10 +1,9 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { PlayCircle, BookmarkPlus } from "lucide-react";
 import { useTranslation } from "@/hooks/useTranslation";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { useState } from "react";
 import { LoadingOverlay } from "@/components/LoadingOverlay";
 import {
@@ -23,7 +22,7 @@ interface HeroCarouselProps {
 
 export function HeroCarousel({ mangaList }: HeroCarouselProps) {
   const { t } = useTranslation();
-  const router = useRouter();
+  const router = useAppRouter();
   const [isLoading, setIsLoading] = useState(false);
 
   const handleNavigate = async (id: string) => {

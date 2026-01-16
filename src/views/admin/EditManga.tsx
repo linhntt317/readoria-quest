@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -35,7 +35,7 @@ const mangaSchema = z.object({
 type MangaForm = z.infer<typeof mangaSchema>;
 
 const EditManga = ({ mangaId }: { mangaId: string }) => {
-  const router = useRouter();
+  const router = useAppRouter();
   const { data: manga, isLoading: mangaLoading } = useMangaById(mangaId);
   const { data: tags, isLoading: tagsLoading } = useTags();
   const [searchTag, setSearchTag] = useState("");

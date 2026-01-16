@@ -1,7 +1,7 @@
 "use client";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { LogOut, Home, Tags, Upload } from "lucide-react";
 import { useState } from "react";
 import AddManga from "./AddManga";
@@ -10,7 +10,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useLoading } from "@/contexts/LoadingContext";
 
 const AdminDashboard = () => {
-  const router = useRouter();
+  const router = useAppRouter();
   const { signOut } = useAuth();
   const { showLoading, hideLoading } = useLoading();
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useAppRouter } from "@/lib/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
@@ -30,7 +30,7 @@ const chapterSchema = z.object({
 type ChapterForm = z.infer<typeof chapterSchema>;
 
 const AddChapter = ({ mangaId }: { mangaId: string }) => {
-  const router = useRouter();
+  const router = useAppRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { data: manga, isLoading } = useMangaById(mangaId);
 

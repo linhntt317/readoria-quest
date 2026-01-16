@@ -3,7 +3,7 @@
 import { TrendingUp, Flame } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { useTranslation } from "@/hooks/useTranslation";
-import Link from "next/link";
+import { AppLink as Link } from "@/lib/navigation";
 import { FeedbackSection } from "@/components/FeedbackSection";
 import type { Manga } from "@/lib/supabase-server";
 
