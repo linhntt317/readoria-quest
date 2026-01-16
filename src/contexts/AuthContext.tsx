@@ -46,6 +46,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (error) throw error;
 
         setIsAdmin(!!hasAdminRole);
+        // FIXED: Don't redirect here - let components decide navigation
       } catch (error) {
         console.error("Error checking admin role:", error);
         setIsAdmin(false);

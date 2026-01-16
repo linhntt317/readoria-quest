@@ -67,7 +67,6 @@ const AdminLogin = () => {
     }
 
     setIsSubmitting(true);
-    showLoading();
 
     try {
       const { error } = await signIn(email, password);

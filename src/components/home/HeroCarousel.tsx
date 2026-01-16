@@ -95,18 +95,14 @@ export function HeroCarousel({ mangaList }: HeroCarouselProps) {
                     </p>
 
                     <div className="flex flex-wrap gap-3">
-                      <Link
-                        onClick={() => setIsLoading(true)}
-                        href={`/truyen/${manga.id}`}
+                      <Button
+                        onClick={() => handleNavigate(manga.id)}
+                        size="default"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
                       >
-                        <Button
-                          size="default"
-                          className="bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/30"
-                        >
-                          <PlayCircle className="mr-2 h-5 w-5" />
-                          {t.hero.readNow}
-                        </Button>
-                      </Link>
+                        <PlayCircle className="mr-2 h-5 w-5" />
+                        {t.hero.readNow}
+                      </Button>
                       <Button
                         size="default"
                         variant="outline"

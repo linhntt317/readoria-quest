@@ -35,26 +35,35 @@ export const useManga = () => {
   return useQuery({
     queryKey: ["truyen"],
     queryFn: async () => {
-      // Query manga with tags
+      // OPTIMIZED: Select only needed columns, limit to 100 for pagination
       const { data: mangaData, error: mangaError } = await supabase
         .from("manga")
         .select(
           `
-          *,
-          tags:manga_tags(tag:tags(*))
+          id,
+          title,
+          author,
+          image_url,
+          views,
+          rating,
+          created_at,
+          description,
+          tags:manga_tags(tag:tags(id, name, color, category))
         `
         )
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .limit(100); // Limit to prevent huge payloads
 
       if (mangaError) throw mangaError;
 
-      // Get chapter counts
+      // OPTIMIZED: Get chapter counts in a single efficient query
       const mangaIds = mangaData?.map((m) => m.id) || [];
       const { data: chapterCounts } = await supabase
         .from("chapters")
-        .select("manga_id")
+        .select("manga_id, id")
         .in("manga_id", mangaIds);
 
+      // Create count map
       const countMap = (chapterCounts || []).reduce((acc, ch) => {
         acc[ch.manga_id] = (acc[ch.manga_id] || 0) + 1;
         return acc;
@@ -81,41 +90,43 @@ export const useMangaById = (id: string | undefined) => {
     queryFn: async () => {
       if (!id) throw new Error("Truyen ID is required");
 
-      // Fetch manga details directly from database
+      // OPTIMIZED: Fetch everything in a single query instead of 3 separate calls
       const { data: manga, error: mangaError } = await supabase
         .from("manga")
-        .select("*")
+        .select(
+          `
+          id,
+          title,
+          author,
+          description,
+          image_url,
+          views,
+          rating,
+          created_at,
+          updated_at,
+          status,
+          tags:manga_tags(tag:tags(id, name, color, category)),
+          chapters:chapters(id, chapter_number, title, created_at, content)
+        `
+        )
         .eq("id", id)
         .maybeSingle();
 
       if (mangaError) throw mangaError;
       if (!manga) return null;
 
-      // Fetch tags
-      const { data: mangaTags, error: tagsError } = await supabase
-        .from("manga_tags")
-        .select(
-          `
-          tag:tags(*)
-        `
-        )
-        .eq("manga_id", id);
-
-      if (tagsError) throw tagsError;
-
-      // Fetch chapters
-      const { data: chapters, error: chaptersError } = await supabase
-        .from("chapters")
-        .select("id, chapter_number, title, created_at")
-        .eq("manga_id", id)
-        .order("chapter_number", { ascending: true });
-
-      if (chaptersError) throw chaptersError;
-
+      const mangaData = manga as any;
       return {
-        ...manga,
-        tags: mangaTags?.map((mt: any) => mt.tag).filter(Boolean) || [],
-        chapters: chapters || [],
+        id: mangaData.id,
+        title: mangaData.title,
+        author: mangaData.author,
+        description: mangaData.description,
+        image_url: mangaData.image_url,
+        views: mangaData.views,
+        rating: mangaData.rating,
+        created_at: mangaData.created_at,
+        tags: mangaData.tags?.map((mt: any) => mt.tag).filter(Boolean) || [],
+        chapters: mangaData.chapters || [],
       } as Manga;
     },
     enabled: !!id,

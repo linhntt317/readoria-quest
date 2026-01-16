@@ -78,7 +78,7 @@ export const Header = () => {
 
   const handleLoginClick = () => {
     setIsLoading(true);
-    navigateTo("/dang-nhap");
+    router.push("/dang-nhap");
   };
 
   const handleSignOut = async () => {

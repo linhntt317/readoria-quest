@@ -153,6 +153,7 @@ export default function AuthPage() {
           title: "Đăng nhập thành công",
           description: "Chào mừng bạn trở lại!",
         });
+        setIsLoading(true);
         router.push("/");
       }
     } catch (error) {
@@ -214,11 +215,11 @@ export default function AuthPage() {
           });
         }
       } else {
+        router.push("/");
         toast({
           title: "Đăng ký thành công!",
           description: "Chào mừng bạn đến với Truyện Nhà Mèo!",
         });
-        router.push("/");
       }
     } catch (error) {
       toast({
