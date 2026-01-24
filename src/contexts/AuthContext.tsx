@@ -6,6 +6,7 @@ import {
   useEffect,
   useState,
   ReactNode,
+  useMemo,
 } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -35,7 +36,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       return;
     }
 
+    let isMounted = true;
+
     const checkAdminRole = async (userId: string) => {
+      if (!isMounted) return;
+
       setLoading(true);
       try {
         const { data: hasAdminRole, error } = await supabase.rpc("has_role", {
@@ -45,50 +50,58 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
         if (error) throw error;
 
-        setIsAdmin(!!hasAdminRole);
-        // FIXED: Don't redirect here - let components decide navigation
+        if (isMounted) {
+          setIsAdmin(!!hasAdminRole);
+          setLoading(false);
+        }
       } catch (error) {
         console.error("Error checking admin role:", error);
-        setIsAdmin(false);
-      } finally {
-        setLoading(false);
+        if (isMounted) {
+          setIsAdmin(false);
+          setLoading(false);
+        }
       }
     };
 
-    // Set up auth state listener
+    // Set up auth state listener FIRST
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, nextSession) => {
+      if (!isMounted) return;
+
       setSession(nextSession);
       setUser(nextSession?.user ?? null);
 
       if (nextSession?.user) {
-        void checkAdminRole(nextSession.user.id);
+        await checkAdminRole(nextSession.user.id);
       } else {
         setIsAdmin(false);
         setLoading(false);
       }
     });
 
-    // Check for existing session
+    // Check for existing session ONLY on initial mount
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
-      setSession(initialSession);
-      setUser(initialSession?.user ?? null);
+      if (!isMounted) return;
 
-      if (initialSession?.user) {
-        void checkAdminRole(initialSession.user.id);
-      } else {
+      // Only set if not already set by onAuthStateChange
+      if (!initialSession) {
+        setSession(null);
+        setUser(null);
         setIsAdmin(false);
         setLoading(false);
       }
     });
 
-    return () => subscription.unsubscribe();
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = async (
     email: string,
-    password: string
+    password: string,
   ): Promise<{ error: any }> => {
     const { error } = await supabase.auth.signInWithPassword({
       email,
@@ -147,12 +160,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     await supabase.auth.signOut();
   };
 
+  // Memoize context value to prevent unnecessary re-renders of consumers
+  const contextValue = useMemo(
+    () => ({ user, session, isAdmin, loading, signIn, signUp, signOut }),
+    [user, session, isAdmin, loading],
+  );
+
   return (
-    <AuthContext.Provider
-      value={{ user, session, isAdmin, loading, signIn, signUp, signOut }}
-    >
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

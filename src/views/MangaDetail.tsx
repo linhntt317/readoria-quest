@@ -29,7 +29,16 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
   const { data: manga, isLoading, error } = useMangaById(mangaId);
 
   // Debug: log to help troubleshoot
-  console.log("MangaDetail - mangaId:", mangaId, "manga:", manga, "isLoading:", isLoading, "error:", error);
+  console.log(
+    "MangaDetail - mangaId:",
+    mangaId,
+    "manga:",
+    manga,
+    "isLoading:",
+    isLoading,
+    "error:",
+    error,
+  );
 
   if (!mangaId) {
     return (
@@ -80,7 +89,11 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
               <CardTitle>Không tìm thấy truyện</CardTitle>
               <CardDescription>
                 Truyện bạn đang tìm kiếm không tồn tại hoặc đã bị xóa.
-                {error && <span className="block mt-2 text-destructive text-sm">Lỗi: {String(error)}</span>}
+                {error && (
+                  <span className="block mt-2 text-destructive text-sm">
+                    Lỗi: {String(error)}
+                  </span>
+                )}
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -118,12 +131,12 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
             </BreadcrumbItem>
           </BreadcrumbList>
         </Breadcrumb>
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 md:grid-cols-3 gap-8">
           {/* Left Column - Manga Info */}
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 md:col-span-1">
             <Card>
               <CardContent className="p-6">
-                <div className="w-full rounded-lg shadow-lg mb-4 overflow-hidden">
+                <div className="rounded-lg shadow-lg mb-4 overflow-hidden">
                   <img
                     src={
                       (manga.image_url || "").trim().replace(/[)]+$/, "") ||
@@ -179,7 +192,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
           </div>
 
           {/* Right Column - Details & Chapters */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 md:col-span-2 space-y-6">
             {/* Manga Details */}
             <Card>
               <CardHeader>
@@ -240,11 +253,12 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
 
             {/* Chapter List */}
             <Card>
-              <CardHeader>
+              <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <CardTitle>Danh sách chương</CardTitle>
-                <CardDescription>
-                  {manga.chapters?.length || 0} chương
-                </CardDescription>
+                <div className="flex flex-row gap-2">
+                  <Button>Đọc Từ Đầu</Button>
+                  <Button>Lưu Truyện</Button>
+                </div>
               </CardHeader>
               <CardContent>
                 {!manga.chapters || manga.chapters.length === 0 ? (
@@ -267,7 +281,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
                           </span>
                           <span className="text-xs text-muted-foreground">
                             {new Date(chapter.created_at).toLocaleDateString(
-                              "vi-VN"
+                              "vi-VN",
                             )}
                           </span>
                         </Button>
