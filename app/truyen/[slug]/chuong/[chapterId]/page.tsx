@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import React from "react";
 import { createClient } from "@supabase/supabase-js";
 import ChapterReader from "@/views/ChapterReader";
+import { getChapterMetadata } from "@/lib/seo-metadata";
 
 type Params = { slug: string; chapterId: string };
 
@@ -41,71 +42,58 @@ export async function generateMetadata({
   const resolvedParams = await params;
   const mangaId = extractId(resolvedParams.slug);
   const chapterId = resolvedParams.chapterId;
-  const pageUrl = `${SITE_ORIGIN}/truyen/${resolvedParams.slug}/chuong/${chapterId}`;
+  const pageUrl = `https://truyennhameo.vercel.app/truyen/${resolvedParams.slug}/chuong/${chapterId}`;
 
-  let chapterTitle = `Chương ${chapterId}`;
-  let mangaTitle = "Truyện";
+  // Default values - using object to allow mutation
+  let chapterData: { title: string; chapter_number: number } = {
+    title: `Chương ${chapterId}`,
+    chapter_number: parseInt(chapterId) || 0,
+  };
+  let mangaData: { title: string; slug: string } = {
+    title: "Truyện",
+    slug: resolvedParams.slug,
+  };
 
-  // Try to fetch chapter title from database
-  try {
-    const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
+  // Try to fetch chapter and manga details from database
+  if (chapterId) {
+    try {
+      const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
 
-    // Get chapter details
-    const { data: chapter } = await supabase
-      .from("chapters")
-      .select("title, manga_id")
-      .eq("id", chapterId)
-      .single();
-
-    if (chapter?.title) {
-      chapterTitle = chapter.title;
-    }
-
-    // Get manga title
-    if (chapter?.manga_id || mangaId) {
-      const { data: manga } = await supabase
-        .from("manga")
-        .select("title")
-        .eq("id", chapter?.manga_id || mangaId)
+      // Get chapter details
+      const { data: chapter } = await supabase
+        .from("chapters")
+        .select("title, chapter_number, manga_id")
+        .eq("id", chapterId)
         .single();
 
-      if (manga?.title) {
-        mangaTitle = manga.title;
+      if (chapter) {
+        chapterData = {
+          title: chapter.title || `Chương ${chapter.chapter_number}`,
+          chapter_number: chapter.chapter_number,
+        };
+
+        // Get manga title
+        if (chapter.manga_id || mangaId) {
+          const { data: manga } = await supabase
+            .from("manga")
+            .select("title")
+            .eq("id", chapter.manga_id || mangaId)
+            .single();
+
+          if (manga?.title) {
+            mangaData = {
+              title: manga.title,
+              slug: resolvedParams.slug,
+            };
+          }
+        }
       }
+    } catch (error) {
+      console.error("Error fetching chapter metadata:", error);
     }
-  } catch (error) {
-    console.error("Error fetching chapter metadata:", error);
   }
 
-  return {
-    title: `${chapterTitle} - ${mangaTitle} | Truyện Nhà Mèo`,
-    description: `Đọc ${chapterTitle} của ${mangaTitle} online miễn phí tại Truyện Nhà Mèo. Cập nhật liên tục, chất lượng cao.`,
-    keywords: [
-      chapterTitle,
-      mangaTitle,
-      "truyện tranh online",
-      "manga online",
-      "đọc truyện miễn phí",
-      "chapter truyện",
-    ],
-    alternates: { canonical: pageUrl },
-    openGraph: {
-      type: "article",
-      url: pageUrl,
-      title: `${chapterTitle} - ${mangaTitle}`,
-      description: `Đọc ${chapterTitle} online miễn phí`,
-      siteName: "Truyện Nhà Mèo",
-    },
-    twitter: {
-      card: "summary",
-      title: `${chapterTitle} - ${mangaTitle}`,
-      description: `Đọc ${chapterTitle} online`,
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return getChapterMetadata(chapterData, mangaData, pageUrl, chapterId);
 }
 
 export default async function ChapterPage({

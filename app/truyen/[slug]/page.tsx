@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { createClient } from "@supabase/supabase-js";
 import React from "react";
 import MangaDetail from "@/views/MangaDetail";
+import { getMangaMetadata, getMangaStructuredData } from "@/lib/seo-metadata";
 
 type Params = { slug: string };
 
@@ -15,7 +16,7 @@ function extractId(slug: string): string | null {
 
   // Try to extract UUID from the end of the slug (e.g., "ten-truyen-uuid")
   const uuidMatch = slug.match(
-    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+    /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
   );
   if (uuidMatch) {
     return uuidMatch[0];
@@ -38,74 +39,43 @@ export async function generateMetadata({
   params: Promise<Params>;
 }): Promise<Metadata> {
   const resolvedParams = await params;
-  let title = "Truyện - Truyện Nhà Mèo";
-  let description = "Đọc truyện online miễn phí tại Truyện Nhà Mèo";
-  let image = "/og-image.jpg";
-  let keywords: string[] = [
-    "truyện tranh online",
-    "manga",
-    "manhwa",
-    "manhua",
-    "đọc truyện miễn phí",
-  ];
-
   const id = extractId(resolvedParams.slug);
+  const pageUrl = `https://truyennhameo.vercel.app/truyen/${resolvedParams.slug}`;
+
+  // Default metadata
+  let mangaData = {
+    title: "Truyện",
+    description: "Đọc truyện online miễn phí tại Truyện Nhà Mèo",
+    slug: resolvedParams.slug,
+    image_url: undefined,
+    tags: [] as string[],
+  };
 
   if (id) {
     try {
       const supabase = createClient(SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY);
       const { data } = await supabase
         .from("manga")
-        .select("id,title,description,image_url,updated_at")
+        .select("id,title,description,image_url,tags")
         .eq("id", id)
         .single();
 
       if (data) {
-        title = `${data.title} - Đọc Truyện Online | Truyện Nhà Mèo`;
-        description =
-          (data.description || "").slice(0, 160) ||
-          `Đọc truyện ${data.title} online miễn phí tại Truyện Nhà Mèo`;
-        image = data.image_url || image;
-        keywords = [
-          data.title,
-          `${data.title} online`,
-          `đọc ${data.title}`,
-          "truyện tranh online",
-          "manga",
-          "manhwa",
-          "manhua",
-          "đọc truyện miễn phí",
-        ];
+        mangaData = {
+          title: data.title || "Truyện",
+          description:
+            data.description || "Đọc truyện online miễn phí tại Truyện Nhà Mèo",
+          slug: resolvedParams.slug,
+          image_url: data.image_url,
+          tags: data.tags || [],
+        };
       }
-    } catch {}
+    } catch (error) {
+      console.error("Error fetching manga metadata:", error);
+    }
   }
 
-  const pageUrl = `${SITE_ORIGIN}/truyen/${resolvedParams.slug}`;
-
-  return {
-    title,
-    description,
-    keywords,
-    alternates: { canonical: pageUrl },
-    openGraph: {
-      type: "article",
-      url: pageUrl,
-      title,
-      description,
-      images: [{ url: image }],
-      siteName: "Truyện Nhà Mèo",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title,
-      description,
-      images: [image],
-    },
-    robots: {
-      index: true,
-      follow: true,
-    },
-  };
+  return getMangaMetadata(mangaData, pageUrl);
 }
 
 export default async function MangaPage({
