@@ -88,6 +88,9 @@ export const metadata = {
     address: false,
   },
   category: "entertainment",
+  other: {
+    "google-adsense-account": "ca-pub-4536129674694628",
+  },
 };
 
 export default function RootLayout({
