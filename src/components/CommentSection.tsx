@@ -162,7 +162,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       if (mangaId) params.append("mangaId", mangaId);
       if (chapterId) params.append("chapterId", chapterId);
 
-      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/comments?${params.toString()}`;
+      const url = `${BACKEND_URL}/functions/v1/comments?${params.toString()}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -179,7 +179,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       content: string;
       parentId?: string;
     }) => {
-      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/comments`;
+      const url = `${BACKEND_URL}/functions/v1/comments`;
 
       const response = await fetch(url, {
         method: "POST",
