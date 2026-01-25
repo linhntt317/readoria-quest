@@ -84,12 +84,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     supabase.auth.getSession().then(({ data: { session: initialSession } }) => {
       if (!isMounted) return;
 
-      // Only set if not already set by onAuthStateChange
       if (!initialSession) {
         setSession(null);
         setUser(null);
         setIsAdmin(false);
         setLoading(false);
+      } else {
+        // Session exists, check admin role
+        setSession(initialSession);
+        setUser(initialSession.user);
+        checkAdminRole(initialSession.user.id);
       }
     });
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { Metadata } from "next";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { z } from "zod";
@@ -59,6 +59,8 @@ export default function AuthPage() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loginSuccess, setLoginSuccess] = useState(false);
+  const hasRedirected = useRef(false);
 
   // Form states
   const [loginForm, setLoginForm] = useState({ email: "", password: "" });
@@ -71,14 +73,35 @@ export default function AuthPage() {
 
   const router = useRouter();
   const { toast } = useToast();
-  const { user, loading } = useAuth();
+  const { user, isAdmin, loading } = useAuth();
 
   // Redirect if already logged in
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && user && !loginSuccess) {
       router.push("/");
     }
-  }, [user, loading, router]);
+  }, [user, loading, router, loginSuccess]);
+
+  // Handle redirect after successful login (check admin role)
+  useEffect(() => {
+    if (loginSuccess && !loading && user && !hasRedirected.current) {
+      hasRedirected.current = true;
+
+      if (isAdmin) {
+        toast({
+          title: "Chào admin!",
+          description: "Chuyển sang dashboard...",
+        });
+        router.replace("/admin/dashboard");
+      } else {
+        toast({
+          title: "Đăng nhập thành công",
+          description: "Chào mừng bạn!",
+        });
+        router.replace("/");
+      }
+    }
+  }, [loginSuccess, loading, user, isAdmin, router, toast]);
 
   const handleSocialLogin = async (provider: "google" | "facebook") => {
     setIsLoading(true);
@@ -148,13 +171,11 @@ export default function AuthPage() {
             variant: "destructive",
           });
         }
+        setIsLoading(false);
       } else {
-        toast({
-          title: "Đăng nhập thành công",
-          description: "Chào mừng bạn trở lại!",
-        });
-        setIsLoading(true);
-        router.push("/");
+        // Login successful - AuthContext will handle admin role check
+        // Wait for auth state to update with isAdmin status
+        setLoginSuccess(true);
       }
     } catch (error) {
       toast({
@@ -162,7 +183,6 @@ export default function AuthPage() {
         description: "Đã có lỗi xảy ra, vui lòng thử lại",
         variant: "destructive",
       });
-    } finally {
       setIsLoading(false);
     }
   };
@@ -236,6 +256,19 @@ export default function AuthPage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background">
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (loginSuccess && isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center space-y-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary mx-auto" />
+          <p className="text-muted-foreground">
+            {isAdmin ? "Chuyển sang dashboard..." : "Chuyển hướng..."}
+          </p>
+        </div>
       </div>
     );
   }

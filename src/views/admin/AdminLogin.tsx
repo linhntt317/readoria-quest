@@ -3,7 +3,6 @@ import { useState, useEffect, useRef } from "react";
 import { useAppRouter } from "@/lib/navigation";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useLoading } from "@/contexts/LoadingContext";
 import {
   Card,
   CardContent,
@@ -29,24 +28,19 @@ const AdminLogin = () => {
   const { signIn, user, isAdmin, loading } = useAuth();
   const hasRedirected = useRef(false);
 
-  // Redirect when user is admin (either on mount or after login)
+  // Check admin status after successful login
   useEffect(() => {
-    if (!loading && user && isAdmin && !hasRedirected.current) {
+    if (loginSuccess && !loading && user && !hasRedirected.current) {
       hasRedirected.current = true;
-      router.replace("/admin/dashboard");
-    }
-  }, [user, isAdmin, loading, router]);
 
-  // After successful login, wait for auth state to update
-  useEffect(() => {
-    if (loginSuccess && !loading && user) {
       if (isAdmin) {
-        hasRedirected.current = true;
+        // Admin user: auto redirect to dashboard
+        toast.success("Chào admin! Chuyển sang dashboard...");
         router.replace("/admin/dashboard");
       } else {
-        // User logged in but not admin
-        toast.error("Bạn không có quyền truy cập trang quản trị!");
-        setLoginSuccess(false);
+        // Non-admin user: show welcome message
+        toast.success("Đăng nhập thành công!");
+        router.replace("/");
       }
     }
   }, [loginSuccess, loading, user, isAdmin, router]);
@@ -81,12 +75,11 @@ const AdminLogin = () => {
           toast.error("Đăng nhập thất bại. Vui lòng thử lại!");
         }
         setPassword("");
+        setIsSubmitting(false);
       } else {
-        toast.success("Đăng nhập thành công!");
-        // Mark login success - redirect will happen via useEffect when auth state updates
+        // Login successful, wait for auth state to update
         setLoginSuccess(true);
       }
-      // If success, don't clear setIsSubmitting - let navigation happen
     } catch (error) {
       console.error("Unexpected error:", error);
       toast.error("Có lỗi xảy ra, vui lòng thử lại!");
