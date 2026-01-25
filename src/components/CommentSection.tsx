@@ -14,7 +14,8 @@ import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 
 const BACKEND_URL = "https://ljmoqseafxhncpwzuwex.supabase.co";
-const BACKEND_API_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbW9xc2VhZnhobmNwd3p1d2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTIzODksImV4cCI6MjA3NzA2ODM4OX0.y0s_VRhxIrq23q5nBkjm6v3rlenqf6OeQGGdah981n4";
+const BACKEND_API_KEY =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImxqbW9xc2VhZnhobmNwd3p1d2V4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjE0OTIzODksImV4cCI6MjA3NzA2ODM4OX0.y0s_VRhxIrq23q5nBkjm6v3rlenqf6OeQGGdah981n4";
 
 interface Comment {
   id: string;
@@ -161,12 +162,10 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       if (mangaId) params.append("mangaId", mangaId);
       if (chapterId) params.append("chapterId", chapterId);
 
-      const url = `${BACKEND_URL}/functions/v1/comments?${params.toString()}`;
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/comments?${params.toString()}`;
 
       const response = await fetch(url, {
-        headers: {
-          apikey: BACKEND_API_KEY,
-        },
+        method: "GET",
       });
 
       if (!response.ok) throw new Error("Failed to fetch comments");
@@ -180,12 +179,11 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       content: string;
       parentId?: string;
     }) => {
-      const url = `${BACKEND_URL}/functions/v1/comments`;
+      const url = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/comments`;
 
       const response = await fetch(url, {
         method: "POST",
         headers: {
-          apikey: BACKEND_API_KEY,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({

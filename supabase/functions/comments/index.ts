@@ -126,7 +126,15 @@ const createCommentSchema = z
   })
   .refine((data) => data.mangaId || data.chapterId, {
     message: "Either mangaId or chapterId must be provided",
-  });
+  })
+  .refine(
+    (data) =>
+      (data.mangaId && !data.chapterId) || (!data.mangaId && data.chapterId),
+    {
+      message:
+        "Cannot provide both mangaId and chapterId - choose one or the other",
+    },
+  );
 
 const updateCommentSchema = z.object({
   isHidden: z.boolean(),
