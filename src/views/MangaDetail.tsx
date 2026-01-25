@@ -28,18 +28,6 @@ import {
 const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
   const { data: manga, isLoading, error } = useMangaById(mangaId);
 
-  // Debug: log to help troubleshoot
-  console.log(
-    "MangaDetail - mangaId:",
-    mangaId,
-    "manga:",
-    manga,
-    "isLoading:",
-    isLoading,
-    "error:",
-    error,
-  );
-
   if (!mangaId) {
     return (
       <div className="min-h-screen bg-background">

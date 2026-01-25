@@ -12,25 +12,14 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
   const router = useAppRouter();
   const redirectedRef = useRef(false);
 
-  console.log(
-    "ProtectedRoute - loading:",
-    loading,
-    "user:",
-    !!user,
-    "isAdmin:",
-    isAdmin,
-  );
-
   useEffect(() => {
     // Wait for auth check to complete
     if (loading) {
-      console.log("ProtectedRoute - still loading, waiting...");
       return;
     }
 
     // Only redirect once
     if (redirectedRef.current) {
-      console.log("ProtectedRoute - already redirected");
       return;
     }
 
@@ -55,7 +44,6 @@ export const ProtectedRoute = ({ children }: ProtectedRouteProps) => {
     }
 
     // User is authenticated and is admin - allow access
-    console.log("ProtectedRoute - user is admin, allowing access");
     redirectedRef.current = true;
   }, [loading, user, isAdmin, router]);
 
