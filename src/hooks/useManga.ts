@@ -113,7 +113,7 @@ export const useMangaById = (id: string | undefined) => {
           .from("chapters")
           .select("id, chapter_number, title, created_at")
           .eq("manga_id", id)
-          .order("chapter_number", { ascending: false }),
+          .order("chapter_number", { ascending: true }),
 
         // Query 4: Total chapter count (if needed)
         supabase

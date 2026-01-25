@@ -256,7 +256,19 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
                 <CardTitle>Danh sách chương</CardTitle>
                 <div className="flex flex-row gap-2">
-                  <Button>Đọc Từ Đầu</Button>
+                  <Button
+                    onClick={() => {
+                      // Navigate to chapter 1 (first chapter)
+                      const chapter1 = manga.chapters?.find(
+                        (ch) => ch.chapter_number === 1,
+                      );
+                      if (chapter1) {
+                        window.location.href = `/truyen/${mangaId}/chuong/${chapter1.id}`;
+                      }
+                    }}
+                  >
+                    Đọc Từ Đầu
+                  </Button>
                   <Button>Lưu Truyện</Button>
                 </div>
               </CardHeader>
@@ -267,7 +279,8 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
                   </p>
                 ) : (
                   <div className="space-y-2">
-                    {manga.chapters.map((chapter) => (
+                    {/* Display chapters in reverse order - newest first */}
+                    {[...manga.chapters].reverse().map((chapter) => (
                       <Link
                         key={chapter.id}
                         href={`/truyen/${mangaId}/chuong/${chapter.id}`}
