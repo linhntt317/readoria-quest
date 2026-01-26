@@ -112,11 +112,6 @@ export default function RootLayout({
           name="apple-mobile-web-app-status-bar-style"
           content="black-translucent"
         />
-        <script
-          async
-          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4536129674694628"
-          crossorigin="anonymous"
-        ></script>
         <link
           rel="alternate"
           hrefLang="vi"
