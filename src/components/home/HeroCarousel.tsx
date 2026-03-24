@@ -102,14 +102,6 @@ export function HeroCarousel({ mangaList }: HeroCarouselProps) {
                         <PlayCircle className="mr-2 h-5 w-5" />
                         {t.hero.readNow}
                       </Button>
-                      <Button
-                        size="default"
-                        variant="outline"
-                        className="border-primary/50 hover:bg-primary/10"
-                      >
-                        <BookmarkPlus className="mr-2 h-5 w-5" />
-                        {t.hero.addBookmark}
-                      </Button>
                     </div>
 
                     <div className="flex items-center gap-6 text-sm">
