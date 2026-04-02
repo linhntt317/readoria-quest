@@ -4,10 +4,9 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "next dev",
-    "vite:dev": "vite",
-    "build": "next build",
-    "build:vite": "vite build",
+    "dev": "vite",
+    "build": "vite build",
+    "postbuild": "node -e \"const fs=require('fs'); if(!fs.existsSync('dist/index.html')){console.error('ERROR: dist/index.html not found!');process.exit(1)}else{console.log('dist/index.html verified')}\"",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
     "preview": "vite preview",
