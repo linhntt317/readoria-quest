@@ -1,26 +1,22 @@
 "use client";
 
 import React from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 
-// NOTE:
-// This project runs in a Vite-based preview environment, while production uses Next.js.
-// Importing `next/navigation`, `next/link`, or `next/image` inside `src/` causes runtime
-// crashes in preview ("expected app router to be mounted").
-//
-// To keep preview stable, this file provides safe navigation primitives that work
-// everywhere by falling back to regular browser navigation.
+// Navigation primitives using React Router for SPA navigation.
+// Falls back to browser navigation if React Router context is unavailable.
 
-interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+interface LinkProps extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, 'href'> {
   href: string;
   children: React.ReactNode;
 }
 
 export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ href, children, ...props }, ref) => {
+  ({ href, children, className, ...props }, ref) => {
     return (
-      <a href={href} ref={ref} {...props}>
+      <Link to={href} ref={ref} className={className} {...props}>
         {children}
-      </a>
+      </Link>
     );
   }
 );
@@ -28,34 +24,46 @@ export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
 AppLink.displayName = "AppLink";
 
 export function useAppRouter() {
+  let navigate: ReturnType<typeof useNavigate> | null = null;
+  try {
+    navigate = useNavigate();
+  } catch {
+    // Outside Router context — fall back to window.location
+  }
+
   const push = React.useCallback((path: string) => {
-    if (typeof window === "undefined") return;
-    window.location.assign(path);
-  }, []);
+    if (navigate) {
+      navigate(path);
+    } else if (typeof window !== "undefined") {
+      window.location.assign(path);
+    }
+  }, [navigate]);
 
   const replace = React.useCallback((path: string) => {
-    if (typeof window === "undefined") return;
-    window.location.replace(path);
-  }, []);
+    if (navigate) {
+      navigate(path, { replace: true });
+    } else if (typeof window !== "undefined") {
+      window.location.replace(path);
+    }
+  }, [navigate]);
 
   const back = React.useCallback(() => {
-    if (typeof window === "undefined") return;
-    window.history.back();
-  }, []);
+    if (navigate) {
+      navigate(-1);
+    } else if (typeof window !== "undefined") {
+      window.history.back();
+    }
+  }, [navigate]);
 
   return { push, replace, back };
 }
 
 export function useAppPathname() {
-  const [pathname, setPathname] = React.useState(
-    typeof window !== "undefined" ? window.location.pathname : ""
-  );
-
-  React.useEffect(() => {
-    const onChange = () => setPathname(window.location.pathname);
-    window.addEventListener("popstate", onChange);
-    return () => window.removeEventListener("popstate", onChange);
-  }, []);
-
-  return pathname;
+  try {
+    const location = useLocation();
+    return location.pathname;
+  } catch {
+    // Outside Router context
+    return typeof window !== "undefined" ? window.location.pathname : "";
+  }
 }
