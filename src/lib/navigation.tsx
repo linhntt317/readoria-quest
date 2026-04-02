@@ -2,12 +2,8 @@
 
 import React from "react";
 
-// Navigation primitives that use browser APIs.
-// In the Vite SPA entry (main.tsx), BrowserRouter provides history-based
-// navigation automatically through <Link> rendered by React Router routes.
-// This file provides a safe fallback that works everywhere (Next.js SSR,
-// Vite dev, production) without importing react-router-dom hooks directly,
-// which would crash in Next.js SSR where there is no <Router> context.
+// Navigation primitives using standard browser APIs.
+// Works in both Next.js (dev preview) and Vite (production build).
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
@@ -16,26 +12,8 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 
 export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, ...props }, ref) => {
-    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-      // Let browser handle external links, new tab, ctrl/cmd+click
-      if (
-        props.target === "_blank" ||
-        e.metaKey || e.ctrlKey || e.shiftKey ||
-        href.startsWith("http") ||
-        href.startsWith("mailto:")
-      ) {
-        props.onClick?.(e);
-        return;
-      }
-
-      e.preventDefault();
-      props.onClick?.(e);
-      window.history.pushState({}, "", href);
-      window.dispatchEvent(new PopStateEvent("popstate"));
-    };
-
     return (
-      <a href={href} ref={ref} {...props} onClick={handleClick}>
+      <a href={href} ref={ref} {...props}>
         {children}
       </a>
     );
@@ -47,14 +25,12 @@ AppLink.displayName = "AppLink";
 export function useAppRouter() {
   const push = React.useCallback((path: string) => {
     if (typeof window === "undefined") return;
-    window.history.pushState({}, "", path);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.location.assign(path);
   }, []);
 
   const replace = React.useCallback((path: string) => {
     if (typeof window === "undefined") return;
-    window.history.replaceState({}, "", path);
-    window.dispatchEvent(new PopStateEvent("popstate"));
+    window.location.replace(path);
   }, []);
 
   const back = React.useCallback(() => {
