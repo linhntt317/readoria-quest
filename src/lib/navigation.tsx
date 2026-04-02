@@ -2,8 +2,12 @@
 
 import React from "react";
 
-// Navigation primitives that work in both Vite (with React Router) and Next.js environments.
-// Uses require() to avoid SSR crashes when react-router-dom context is missing.
+// Navigation primitives that use browser APIs.
+// In the Vite SPA entry (main.tsx), BrowserRouter provides history-based
+// navigation automatically through <Link> rendered by React Router routes.
+// This file provides a safe fallback that works everywhere (Next.js SSR,
+// Vite dev, production) without importing react-router-dom hooks directly,
+// which would crash in Next.js SSR where there is no <Router> context.
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
@@ -11,20 +15,27 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 }
 
 export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
-  ({ href, children, className, ...props }, ref) => {
-    // In Vite with React Router, use Link for SPA navigation
-    try {
-      const { Link } = require("react-router-dom");
-      return (
-        <Link to={href} ref={ref} className={className} {...props}>
-          {children}
-        </Link>
-      );
-    } catch {
-      // Fallback to plain anchor
-    }
+  ({ href, children, ...props }, ref) => {
+    const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+      // Let browser handle external links, new tab, ctrl/cmd+click
+      if (
+        props.target === "_blank" ||
+        e.metaKey || e.ctrlKey || e.shiftKey ||
+        href.startsWith("http") ||
+        href.startsWith("mailto:")
+      ) {
+        props.onClick?.(e);
+        return;
+      }
+
+      e.preventDefault();
+      props.onClick?.(e);
+      window.history.pushState({}, "", href);
+      window.dispatchEvent(new PopStateEvent("popstate"));
+    };
+
     return (
-      <a href={href} ref={ref} className={className} {...props}>
+      <a href={href} ref={ref} {...props} onClick={handleClick}>
         {children}
       </a>
     );
@@ -34,57 +45,36 @@ export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
 AppLink.displayName = "AppLink";
 
 export function useAppRouter() {
-  let navigate: any = null;
-  try {
-    const { useNavigate } = require("react-router-dom");
-    navigate = useNavigate();
-  } catch {
-    // Not inside Router context or SSR
-  }
-
   const push = React.useCallback((path: string) => {
-    if (navigate) {
-      navigate(path);
-    } else if (typeof window !== "undefined") {
-      window.location.assign(path);
-    }
-  }, [navigate]);
+    if (typeof window === "undefined") return;
+    window.history.pushState({}, "", path);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  }, []);
 
   const replace = React.useCallback((path: string) => {
-    if (navigate) {
-      navigate(path, { replace: true });
-    } else if (typeof window !== "undefined") {
-      window.location.replace(path);
-    }
-  }, [navigate]);
+    if (typeof window === "undefined") return;
+    window.history.replaceState({}, "", path);
+    window.dispatchEvent(new PopStateEvent("popstate"));
+  }, []);
 
   const back = React.useCallback(() => {
-    if (navigate) {
-      navigate(-1);
-    } else if (typeof window !== "undefined") {
-      window.history.back();
-    }
-  }, [navigate]);
+    if (typeof window === "undefined") return;
+    window.history.back();
+  }, []);
 
   return { push, replace, back };
 }
 
 export function useAppPathname() {
-  const [fallbackPathname, setFallbackPathname] = React.useState(
+  const [pathname, setPathname] = React.useState(
     typeof window !== "undefined" ? window.location.pathname : ""
   );
 
   React.useEffect(() => {
-    const onChange = () => setFallbackPathname(window.location.pathname);
+    const onChange = () => setPathname(window.location.pathname);
     window.addEventListener("popstate", onChange);
     return () => window.removeEventListener("popstate", onChange);
   }, []);
 
-  try {
-    const { useLocation } = require("react-router-dom");
-    const location = useLocation();
-    return location.pathname;
-  } catch {
-    return fallbackPathname;
-  }
+  return pathname;
 }
