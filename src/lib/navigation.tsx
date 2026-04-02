@@ -2,19 +2,8 @@
 
 import React from "react";
 
-// Dynamically import react-router-dom to avoid crashes in Next.js SSR
-let RouterLink: React.ComponentType<any> | null = null;
-let useNavigateHook: (() => any) | null = null;
-let useLocationHook: (() => { pathname: string }) | null = null;
-
-try {
-  const rrdom = require("react-router-dom");
-  RouterLink = rrdom.Link;
-  useNavigateHook = rrdom.useNavigate;
-  useLocationHook = rrdom.useLocation;
-} catch {
-  // react-router-dom not available (e.g., Next.js SSR)
-}
+// Navigation primitives that work in both Vite (with React Router) and Next.js environments.
+// Uses require() to avoid SSR crashes when react-router-dom context is missing.
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   href: string;
@@ -24,18 +13,16 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
 export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
   ({ href, children, className, ...props }, ref) => {
     // In Vite with React Router, use Link for SPA navigation
-    if (RouterLink) {
-      try {
-        return (
-          <RouterLink to={href} ref={ref} className={className} {...props}>
-            {children}
-          </RouterLink>
-        );
-      } catch {
-        // Fallback if not inside Router context
-      }
+    try {
+      const { Link } = require("react-router-dom");
+      return (
+        <Link to={href} ref={ref} className={className} {...props}>
+          {children}
+        </Link>
+      );
+    } catch {
+      // Fallback to plain anchor
     }
-    // Fallback to plain anchor
     return (
       <a href={href} ref={ref} className={className} {...props}>
         {children}
@@ -47,14 +34,12 @@ export const AppLink = React.forwardRef<HTMLAnchorElement, LinkProps>(
 AppLink.displayName = "AppLink";
 
 export function useAppRouter() {
-  // Try to use React Router's useNavigate if available and inside Router context
   let navigate: any = null;
-  if (useNavigateHook) {
-    try {
-      navigate = useNavigateHook();
-    } catch {
-      // Not inside Router context
-    }
+  try {
+    const { useNavigate } = require("react-router-dom");
+    navigate = useNavigate();
+  } catch {
+    // Not inside Router context or SSR
   }
 
   const push = React.useCallback((path: string) => {
@@ -85,24 +70,21 @@ export function useAppRouter() {
 }
 
 export function useAppPathname() {
-  const [pathname, setPathname] = React.useState(
+  const [fallbackPathname, setFallbackPathname] = React.useState(
     typeof window !== "undefined" ? window.location.pathname : ""
   );
 
-  if (useLocationHook) {
-    try {
-      const location = useLocationHook();
-      return location.pathname;
-    } catch {
-      // Not inside Router context
-    }
-  }
-
   React.useEffect(() => {
-    const onChange = () => setPathname(window.location.pathname);
+    const onChange = () => setFallbackPathname(window.location.pathname);
     window.addEventListener("popstate", onChange);
     return () => window.removeEventListener("popstate", onChange);
   }, []);
 
-  return pathname;
+  try {
+    const { useLocation } = require("react-router-dom");
+    const location = useLocation();
+    return location.pathname;
+  } catch {
+    return fallbackPathname;
+  }
 }
