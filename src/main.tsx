@@ -2,13 +2,14 @@
 
 import React, { Suspense } from 'react';
 import ReactDOM from 'react-dom/client';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, useParams } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ThemeProvider } from '@/contexts/ThemeContext';
 import { LanguageProvider } from '@/contexts/LanguageContext';
 import { AuthProvider } from '@/contexts/AuthContext';
 import { LoadingProvider } from '@/contexts/LoadingContext';
 import { Toaster } from '@/components/ui/sonner';
+import { PageTransition } from '@/components/PageTransition';
 import './index.css';
 
 // Lazy-loaded route components
@@ -27,16 +28,13 @@ const EditChapter = React.lazy(() => import('@/views/admin/EditChapter'));
 const ViewChapter = React.lazy(() => import('@/views/admin/ViewChapter'));
 const MangaDetailAdmin = React.lazy(() => import('@/views/admin/MangaDetail'));
 
-// Lazy-loaded ProtectedRoute
 const ProtectedRoute = React.lazy(() =>
   import('@/components/admin/ProtectedRoute').then(m => ({ default: m.ProtectedRoute }))
 );
 
 const queryClient = new QueryClient({
   defaultOptions: {
-    queries: {
-      staleTime: 60 * 1000,
-    },
+    queries: { staleTime: 60 * 1000 },
   },
 });
 
@@ -51,59 +49,50 @@ function LoadingFallback() {
   );
 }
 
-// Wrapper components to extract route params
+// Helper to extract UUID from a slug
+function extractId(slug: string): string {
+  const uuidMatch = slug.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
+  return uuidMatch ? uuidMatch[0] : slug;
+}
+
+// Route wrapper components using useParams
 function MangaDetailRoute() {
-  const params = React.useMemo(() => {
-    const path = window.location.pathname;
-    const slug = path.split('/truyen/')[1]?.split('/')[0] || '';
-    // Extract UUID or numeric ID from slug
-    const uuidMatch = slug.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
-    return uuidMatch ? uuidMatch[0] : slug;
-  }, []);
-  return <MangaDetail mangaId={params || undefined} />;
+  const { slug = '' } = useParams();
+  return <MangaDetail mangaId={extractId(slug) || undefined} />;
 }
 
 function ChapterReaderRoute() {
-  const path = window.location.pathname;
-  const parts = path.split('/');
-  // /truyen/:slug/chuong/:chapterId
-  const slugIdx = parts.indexOf('truyen') + 1;
-  const chapterIdx = parts.indexOf('chuong') + 1;
-  const slug = parts[slugIdx] || '';
-  const chapterId = parts[chapterIdx] || '';
-  const uuidMatch = slug.match(/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i);
-  const mangaId = uuidMatch ? uuidMatch[0] : slug;
-  return <ChapterReader mangaId={mangaId || undefined} chapterId={chapterId || undefined} />;
+  const { slug = '', chapterId = '' } = useParams();
+  return <ChapterReader mangaId={extractId(slug) || undefined} chapterId={chapterId || undefined} />;
 }
 
 function TagPageRoute() {
-  const path = window.location.pathname;
-  const tagName = path.split('/the-loai/')[1]?.split('/')[0] || '';
+  const { tagName = '' } = useParams();
   return <TagPage tagName={decodeURIComponent(tagName)} />;
 }
 
 function AdminAddChapterRoute() {
-  const mangaId = window.location.pathname.split('/admin/add-chapter/')[1]?.split('/')[0] || '';
+  const { mangaId = '' } = useParams();
   return <ProtectedRoute><AddChapter mangaId={mangaId} /></ProtectedRoute>;
 }
 
 function AdminEditMangaRoute() {
-  const mangaId = window.location.pathname.split('/admin/edit-manga/')[1]?.split('/')[0] || '';
+  const { mangaId = '' } = useParams();
   return <ProtectedRoute><EditManga mangaId={mangaId} /></ProtectedRoute>;
 }
 
 function AdminEditChapterRoute() {
-  const chapterId = window.location.pathname.split('/admin/edit-chapter/')[1]?.split('/')[0] || '';
+  const { chapterId = '' } = useParams();
   return <ProtectedRoute><EditChapter chapterId={chapterId} /></ProtectedRoute>;
 }
 
 function AdminViewChapterRoute() {
-  const chapterId = window.location.pathname.split('/admin/view-chapter/')[1]?.split('/')[0] || '';
+  const { chapterId = '' } = useParams();
   return <ProtectedRoute><ViewChapter chapterId={chapterId} /></ProtectedRoute>;
 }
 
 function AdminMangaDetailRoute() {
-  const mangaId = window.location.pathname.split('/admin/manga-detail/')[1]?.split('/')[0] || '';
+  const { mangaId = '' } = useParams();
   return <ProtectedRoute><MangaDetailAdmin mangaId={mangaId} /></ProtectedRoute>;
 }
 
@@ -116,28 +105,30 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
             <LoadingProvider>
               <BrowserRouter>
                 <Suspense fallback={<LoadingFallback />}>
-                  <Routes>
-                    <Route path="/" element={<Index />} />
-                    <Route path="/truyen/:slug" element={<MangaDetailRoute />} />
-                    <Route path="/truyen/:slug/chuong/:chapterId" element={<ChapterReaderRoute />} />
-                    <Route path="/the-loai/:tagName" element={<TagPageRoute />} />
-                    
-                    {/* Auth */}
-                    <Route path="/dang-nhap" element={<AdminLogin />} />
-                    <Route path="/admin/login" element={<AdminLogin />} />
-                    
-                    {/* Admin routes */}
-                    <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
-                    <Route path="/admin/post-truyen" element={<ProtectedRoute><PostTruyen /></ProtectedRoute>} />
-                    <Route path="/admin/tags" element={<ProtectedRoute><ManageTags /></ProtectedRoute>} />
-                    <Route path="/admin/add-chapter/:mangaId" element={<AdminAddChapterRoute />} />
-                    <Route path="/admin/edit-manga/:mangaId" element={<AdminEditMangaRoute />} />
-                    <Route path="/admin/edit-chapter/:chapterId" element={<AdminEditChapterRoute />} />
-                    <Route path="/admin/view-chapter/:chapterId" element={<AdminViewChapterRoute />} />
-                    <Route path="/admin/manga-detail/:mangaId" element={<AdminMangaDetailRoute />} />
-                    
-                    <Route path="*" element={<NotFound />} />
-                  </Routes>
+                  <PageTransition>
+                    <Routes>
+                      <Route path="/" element={<Index />} />
+                      <Route path="/truyen/:slug" element={<MangaDetailRoute />} />
+                      <Route path="/truyen/:slug/chuong/:chapterId" element={<ChapterReaderRoute />} />
+                      <Route path="/the-loai/:tagName" element={<TagPageRoute />} />
+                      
+                      {/* Auth */}
+                      <Route path="/dang-nhap" element={<AdminLogin />} />
+                      <Route path="/admin/login" element={<AdminLogin />} />
+                      
+                      {/* Admin routes */}
+                      <Route path="/admin/dashboard" element={<ProtectedRoute><AdminDashboard /></ProtectedRoute>} />
+                      <Route path="/admin/post-truyen" element={<ProtectedRoute><PostTruyen /></ProtectedRoute>} />
+                      <Route path="/admin/tags" element={<ProtectedRoute><ManageTags /></ProtectedRoute>} />
+                      <Route path="/admin/add-chapter/:mangaId" element={<AdminAddChapterRoute />} />
+                      <Route path="/admin/edit-manga/:mangaId" element={<AdminEditMangaRoute />} />
+                      <Route path="/admin/edit-chapter/:chapterId" element={<AdminEditChapterRoute />} />
+                      <Route path="/admin/view-chapter/:chapterId" element={<AdminViewChapterRoute />} />
+                      <Route path="/admin/manga-detail/:mangaId" element={<AdminMangaDetailRoute />} />
+                      
+                      <Route path="*" element={<NotFound />} />
+                    </Routes>
+                  </PageTransition>
                 </Suspense>
               </BrowserRouter>
               <Toaster />
