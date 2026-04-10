@@ -6,6 +6,7 @@ import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 const ALLOWED_ORIGINS = [
   "https://truyennhameo.vercel.app",
   "https://www.truyennhameo.com",
+  "https://tieuthuyet.lovable.app",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:8080",
