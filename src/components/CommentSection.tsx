@@ -7,9 +7,17 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useAuth } from "@/contexts/AuthContext";
 import { useToast } from "@/hooks/use-toast";
-import { MessageCircle, Reply, Trash2, EyeOff, Eye } from "lucide-react";
+import { MessageCircle, Reply, Trash2, EyeOff, Eye, LogIn } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { vi } from "date-fns/locale";
 
@@ -149,7 +157,9 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
   const [content, setContent] = useState("");
   const [replyToId, setReplyToId] = useState<string | null>(null);
   const [replyToNickname, setReplyToNickname] = useState<string>("");
-  const { isAdmin } = useAuth();
+  const [showLoginPrompt, setShowLoginPrompt] = useState(false);
+  const [guestModeEnabled, setGuestModeEnabled] = useState(false);
+  const { user, isAdmin } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
@@ -308,9 +318,32 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
     },
   });
 
+  // When user clicks on comment form area and is not logged in
+  const handleCommentAreaFocus = () => {
+    if (!user && !guestModeEnabled) {
+      setShowLoginPrompt(true);
+    }
+  };
+
+  const handleLoginRedirect = () => {
+    setShowLoginPrompt(false);
+    window.location.href = "/dang-nhap";
+  };
+
+  const handleGuestComment = () => {
+    setShowLoginPrompt(false);
+    setGuestModeEnabled(true);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nickname.trim() || !content.trim()) {
+
+    // For logged-in users, use their display name or email as nickname
+    const finalNickname = user
+      ? user.user_metadata?.display_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "User"
+      : nickname;
+
+    if (!finalNickname.trim() || !content.trim()) {
       toast({
         title: "Lỗi",
         description: "Vui lòng điền đầy đủ thông tin",
@@ -319,7 +352,7 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
       return;
     }
     createCommentMutation.mutate({
-      nickname,
+      nickname: finalNickname,
       content,
       parentId: replyToId || undefined,
     });
@@ -328,6 +361,13 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
   const handleReply = (commentId: string, commentNickname: string) => {
     setReplyToId(commentId);
     setReplyToNickname(commentNickname);
+
+    // If not logged in and guest mode not enabled, show login prompt
+    if (!user && !guestModeEnabled) {
+      setShowLoginPrompt(true);
+      return;
+    }
+
     document
       .getElementById("comment-form")
       ?.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -342,6 +382,9 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
   const getReplies = (parentId: string) =>
     comments.filter((c: Comment) => c.parent_id === parentId);
 
+  const isLoggedIn = !!user;
+  const canComment = isLoggedIn || guestModeEnabled;
+
   return (
     <div className="space-y-6">
       <div className="flex items-center gap-2">
@@ -349,60 +392,113 @@ export const CommentSection = ({ mangaId, chapterId }: CommentSectionProps) => {
         <h2 className="text-xl font-bold">Bình luận ({comments.length})</h2>
       </div>
 
-      <Card className="p-4">
-        <form onSubmit={handleSubmit} className="space-y-3" id="comment-form">
-          {replyToId && (
-            <div className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border">
-              <div className="flex items-center gap-2">
-                <Reply className="w-4 h-4 text-muted-foreground" />
-                <span className="text-sm">
-                  Đang trả lời{" "}
-                  <span className="font-semibold text-primary">
-                    {replyToNickname}
+      {/* Login Prompt Dialog */}
+      <Dialog open={showLoginPrompt} onOpenChange={setShowLoginPrompt}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <LogIn className="w-5 h-5" />
+              Đăng nhập để bình luận
+            </DialogTitle>
+            <DialogDescription>
+              Bạn có muốn đăng nhập để bình luận không? Đăng nhập giúp quản lý
+              bình luận tốt hơn và hiển thị tên tài khoản của bạn.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex flex-col sm:flex-row gap-2">
+            <Button variant="outline" onClick={handleGuestComment} className="w-full sm:w-auto">
+              Bình luận vãng lai
+            </Button>
+            <Button onClick={handleLoginRedirect} className="w-full sm:w-auto">
+              <LogIn className="w-4 h-4 mr-2" />
+              Đăng nhập
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Comment Form */}
+      {canComment ? (
+        <Card className="p-4">
+          <form onSubmit={handleSubmit} className="space-y-3" id="comment-form">
+            {replyToId && (
+              <div className="flex items-center justify-between p-3 bg-muted rounded-lg border border-border">
+                <div className="flex items-center gap-2">
+                  <Reply className="w-4 h-4 text-muted-foreground" />
+                  <span className="text-sm">
+                    Đang trả lời{" "}
+                    <span className="font-semibold text-primary">
+                      {replyToNickname}
+                    </span>
                   </span>
+                </div>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={cancelReply}
+                  className="h-7"
+                >
+                  Hủy
+                </Button>
+              </div>
+            )}
+
+            {/* Show nickname input only for guest users */}
+            {!isLoggedIn && (
+              <Input
+                placeholder="Tên của bạn"
+                value={nickname}
+                onChange={(e) => setNickname(e.target.value)}
+                maxLength={50}
+                required
+              />
+            )}
+
+            {isLoggedIn && (
+              <div className="flex items-center gap-2 p-2 bg-muted/50 rounded-lg text-sm text-muted-foreground">
+                <span>Bình luận với tên:</span>
+                <span className="font-semibold text-foreground">
+                  {user.user_metadata?.display_name || user.user_metadata?.full_name || user.email?.split("@")[0] || "User"}
                 </span>
               </div>
-              <Button
-                type="button"
-                variant="ghost"
-                size="sm"
-                onClick={cancelReply}
-                className="h-7"
-              >
-                Hủy
+            )}
+
+            <Textarea
+              placeholder="Viết bình luận của bạn..."
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              rows={4}
+              maxLength={1000}
+              required
+            />
+
+            <div className="flex justify-between items-center">
+              <span className="text-xs text-muted-foreground">
+                {content.length}/1000 ký tự
+              </span>
+              <Button type="submit" disabled={createCommentMutation.isPending}>
+                {createCommentMutation.isPending
+                  ? "Đang gửi..."
+                  : "Gửi bình luận"}
               </Button>
             </div>
-          )}
-
-          <Input
-            placeholder="Tên của bạn"
-            value={nickname}
-            onChange={(e) => setNickname(e.target.value)}
-            maxLength={50}
-            required
-          />
-
-          <Textarea
-            placeholder="Viết bình luận của bạn..."
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            rows={4}
-            maxLength={1000}
-            required
-          />
-
-          <div className="flex justify-between items-center">
-            <span className="text-xs text-muted-foreground">
-              {content.length}/1000 ký tự
-            </span>
-            <Button type="submit" disabled={createCommentMutation.isPending}>
-              {createCommentMutation.isPending
-                ? "Đang gửi..."
-                : "Gửi bình luận"}
-            </Button>
+          </form>
+        </Card>
+      ) : (
+        /* Prompt to start commenting - shows login dialog on click */
+        <Card
+          className="p-6 cursor-pointer hover:border-primary/50 transition-colors"
+          onClick={handleCommentAreaFocus}
+        >
+          <div className="text-center space-y-2">
+            <MessageCircle className="w-8 h-8 mx-auto text-muted-foreground" />
+            <p className="text-muted-foreground">
+              Nhấn vào đây để viết bình luận
+            </p>
           </div>
-        </form>
-      </Card>
+        </Card>
+      )}
 
       {isLoading ? (
         <div className="text-center text-muted-foreground py-8">
