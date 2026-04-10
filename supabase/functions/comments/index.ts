@@ -6,6 +6,7 @@ import { z } from "https://deno.land/x/zod@v3.22.4/mod.ts";
 const ALLOWED_ORIGINS = [
   "https://truyennhameo.vercel.app",
   "https://www.truyennhameo.com",
+  "https://tieuthuyet.lovable.app",
   "http://localhost:3000",
   "http://localhost:5173",
   "http://localhost:8080",
@@ -13,8 +14,13 @@ const ALLOWED_ORIGINS = [
 
 // Function to get CORS headers based on origin
 function getCorsHeaders(origin: string | null): Record<string, string> {
-  const allowedOrigin =
-    origin && ALLOWED_ORIGINS.includes(origin) ? origin : ALLOWED_ORIGINS[0];
+  // Allow lovable preview origins dynamically
+  const isAllowed =
+    origin &&
+    (ALLOWED_ORIGINS.includes(origin) ||
+      origin.endsWith(".lovableproject.com") ||
+      origin.endsWith(".lovable.app"));
+  const allowedOrigin = isAllowed ? origin : ALLOWED_ORIGINS[0];
   return {
     "Access-Control-Allow-Origin": allowedOrigin,
     "Access-Control-Allow-Credentials": "true",
