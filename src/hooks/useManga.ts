@@ -175,14 +175,16 @@ export const useTags = () => {
   return useQuery({
     queryKey: ["tags"],
     queryFn: async () => {
-      const { data, error } = await supabase.functions.invoke("tags", {
-        method: "GET",
-      });
+      const { data, error } = await supabase
+        .from("tags")
+        .select("id, name, color, category")
+        .order("category", { ascending: true })
+        .order("name", { ascending: true });
 
       if (error) throw error;
       return data as Tag[];
     },
-    staleTime: 10 * 60 * 1000, // Cache for 10 minutes
-    gcTime: 30 * 60 * 1000, // Keep in memory for 30 minutes
+    staleTime: 10 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 };
