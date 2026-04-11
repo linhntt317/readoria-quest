@@ -18,6 +18,7 @@ const MangaDetail = React.lazy(() => import('@/views/MangaDetail'));
 const ChapterReader = React.lazy(() => import('@/views/ChapterReader'));
 const TagPage = React.lazy(() => import('@/views/TagPage'));
 const NotFound = React.lazy(() => import('@/views/NotFound'));
+const SearchPage = React.lazy(() => import('@/views/SearchPage'));
 const AdminLogin = React.lazy(() => import('@/views/admin/AdminLogin'));
 const AdminDashboard = React.lazy(() => import('@/views/admin/AdminDashboard'));
 const PostTruyen = React.lazy(() => import('@/views/admin/PostTruyen'));
@@ -111,6 +112,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
                       <Route path="/truyen/:slug" element={<MangaDetailRoute />} />
                       <Route path="/truyen/:slug/chuong/:chapterId" element={<ChapterReaderRoute />} />
                       <Route path="/the-loai/:tagName" element={<TagPageRoute />} />
+                      <Route path="/tim-kiem" element={<SearchPage />} />
                       
                       {/* Auth */}
                       <Route path="/dang-nhap" element={<AdminLogin />} />

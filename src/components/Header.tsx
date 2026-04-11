@@ -129,16 +129,31 @@ export const Header = () => {
           </div>
 
           <div className="flex items-center gap-3">
-            <div className="relative hidden sm:block">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                const formData = new FormData(e.currentTarget);
+                const q = (formData.get("q") as string)?.trim();
+                setIsLoading(true);
+                router.push(q ? `/tim-kiem?q=${encodeURIComponent(q)}` : "/tim-kiem");
+              }}
+              className="relative hidden sm:block"
+            >
               <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
                 type="search"
+                name="q"
                 placeholder={t.common.search}
                 className="w-64 pl-9 bg-secondary/50 border-border/50"
               />
-            </div>
+            </form>
 
-            <Button variant="ghost" size="icon" className="sm:hidden">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="sm:hidden"
+              onClick={() => { setIsLoading(true); router.push("/tim-kiem"); }}
+            >
               <Search className="h-5 w-5" />
             </Button>
 
