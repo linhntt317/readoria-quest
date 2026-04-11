@@ -64,7 +64,7 @@ async function checkAdminRole(req: Request, supabase: any): Promise<{ user: any;
   return { user };
 }
 
-serve(async (req) => {
+Deno.serve(async (req) => {
   const origin = req.headers.get('origin');
   const corsHeaders = getCorsHeaders(origin);
 
