@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+User-agent: Googlebot
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+Sitemap: https://ljmoqseafxhncpwzuwex.supabase.co/functions/v1/sitemap
+Sitemap: https://tieuthuyet.lovable.app/sitemap.xml
