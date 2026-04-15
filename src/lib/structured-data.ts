@@ -1,27 +1,28 @@
-// app/lib/structured-data.ts
+const SITE_URL = 'https://truyennhameo.vercel.com';
+const SITE_NAME = 'Truyện Nhà Mèo';
 
 export function getWebsiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
-    name: 'Truyện Nhà Mèo',
+    name: SITE_NAME,
     alternateName: 'Readoria Quest',
-    url: 'https://truyennhameo.vercel.app',
+    url: SITE_URL,
     description: 'Đọc truyện tranh online miễn phí - Kho truyện manga, manhwa, manhua phong phú',
     potentialAction: {
       '@type': 'SearchAction',
       target: {
         '@type': 'EntryPoint',
-        urlTemplate: 'https://truyennhameo.vercel.app/search?q={search_term_string}'
+        urlTemplate: `${SITE_URL}/tim-kiem?q={search_term_string}`
       },
       'query-input': 'required name=search_term_string'
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Truyện Nhà Mèo',
+      name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://truyennhameo.vercel.app/logo.png'
+        url: `${SITE_URL}/logo.png`
       }
     }
   }
@@ -51,7 +52,7 @@ export function getMangaSchema(manga: any) {
     } : undefined,
     publisher: {
       '@type': 'Organization',
-      name: 'Truyện Nhà Mèo'
+      name: SITE_NAME
     }
   }
 }
@@ -84,15 +85,15 @@ export function getArticleSchema(chapter: any, manga: any) {
     },
     publisher: {
       '@type': 'Organization',
-      name: 'Truyện Nhà Mèo',
+      name: SITE_NAME,
       logo: {
         '@type': 'ImageObject',
-        url: 'https://truyennhameo.vercel.app/logo.png'
+        url: `${SITE_URL}/logo.png`
       }
     },
     mainEntityOfPage: {
       '@type': 'WebPage',
-      '@id': `https://truyennhameo.vercel.app/truyen/${manga.id}/chuong/${chapter.id}`
+      '@id': `${SITE_URL}/truyen/${manga.id}/chuong/${chapter.id}`
     }
   }
 }
@@ -101,13 +102,12 @@ export function getOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
-    name: 'Truyện Nhà Mèo',
+    name: SITE_NAME,
     alternateName: 'Readoria Quest',
-    url: 'https://truyennhameo.vercel.app',
-    logo: 'https://truyennhameo.vercel.app/logo.png',
+    url: SITE_URL,
+    logo: `${SITE_URL}/logo.png`,
     description: 'Website đọc truyện tranh online miễn phí hàng đầu Việt Nam',
     sameAs: [
-      // Add social media links
       'https://facebook.com/truyennhameo',
       'https://twitter.com/truyennhameo',
     ]
