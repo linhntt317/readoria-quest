@@ -30,9 +30,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Seo
-        title="Đọc Tiểu Thuyết - Kho truyện online miễn phí"
+        title="Truyện Nhà Mèo - Kho truyện online miễn phí"
         description="Đọc truyện online miễn phí với hàng ngàn bộ truyện hay. Cập nhật liên tục các thể loại: Ngôn tình, Đam mỹ, Huyền huyễn, Tiên hiệp, Xuyên không..."
-        url="https://doctieuthuyet.com"
+        url="https://truyennhameo.vercel.com"
         keywords={[
           "đọc truyện",
           "truyện online",
@@ -112,7 +112,7 @@ const Index = () => {
 
       <footer className="bg-card border-t border-border py-8 mt-12">
         <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2024 Đọc Tiểu Thuyết. All rights reserved.</p>
+          <p>© 2026 Truyện Nhà Mèo. All rights reserved.</p>
         </div>
       </footer>
     </div>

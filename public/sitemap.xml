@@ -1,15 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://truyennhameo.vercel.app/</loc>
-    <lastmod>2025-11-16</lastmod>
+    <loc>https://truyennhameo.vercel.com/</loc>
+    <lastmod>2026-04-15</lastmod>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
-  </url>
-  <url>
-    <loc>https://truyennhameo.vercel.app/manga/68dd8615-46bb-4e3c-b561-e7debfe1f0d2</loc>
-    <lastmod>2025-11-16</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
   </url>
 </urlset>
