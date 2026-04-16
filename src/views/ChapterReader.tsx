@@ -9,7 +9,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowLeft, ChevronLeft, ChevronRight } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
+import Seo from "@/components/Seo";
 import { supabase } from "@/integrations/supabase/client";
+import { getArticleSchema, getBreadcrumbSchema } from "@/lib/structured-data";
 import DOMPurify from "dompurify";
 
 const ChapterReader = ({
@@ -98,8 +100,26 @@ const ChapterReader = ({
       ? manga.chapters![currentIndex + 1]
       : null;
 
+  const SITE_URL = "https://truyennhameo.vercel.com";
+  const chapterTitle = `Chương ${chapter.chapter_number}: ${chapter.title}`;
+  const chapterUrl = `${SITE_URL}/truyen/${mangaId}/chuong/${chapterId}`;
+  const articleLd = getArticleSchema(chapter, manga);
+  const breadcrumbLd = getBreadcrumbSchema([
+    { name: "Trang chủ", url: SITE_URL },
+    { name: manga.title, url: `${SITE_URL}/truyen/${mangaId}` },
+    { name: chapterTitle, url: chapterUrl },
+  ]);
+
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={`${chapterTitle} - ${manga.title} | Truyện Nhà Mèo`}
+        description={`Đọc ${manga.title} ${chapterTitle} online miễn phí tại Truyện Nhà Mèo`}
+        url={chapterUrl}
+        image={manga.image_url}
+        ogType="article"
+        jsonLd={[articleLd, breadcrumbLd]}
+      />
       <Header />
       <main className="container mx-auto px-4 py-8">
         {/* Navigation Header */}

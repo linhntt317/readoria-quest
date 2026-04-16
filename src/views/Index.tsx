@@ -111,8 +111,35 @@ const Index = () => {
       </main>
 
       <footer className="bg-card border-t border-border py-8 mt-12">
-        <div className="container mx-auto px-4 text-center text-muted-foreground">
-          <p>© 2026 Truyện Nhà Mèo. All rights reserved.</p>
+        <div className="container mx-auto px-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-6">
+            <div>
+              <h3 className="font-bold text-foreground mb-3">Truyện Nhà Mèo</h3>
+              <p className="text-sm text-muted-foreground">
+                Nền tảng đọc truyện online miễn phí với hàng ngàn bộ truyện hay, cập nhật liên tục.
+              </p>
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground mb-3">Thể loại</h3>
+              <div className="flex flex-wrap gap-2 text-sm text-muted-foreground">
+                {["Ngôn tình", "Đam mỹ", "Xuyên không", "Huyền huyễn", "Cổ đại"].map((genre) => (
+                  <a key={genre} href={`/the-loai/${genre.toLowerCase().replace(/\s+/g, "-")}`} className="hover:text-primary transition-colors">
+                    {genre}
+                  </a>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 className="font-bold text-foreground mb-3">Liên kết</h3>
+              <div className="flex flex-col gap-1 text-sm text-muted-foreground">
+                <a href="/tim-kiem" className="hover:text-primary transition-colors">Tìm kiếm truyện</a>
+                <a href="/dang-nhap" className="hover:text-primary transition-colors">Đăng nhập</a>
+              </div>
+            </div>
+          </div>
+          <div className="border-t border-border pt-4 text-center text-sm text-muted-foreground">
+            <p>© 2026 Truyện Nhà Mèo. All rights reserved.</p>
+          </div>
         </div>
       </footer>
     </div>
