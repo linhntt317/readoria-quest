@@ -12,9 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Eye, Star } from "lucide-react";
+import { BookOpen, Eye } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
+import Seo from "@/components/Seo";
 import DOMPurify from "dompurify";
 import {
   Breadcrumb,
@@ -24,6 +25,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import { getBreadcrumbSchema, getMangaSchema } from "@/lib/structured-data";
 
 const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
   const { data: manga, isLoading, error } = useMangaById(mangaId);
