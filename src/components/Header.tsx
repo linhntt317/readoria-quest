@@ -285,13 +285,23 @@ export const Header = () => {
                 </DropdownMenuContent>
               </DropdownMenu>
             ) : (
-              <Button
-                className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
-                onClick={handleLoginClick}
-              >
-                <LogIn className="mr-2 h-4 w-4" />
-                Đăng nhập/Đăng ký
-              </Button>
+              <>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="md:hidden"
+                  onClick={handleLoginClick}
+                >
+                  <LogIn className="h-5 w-5" />
+                </Button>
+                <Button
+                  className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
+                  onClick={handleLoginClick}
+                >
+                  <LogIn className="mr-2 h-4 w-4" />
+                  Đăng nhập/Đăng ký
+                </Button>
+              </>
             )}
           </div>
         </div>

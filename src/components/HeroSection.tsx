@@ -106,15 +106,6 @@ export const HeroSection = () => {
                             "N/A"}
                         </span>
                       </div>
-                      <div className="h-4 w-px bg-border" />
-                      {/* <div>
-                        <span className="text-muted-foreground">
-                          {t.common.views}:{" "}
-                        </span>
-                        <span className="text-primary font-medium">
-                          {manga.views}
-                        </span>
-                      </div> */}
                     </div>
                   </div>
                 </div>
