@@ -267,7 +267,6 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
                 <div className="flex flex-row gap-2">
                   <Button
                     onClick={() => {
-                      // Navigate to chapter 1 (first chapter)
                       const chapter1 = manga.chapters?.find(
                         (ch) => ch.chapter_number === 1,
                       );
@@ -278,7 +277,6 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
                   >
                     Đọc Từ Đầu
                   </Button>
-                  <Button>Lưu Truyện</Button>
                 </div>
               </CardHeader>
               <CardContent>
