@@ -33,20 +33,19 @@ export function getMangaSchema(manga: any) {
     '@context': 'https://schema.org',
     '@type': 'Book',
     name: manga.title,
-    description: manga.description,
-    image: manga.cover_image,
+    description: (manga.description || '').replace(/<[^>]*>/g, '').slice(0, 300),
+    image: manga.image_url,
     author: {
       '@type': 'Person',
       name: manga.author || 'Unknown'
     },
-    genre: manga.tags?.join(', '),
+    genre: manga.tags?.map((t: any) => t.name).join(', '),
     inLanguage: 'vi-VN',
     datePublished: manga.created_at,
     dateModified: manga.updated_at,
     aggregateRating: manga.rating ? {
       '@type': 'AggregateRating',
       ratingValue: manga.rating,
-      ratingCount: manga.rating_count,
       bestRating: 5,
       worstRating: 1
     } : undefined,
@@ -74,11 +73,10 @@ export function getArticleSchema(chapter: any, manga: any) {
   return {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: `${manga.title} - ${chapter.title}`,
-    description: `Đọc ${manga.title} ${chapter.title} online miễn phí`,
-    image: chapter.images?.[0] || manga.cover_image,
+    headline: `${manga.title} - Chương ${chapter.chapter_number}: ${chapter.title}`,
+    description: `Đọc ${manga.title} Chương ${chapter.chapter_number} online miễn phí`,
+    image: manga.image_url,
     datePublished: chapter.created_at,
-    dateModified: chapter.updated_at,
     author: {
       '@type': 'Person',
       name: manga.author || 'Unknown'

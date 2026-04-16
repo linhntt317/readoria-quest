@@ -8,7 +8,8 @@ interface SeoProps {
   url?: string;
   image?: string;
   keywords?: string[];
-  jsonLd?: object;
+  jsonLd?: object | object[];
+  ogType?: string;
 }
 
 const upsertMeta = (name: string, content: string, attr = "name") => {
@@ -28,17 +29,20 @@ export default function Seo({
   image,
   keywords,
   jsonLd,
+  ogType = "website",
 }: SeoProps) {
   useEffect(() => {
     const prevTitle = document.title;
     document.title = title;
 
     upsertMeta("description", description);
-    upsertMeta("keywords", (keywords || []).join(", "));
+    if (keywords?.length) upsertMeta("keywords", keywords.join(", "));
 
     // Open Graph
     upsertMeta("og:title", title, "property");
     upsertMeta("og:description", description, "property");
+    upsertMeta("og:type", ogType, "property");
+    upsertMeta("og:site_name", "Truyện Nhà Mèo", "property");
     if (url) upsertMeta("og:url", url, "property");
     if (image) upsertMeta("og:image", image, "property");
 
@@ -59,23 +63,31 @@ export default function Seo({
     }
     if (url) link.href = url;
 
-    // JSON-LD
-    let ld: HTMLScriptElement | null = null;
+    // JSON-LD — support multiple schemas
+    const existingScripts = document.querySelectorAll(
+      "script[type='application/ld+json'][data-seo]"
+    );
+    existingScripts.forEach((s) => s.remove());
+
     if (jsonLd) {
-      ld = document.querySelector("script[type='application/ld+json']");
-      if (!ld) {
-        ld = document.createElement("script");
-        ld.type = "application/ld+json";
-        document.head.appendChild(ld);
-      }
-      ld.textContent = JSON.stringify(jsonLd);
+      const schemas = Array.isArray(jsonLd) ? jsonLd : [jsonLd];
+      schemas.forEach((schema) => {
+        const script = document.createElement("script");
+        script.type = "application/ld+json";
+        script.setAttribute("data-seo", "true");
+        script.textContent = JSON.stringify(schema);
+        document.head.appendChild(script);
+      });
     }
 
     return () => {
       document.title = prevTitle;
-      // Note: we intentionally keep meta tags for caching / SSR parity; cleanup not mandatory
+      const scripts = document.querySelectorAll(
+        "script[type='application/ld+json'][data-seo]"
+      );
+      scripts.forEach((s) => s.remove());
     };
-  }, [title, description, url, image, keywords, jsonLd]);
+  }, [title, description, url, image, keywords, jsonLd, ogType]);
 
   return null;
 }

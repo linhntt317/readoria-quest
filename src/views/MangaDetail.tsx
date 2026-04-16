@@ -12,9 +12,10 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-import { BookOpen, Eye, Star } from "lucide-react";
+import { BookOpen, Eye } from "lucide-react";
 import { Header } from "@/components/Header";
 import { CommentSection } from "@/components/CommentSection";
+import Seo from "@/components/Seo";
 import DOMPurify from "dompurify";
 import {
   Breadcrumb,
@@ -24,6 +25,7 @@ import {
   BreadcrumbSeparator,
   BreadcrumbPage,
 } from "@/components/ui/breadcrumb";
+import { getBreadcrumbSchema, getMangaSchema } from "@/lib/structured-data";
 
 const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
   const { data: manga, isLoading, error } = useMangaById(mangaId);
@@ -95,9 +97,28 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    const SITE_URL = "https://truyennhameo.vercel.com";
+    const mangaUrl = `${SITE_URL}/truyen/${mangaId}`;
+    const cleanDesc = (manga.description || "").replace(/<[^>]*>/g, "").slice(0, 160);
+    const breadcrumbLd = getBreadcrumbSchema([
+      { name: "Trang chủ", url: SITE_URL },
+      { name: "Truyện", url: `${SITE_URL}/truyen` },
+      { name: manga.title, url: mangaUrl },
+    ]);
+    const mangaLd = getMangaSchema(manga);
+
+    return (
+      <div className="min-h-screen bg-background">
+        <Seo
+          title={`${manga.title} - Truyện Nhà Mèo`}
+          description={cleanDesc || `Đọc ${manga.title} online miễn phí tại Truyện Nhà Mèo`}
+          url={mangaUrl}
+          image={manga.image_url}
+          ogType="book"
+          keywords={[manga.title, manga.author, ...(manga.tags?.map((t: any) => t.name) || [])]}
+          jsonLd={[mangaLd, breadcrumbLd]}
+        />
+        <Header />
 
       <main className="container mx-auto px-4 py-8">
         <Breadcrumb className="mb-6">
@@ -246,7 +267,6 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
                 <div className="flex flex-row gap-2">
                   <Button
                     onClick={() => {
-                      // Navigate to chapter 1 (first chapter)
                       const chapter1 = manga.chapters?.find(
                         (ch) => ch.chapter_number === 1,
                       );
@@ -257,7 +277,6 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
                   >
                     Đọc Từ Đầu
                   </Button>
-                  <Button>Lưu Truyện</Button>
                 </div>
               </CardHeader>
               <CardContent>
