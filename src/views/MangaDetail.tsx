@@ -97,9 +97,28 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
     );
   }
 
-  return (
-    <div className="min-h-screen bg-background">
-      <Header />
+    const SITE_URL = "https://truyennhameo.vercel.com";
+    const mangaUrl = `${SITE_URL}/truyen/${mangaId}`;
+    const cleanDesc = (manga.description || "").replace(/<[^>]*>/g, "").slice(0, 160);
+    const breadcrumbLd = getBreadcrumbSchema([
+      { name: "Trang chủ", url: SITE_URL },
+      { name: "Truyện", url: `${SITE_URL}/truyen` },
+      { name: manga.title, url: mangaUrl },
+    ]);
+    const mangaLd = getMangaSchema(manga);
+
+    return (
+      <div className="min-h-screen bg-background">
+        <Seo
+          title={`${manga.title} - Truyện Nhà Mèo`}
+          description={cleanDesc || `Đọc ${manga.title} online miễn phí tại Truyện Nhà Mèo`}
+          url={mangaUrl}
+          image={manga.image_url}
+          ogType="book"
+          keywords={[manga.title, manga.author, ...(manga.tags?.map((t: any) => t.name) || [])]}
+          jsonLd={[mangaLd, breadcrumbLd]}
+        />
+        <Header />
 
       <main className="container mx-auto px-4 py-8">
         <Breadcrumb className="mb-6">
