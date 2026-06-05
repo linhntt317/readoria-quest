@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
+import Seo from "@/components/Seo";
 import { MangaCard } from "@/components/MangaCard";
 import { useManga, useTags } from "@/hooks/useManga";
 import { useTranslation } from "@/hooks/useTranslation";
