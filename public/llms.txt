@@ -1,0 +1,19 @@
+# Truyện Nhà Mèo
+
+> Nền tảng đọc truyện online miễn phí - kho truyện ngôn tình, đam mỹ, huyền huyễn, tiên hiệp, xuyên không, cổ đại bằng tiếng Việt, cập nhật liên tục.
+
+Truyện Nhà Mèo cung cấp hàng ngàn bộ truyện (tiểu thuyết, truyện edit, truyện dịch) hoàn toàn miễn phí cho độc giả Việt Nam. Người dùng có thể tìm kiếm theo tên, tác giả, thể loại; lưu lịch sử đọc và truyện yêu thích sau khi đăng nhập.
+
+## Pages
+
+- [Trang chủ](/): Danh sách truyện mới cập nhật và truyện thịnh hành.
+- [Tìm kiếm](/tim-kiem): Tìm truyện theo tên, tác giả hoặc lọc theo thể loại.
+- [Thể loại Ngôn tình](/the-loai/ngon-tinh): Truyện ngôn tình lãng mạn.
+- [Thể loại Đam mỹ](/the-loai/dam-my): Truyện đam mỹ.
+- [Thể loại Huyền huyễn](/the-loai/huyen-huyen): Truyện huyền huyễn, tiên hiệp.
+- [Thể loại Xuyên không](/the-loai/xuyen-khong): Truyện xuyên không, trọng sinh.
+- [Thể loại Cổ đại](/the-loai/co-dai): Truyện cổ đại.
+
+## Optional
+
+- [Đăng nhập](/dang-nhap): Đăng nhập để lưu lịch sử và truyện yêu thích.
