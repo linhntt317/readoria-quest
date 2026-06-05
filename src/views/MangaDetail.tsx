@@ -263,7 +263,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
             {/* Chapter List */}
             <Card>
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <CardTitle>Danh sách chương</CardTitle>
+                <h2 className="text-xl font-semibold">Danh sách chương</h2>
                 <div className="flex flex-row gap-2">
                   <Button
                     onClick={() => {
