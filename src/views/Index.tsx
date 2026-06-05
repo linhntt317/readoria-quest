@@ -32,7 +32,7 @@ const Index = () => {
       <Seo
         title="Truyện Nhà Mèo - Kho truyện online miễn phí"
         description="Đọc truyện online miễn phí với hàng ngàn bộ truyện hay. Cập nhật liên tục các thể loại: Ngôn tình, Đam mỹ, Huyền huyễn, Tiên hiệp, Xuyên không..."
-        url="https://truyennhameo.vercel.com"
+        url="https://tieuthuyet.lovable.app"
         keywords={[
           "đọc truyện",
           "truyện online",
@@ -43,6 +43,8 @@ const Index = () => {
         ]}
         jsonLd={structuredData}
       />
+
+      <h1 className="sr-only">Truyện Nhà Mèo - Kho truyện online miễn phí</h1>
 
       <Header />
 
