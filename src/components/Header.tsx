@@ -213,6 +213,7 @@ export const Header = () => {
                   <Button
                     variant="ghost"
                     className="relative h-9 w-9 rounded-full"
+                    aria-label={language === "vi" ? "Tài khoản người dùng" : "User account"}
                   >
                     <Avatar className="h-9 w-9">
                       <AvatarImage
@@ -229,6 +230,9 @@ export const Header = () => {
                         )}
                       </AvatarFallback>
                     </Avatar>
+                    <span className="sr-only">
+                      {language === "vi" ? "Mở menu tài khoản" : "Open account menu"}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
