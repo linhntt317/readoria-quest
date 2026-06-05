@@ -6,7 +6,7 @@ const corsHeaders = {
     "authorization, x-client-info, apikey, content-type",
 };
 
-const SITE_URL = "https://truyennhameo.vercel.com";
+const SITE_URL = "https://tieuthuyet.lovable.app";
 
 function escapeXml(str: string): string {
   return str
