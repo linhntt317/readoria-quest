@@ -310,8 +310,10 @@ export const Header = () => {
                   size="icon"
                   className="md:hidden"
                   onClick={handleLoginClick}
+                  aria-label={language === "vi" ? "Đăng nhập" : "Sign in"}
                 >
                   <LogIn className="h-5 w-5" />
+                  <span className="sr-only">{language === "vi" ? "Đăng nhập" : "Sign in"}</span>
                 </Button>
                 <Button
                   className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"
