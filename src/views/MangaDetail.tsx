@@ -205,13 +205,13 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
             {/* Manga Details */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">{manga.title}</CardTitle>
+                <h1 className="text-3xl font-bold leading-tight">{manga.title}</h1>
                 <CardDescription className="text-base">
                   Tác giả: {manga.author}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <h3 className="font-semibold mb-2">Giới thiệu</h3>
+                <h2 className="font-semibold mb-2 text-xl">Giới thiệu</h2>
                 <div
                   className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{
