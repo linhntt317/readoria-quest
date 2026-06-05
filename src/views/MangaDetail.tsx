@@ -97,7 +97,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
     );
   }
 
-    const SITE_URL = "https://truyennhameo.vercel.com";
+    const SITE_URL = "https://tieuthuyet.lovable.app";
     const mangaUrl = `${SITE_URL}/truyen/${mangaId}`;
     const cleanDesc = (manga.description || "").replace(/<[^>]*>/g, "").slice(0, 160);
     const breadcrumbLd = getBreadcrumbSchema([
