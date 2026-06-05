@@ -97,7 +97,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
     );
   }
 
-    const SITE_URL = "https://truyennhameo.vercel.com";
+    const SITE_URL = "https://tieuthuyet.lovable.app";
     const mangaUrl = `${SITE_URL}/truyen/${mangaId}`;
     const cleanDesc = (manga.description || "").replace(/<[^>]*>/g, "").slice(0, 160);
     const breadcrumbLd = getBreadcrumbSchema([
@@ -205,13 +205,13 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
             {/* Manga Details */}
             <Card>
               <CardHeader>
-                <CardTitle className="text-3xl">{manga.title}</CardTitle>
+                <h1 className="text-3xl font-bold leading-tight">{manga.title}</h1>
                 <CardDescription className="text-base">
                   Tác giả: {manga.author}
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <h3 className="font-semibold mb-2">Giới thiệu</h3>
+                <h2 className="font-semibold mb-2 text-xl">Giới thiệu</h2>
                 <div
                   className="prose prose-sm md:prose-base max-w-none dark:prose-invert text-muted-foreground whitespace-pre-wrap"
                   dangerouslySetInnerHTML={{
@@ -263,7 +263,7 @@ const MangaDetail = ({ mangaId }: { mangaId?: string }) => {
             {/* Chapter List */}
             <Card>
               <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <CardTitle>Danh sách chương</CardTitle>
+                <h2 className="text-xl font-semibold">Danh sách chương</h2>
                 <div className="flex flex-row gap-2">
                   <Button
                     onClick={() => {

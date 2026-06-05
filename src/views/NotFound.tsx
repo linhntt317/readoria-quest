@@ -1,6 +1,7 @@
 "use client";
 import { AppLink as Link, useAppPathname } from "@/lib/navigation";
 import { useEffect } from "react";
+import Seo from "@/components/Seo";
 
 const NotFound = () => {
   const pathname = useAppPathname();
@@ -10,12 +11,22 @@ const NotFound = () => {
   }, [pathname]);
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">404</h1>
-        <p className="mb-4 text-xl text-gray-600">Oops! Page not found</p>
-        <Link href="/" className="text-blue-500 underline hover:text-blue-700">
-          Return to Home
+    <div className="flex min-h-screen items-center justify-center bg-background">
+      <Seo
+        title="404 - Không tìm thấy trang | Truyện Nhà Mèo"
+        description="Trang bạn đang tìm kiếm không tồn tại hoặc đã bị xóa. Quay về trang chủ Truyện Nhà Mèo để khám phá thêm nhiều truyện hay."
+        url="https://tieuthuyet.lovable.app/404"
+      />
+      <div className="text-center px-4">
+        <h1 className="mb-4 text-5xl font-bold text-foreground">404</h1>
+        <p className="mb-6 text-xl text-muted-foreground">
+          Không tìm thấy trang bạn yêu cầu
+        </p>
+        <Link
+          href="/"
+          className="text-primary underline hover:text-primary/80 font-medium"
+        >
+          Quay về trang chủ
         </Link>
       </div>
     </div>

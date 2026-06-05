@@ -1,4 +1,4 @@
-const SITE_URL = 'https://truyennhameo.vercel.com';
+const SITE_URL = 'https://tieuthuyet.lovable.app';
 const SITE_NAME = 'Truyện Nhà Mèo';
 
 export function getWebsiteSchema() {

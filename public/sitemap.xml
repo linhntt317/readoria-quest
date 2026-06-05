@@ -1,9 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
-    <loc>https://truyennhameo.vercel.com/</loc>
-    <lastmod>2026-04-15</lastmod>
+    <loc>https://tieuthuyet.lovable.app/</loc>
     <changefreq>daily</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://tieuthuyet.lovable.app/tim-kiem</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://tieuthuyet.lovable.app/dang-nhap</loc>
+    <changefreq>monthly</changefreq>
+    <priority>0.3</priority>
+  </url>
 </urlset>
+<!-- Dynamic routes (/truyen/:slug, /truyen/:slug/chuong/:chapterId, /the-loai/:tagName)
+     are listed in the Edge Function sitemap: https://ljmoqseafxhncpwzuwex.supabase.co/functions/v1/sitemap -->

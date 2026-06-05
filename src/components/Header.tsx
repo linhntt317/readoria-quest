@@ -152,15 +152,22 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               className="sm:hidden"
+              aria-label={language === "vi" ? "Tìm kiếm" : "Search"}
               onClick={() => { setIsLoading(true); router.push("/tim-kiem"); }}
             >
               <Search className="h-5 w-5" />
+              <span className="sr-only">{language === "vi" ? "Tìm kiếm" : "Search"}</span>
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={language === "vi" ? "Chọn giao diện" : "Select theme"}
+                >
                   <ThemeIcon className="h-5 w-5" />
+                  <span className="sr-only">{language === "vi" ? "Chọn giao diện" : "Select theme"}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -183,6 +190,11 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               onClick={toggleLanguage}
+              aria-label={
+                language === "vi"
+                  ? "Switch to English"
+                  : "Chuyển sang Tiếng Việt"
+              }
               title={
                 language === "vi"
                   ? "Switch to English"
@@ -190,6 +202,9 @@ export const Header = () => {
               }
             >
               <Globe className="h-5 w-5" />
+              <span className="sr-only">
+                {language === "vi" ? "Switch to English" : "Chuyển sang Tiếng Việt"}
+              </span>
             </Button>
 
             {user ? (
@@ -198,6 +213,7 @@ export const Header = () => {
                   <Button
                     variant="ghost"
                     className="relative h-9 w-9 rounded-full"
+                    aria-label={language === "vi" ? "Tài khoản người dùng" : "User account"}
                   >
                     <Avatar className="h-9 w-9">
                       <AvatarImage
@@ -214,6 +230,9 @@ export const Header = () => {
                         )}
                       </AvatarFallback>
                     </Avatar>
+                    <span className="sr-only">
+                      {language === "vi" ? "Mở menu tài khoản" : "Open account menu"}
+                    </span>
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-56">
@@ -291,8 +310,10 @@ export const Header = () => {
                   size="icon"
                   className="md:hidden"
                   onClick={handleLoginClick}
+                  aria-label={language === "vi" ? "Đăng nhập" : "Sign in"}
                 >
                   <LogIn className="h-5 w-5" />
+                  <span className="sr-only">{language === "vi" ? "Đăng nhập" : "Sign in"}</span>
                 </Button>
                 <Button
                   className="hidden md:inline-flex bg-primary hover:bg-primary/90 text-primary-foreground"

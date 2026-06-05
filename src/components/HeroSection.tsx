@@ -74,12 +74,12 @@ export const HeroSection = () => {
                       </span>
                     </div>
 
-                    <h1 className="text-2xl md:text-3xl font-bold leading-tight">
+                    <h2 className="text-2xl md:text-3xl font-bold leading-tight">
                       {manga.title}
                       <span className="block text-xl md:text-2xl mt-2 text-muted-foreground font-normal">
                         {manga.author}
                       </span>
-                    </h1>
+                    </h2>
 
                     <p className="text-sm text-muted-foreground max-w-xl line-clamp-3">
                       {manga.description}

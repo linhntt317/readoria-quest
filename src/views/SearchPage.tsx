@@ -3,6 +3,7 @@
 import React, { useState, useMemo } from "react";
 import { useSearchParams } from "react-router-dom";
 import { Header } from "@/components/Header";
+import Seo from "@/components/Seo";
 import { MangaCard } from "@/components/MangaCard";
 import { useManga, useTags } from "@/hooks/useManga";
 import { useTranslation } from "@/hooks/useTranslation";
@@ -100,8 +101,21 @@ const SearchPage = () => {
     title: language === "vi" ? "Tên A-Z" : "Title A-Z",
   };
 
+  const seoQuery = query.trim();
+  const seoTitle = seoQuery
+    ? `Kết quả tìm kiếm "${seoQuery.slice(0, 40)}" - Truyện Nhà Mèo`
+    : "Tìm kiếm truyện - Truyện Nhà Mèo";
+  const seoDescription = seoQuery
+    ? `Kết quả tìm kiếm truyện cho từ khóa "${seoQuery}". Tìm truyện ngôn tình, đam mỹ, huyền huyễn miễn phí trên Truyện Nhà Mèo.`
+    : "Tìm kiếm truyện theo tên, tác giả hoặc thể loại. Lọc và sắp xếp hàng ngàn bộ truyện miễn phí trên Truyện Nhà Mèo.";
+
   return (
     <div className="min-h-screen bg-background">
+      <Seo
+        title={seoTitle}
+        description={seoDescription}
+        url={`https://tieuthuyet.lovable.app/tim-kiem${seoQuery ? `?q=${encodeURIComponent(seoQuery)}` : ""}`}
+      />
       <Header />
 
       <main className="container mx-auto px-4 py-8">
