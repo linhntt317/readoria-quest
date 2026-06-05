@@ -152,15 +152,22 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               className="sm:hidden"
+              aria-label={language === "vi" ? "Tìm kiếm" : "Search"}
               onClick={() => { setIsLoading(true); router.push("/tim-kiem"); }}
             >
               <Search className="h-5 w-5" />
+              <span className="sr-only">{language === "vi" ? "Tìm kiếm" : "Search"}</span>
             </Button>
 
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label={language === "vi" ? "Chọn giao diện" : "Select theme"}
+                >
                   <ThemeIcon className="h-5 w-5" />
+                  <span className="sr-only">{language === "vi" ? "Chọn giao diện" : "Select theme"}</span>
                 </Button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end">
@@ -183,6 +190,11 @@ export const Header = () => {
               variant="ghost"
               size="icon"
               onClick={toggleLanguage}
+              aria-label={
+                language === "vi"
+                  ? "Switch to English"
+                  : "Chuyển sang Tiếng Việt"
+              }
               title={
                 language === "vi"
                   ? "Switch to English"
@@ -190,6 +202,9 @@ export const Header = () => {
               }
             >
               <Globe className="h-5 w-5" />
+              <span className="sr-only">
+                {language === "vi" ? "Switch to English" : "Chuyển sang Tiếng Việt"}
+              </span>
             </Button>
 
             {user ? (
