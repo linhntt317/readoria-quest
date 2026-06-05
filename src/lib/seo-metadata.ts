@@ -1,5 +1,5 @@
 const SITE_NAME = "Truyện Nhà Mèo";
-const SITE_URL = "https://truyennhameo.vercel.com";
+const SITE_URL = "https://tieuthuyet.lovable.app";
 const SITE_DESCRIPTION =
   "Nền tảng đọc truyện ngôn tình, tiểu thuyết, truyện edit và truyện dịch online miễn phí";
 
